@@ -126,8 +126,8 @@
     $sum = 0;
     foreach ($sch_arr as $el)
         $sum += strlen ($el);
-    // only for vewltiwseis
-	if (!$sum && $av_type == 2){
+    // only for apospaseis (επιτρέπει αρνητική δήλωση (χωρίς καμία επιλογή) μόνο στις βελτιώσεις, στις αποσπάσεις βγάζει μήνυμα λάθους)
+	if (!$sum && $av_type == 1){
         echo "Πρέπει να εισάγετε τουλάχιστον μία επιλογή";
         $error_found = 1;
     }
