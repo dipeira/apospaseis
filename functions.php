@@ -33,6 +33,16 @@ function getSchoolID ($name,$conn)
     else
         return mysql_result($result, 0);	
 }
+function getSchoolcode ($id, $conn)
+{
+    global $av_sch;
+    $query = "SELECT kwdikos from $av_sch where id=".$id;
+    $result = mysql_query($query, $conn);
+    if (mysql_num_rows($result)==0) 
+        return 0;
+    else
+        return mysql_result($result, 0);	
+}
 
 // epil: epilogh 1-20 / dim: 2 dhmotiko,1 nip,0 ola / omada / sch: sxoleio (lektiko)
 function getSchools ($epil, $dim, $omada, $conn, $sch)
