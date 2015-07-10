@@ -57,7 +57,7 @@ class logmein {
 		if (strlen($password) == 8)
 			$password = '0'.$password;
         // sugarvag: check if employee can apply
-        $qry = "SELECT * FROM apo_employee WHERE am=".$username;
+        $qry = "SELECT * FROM ".$this->user_table." WHERE am=".$username;
         $res = $this->qry($qry);
         //echo $qry;
         //echo "<form><input type='submit' value='qqq' /></form>";
