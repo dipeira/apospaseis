@@ -61,20 +61,27 @@ if($_REQUEST['action'] == "login"){
     {
         session_start();
         $_SESSION['timeout'] = time() + (60 * 60);
+		// if system inactive, allow only administrator
+		if (!$av_is_active && $_REQUEST['username'] != $av_admin)
+		{
+			echo "H είσοδος απέτυχε διότι το σύστημα δεν είναι ενεργό...";
+			echo "<FORM><INPUT Type='button' VALUE='Επιστροφή' onClick='history.go(-1);return true;'></FORM>";
+			die();
+		}
         if ($av_type == 1){
             //header("Location: index.php");
             $page = 'index.php';
-		echo '<script type="text/javascript">';
-		echo 'window.location.href="'.$page.'";';
-		echo '</script>';
-            }
+			echo '<script type="text/javascript">';
+			echo 'window.location.href="'.$page.'";';
+			echo '</script>';
+        }
         else{
             //header("Location: index2.php");
             $page = 'index2.php';
-	echo '<script type="text/javascript">';
-	echo 'window.location.href="'.$page.'";';
-	echo '</script>';
-            }
+			echo '<script type="text/javascript">';
+			echo 'window.location.href="'.$page.'";';
+			echo '</script>';
+        }
     }
 else{
     echo "H είσοδος απέτυχε...";
