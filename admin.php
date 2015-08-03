@@ -471,6 +471,7 @@
 			//echo "<br><a href='admin.php?action=nothing'>Εκπ/κοί που δεν έχουν κάνει καμία αποθήκευση ή υποβολή ($nothing)</a>";
 			echo "<br><a href='admin.php?action=saved'>Εκπ/κοί που έχουν αποθηκεύσει αλλά δεν έχουν υποβάλει αίτηση ($saved)</a>";
             echo "<br><br><a href='admin.php?action=export'>Εξαγωγή</a><br>";
+			echo "<br><a href=\"edit.php\">Μεταβολή παραμέτρων</a><br>";
             echo "<br><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' value='Έξοδος'></form>";
             echo "</center>";
     }   
