@@ -50,7 +50,7 @@
 	?>
 	<!-- HTML form -->
 	<form action="" method="post">
-	<textarea name="text" style="width: 700px; height: 740px;"><?php echo htmlspecialchars($text) ?></textarea>
+	<textarea name="text" style="width: 700px; height: 740px;"><?php echo $text; ?></textarea>
 	<br>
 	<input type="submit" value="Μεταβολή" />
 	<br>
