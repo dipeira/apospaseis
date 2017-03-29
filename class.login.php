@@ -11,16 +11,18 @@ class logmein {
     var $database_logon;
     var $username_logon;
     var $password_logon;
-	var $user_table;
+    var $theConnection;
+    var $user_table;
     protected $_prop;
+    
     public function get_vars()
     {
-        include 'config.php';
-        $this->hostname_logon = $db_host;
-        $this->database_logon = $db_name;
-        $this->username_logon = $db_user;
-        $this->password_logon = $db_password;
-		$this->user_table = $av_emp;
+      include 'config.php';
+      $this->hostname_logon = $db_host;
+      $this->database_logon = $db_name;
+      $this->username_logon = $db_user;
+      $this->password_logon = $db_password;
+      $this->user_table = $av_emp;
     }
     	
     //table fields
@@ -36,8 +38,7 @@ class logmein {
     //connect to database
     function dbconnect(){
         $this->get_vars();
-        $connections = mysql_connect($this->hostname_logon, $this->username_logon, $this->password_logon) or die ('Unabale to connect to the database');
-        mysql_select_db($this->database_logon) or die ('Unable to select database!');
+        $this->theConnection = mysqli_connect($this->hostname_logon, $this->username_logon, $this->password_logon, $this->database_logon) or die ('Unable to connect to the database');
         return;
     }
  
@@ -53,20 +54,19 @@ class logmein {
         if($this->encrypt == true){
             $password = md5($password);
         }
-		// sugarvag: leading zero?
-		if (strlen($password) == 8)
-			$password = '0'.$password;
+      // sugarvag: leading zero?
+      if (strlen($password) == 8)
+        $password = '0'.$password;
         // sugarvag: check if employee can apply
         $qry = "SELECT * FROM ".$this->user_table." WHERE am=".$username;
         $res = $this->qry($qry);
-        //echo $qry;
-        //echo "<form><input type='submit' value='qqq' /></form>";
-        $rows_emp = mysql_num_rows($res);
+        
+        $rows_emp = mysqli_num_rows($res);
         if ($rows_emp>0)
         {
             //execute login via qry function that prevents MySQL injections
-            $result = $this->qry("SELECT * FROM ".$this->user_table." WHERE ".$this->user_column."='?' AND ".$this->pass_column." = '?';" , $username, $password);
-            $row=mysql_fetch_assoc($result);
+            //$result = $this->qry("SELECT * FROM ".$this->user_table." WHERE ".$this->user_column."='?' AND ".$this->pass_column." = '?';" , $username, $password);
+            $row = mysqli_fetch_assoc($res);
             if($row != "Error"){
                 if($row[$this->user_column] !="" && $row[$this->pass_column] !=""){
                     //register sessions
@@ -77,31 +77,34 @@ class logmein {
                     //userlevel session is optional. Use it if you have different user levels
                     //$_SESSION['userlevel'] = $row[$this->user_level];
                     $result = $this->qry("UPDATE ".$this->user_table." SET lastlogin=now()WHERE ".$this->user_column."='?';" , $username);
-                    //$row=mysql_fetch_assoc($result);
                     return true;
-                }else{
+                } else {
                     session_destroy();
                     return false;
                 }
-            }else{
+            } else {
                 return false;
             }
         }
         else
             return false;
- 
     }
  
     //prevent injection
     function qry($query) {
       $this->dbconnect();
       $args  = func_get_args();
+      /*
       $query = array_shift($args);
       $query = str_replace("?", "%s", $query);
-      $args  = array_map('mysql_real_escape_string', $args);
+
+      $args = mysqli_real_escape_string($this->theConnection, $args[0]);
+      $args = array($args);
+      print_r($args);
       array_unshift($args,$query);
-      $query = call_user_func_array('sprintf',$args);
-      $result = mysql_query($query) or die(mysql_error());
+      
+      $query = call_user_func_array('sprintf', $args);*/
+      $result = mysqli_query($this->theConnection, $query) or die(mysqli_error());
           if($result){
             return $result;
           }else{
@@ -140,8 +143,9 @@ class logmein {
             $this->user_table = $user_table;
         }
             //exectue query
-            $result = $this->qry("SELECT * FROM ".$this->user_table." WHERE ".$this->pass_column." = '?';" , $logincode);
-            $rownum = mysql_num_rows($result);
+            //$result = $this->qry("SELECT * FROM ".$this->user_table." WHERE ".$this->pass_column." = '?';" , $logincode);
+            $result = mysqli_query($this->theConnection, "SELECT * FROM ".$this->user_table." WHERE ".$this->pass_column." = ".$logincode);
+            $rownum = mysqli_num_rows($result);
             //return true if logged in and false if not
             if($row != "Error"){
                 if($rownum > 0){
@@ -159,13 +163,13 @@ class logmein {
         echo '
 <form name="'.$formname.'" method="post" id="'.$formname.'" class="'.$formclass.'" enctype="application/x-www-form-urlencoded" action="'.$formaction.'" autocomplete="off">
 <table>
-<tr><td><div><label for="username">Αριθμός Μητρώου Εκπ/κού</label></td>
+<tr><td><div><label for="username">Ξ‘ΟΞΉΞΈΞΌΟΟ‚ ΞΞ·Ο„ΟΟΞΏΟ… Ξ•ΞΊΟ€/ΞΊΞΏΟ</label></td>
 <td><input name="username" id="username" type="text" ></div></td></tr>
-<tr><td><div><label for="password">Α.Φ.Μ. Εκπ/κού</label></td>
+<tr><td><div><label for="password">Ξ‘.Ξ¦.Ξ. Ξ•ΞΊΟ€/ΞΊΞΏΟ</label></td>
 <td><input name="password" id="password" type="password" ></div></td></tr>
 <tr><td colspan=2><input name="action" id="action" value="login" type="hidden">
 <div>
-<center><input name="submit" id="submit" value="Είσοδος στο σύστημα" type="submit"></center></div></td></tr></table>
+<center><input name="submit" id="submit" value="Ξ•Ξ―ΟƒΞΏΞ΄ΞΏΟ‚ ΟƒΟ„ΞΏ ΟƒΟΟƒΟ„Ξ·ΞΌΞ±" type="submit"></center></div></td></tr></table>
 </form>
 ';
     }

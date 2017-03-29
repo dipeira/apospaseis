@@ -1,5 +1,4 @@
 <?php
-header('Content-type: text/html; charset=iso8859-7'); 
 if (isset($_SESSION))
 	session_destroy();
 
@@ -7,7 +6,7 @@ include_once 'config.php';
 //session_start();
 ?>
 <html>
-    <head><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-7"><title><?php echo $av_title." ".$av_foreas; ?></title></head>
+    <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title><?php echo $av_title." ".$av_foreas; ?></title></head>
 <body>
 <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed&subset=greek,latin' rel='stylesheet' type='text/css'>
 <LINK href="style.css" rel="stylesheet" type="text/css">
@@ -31,28 +30,28 @@ if (!isset($_REQUEST['action']))
     ?>
 <center>
 <h2><?php echo $av_dnsh; ?>
-    <br><?php echo $av_title; ?> εντός <?php echo $av_foreas; ?></h2>
+    <br><?php echo $av_title; ?> Ξ΅Ξ½ΟΟΟ <?php echo $av_foreas; ?></h2>
 <?php
-    echo "<h3>Διάστημα υποβολής αιτήσεων: από $av_active_from έως $av_active_to και ώρα $av_active_to_time.</h3>";
+    echo "<h3>ΞΞΉΞ¬ΟΟΞ·ΞΌΞ± ΟΟΞΏΞ²ΞΏΞ»Ξ®Ο Ξ±ΞΉΟΞ®ΟΞ΅ΟΞ½: Ξ±ΟΟ $av_active_from Ξ­ΟΟ $av_active_to ΞΊΞ±ΞΉ ΟΟΞ± $av_active_to_time.</h3>";
 
     if (!$av_is_active)
-        echo "<h3>Η προθεσμία υποβολής αιτήσεων έχει παρέλθει.<br>Το σύστημα δεν είναι ενεργό αυτή τη στιγμή.</h3><br><br>";
+        echo "<h3>Ξ ΟΟΞΏΞΈΞ΅ΟΞΌΞ―Ξ± ΟΟΞΏΞ²ΞΏΞ»Ξ®Ο Ξ±ΞΉΟΞ®ΟΞ΅ΟΞ½ Ξ­ΟΞ΅ΞΉ ΟΞ±ΟΞ­Ξ»ΞΈΞ΅ΞΉ.<br>Ξ€ΞΏ ΟΟΟΟΞ·ΞΌΞ± Ξ΄Ξ΅Ξ½ Ξ΅Ξ―Ξ½Ξ±ΞΉ Ξ΅Ξ½Ξ΅ΟΞ³Ο Ξ±ΟΟΞ® ΟΞ· ΟΟΞΉΞ³ΞΌΞ®.</h3><br><br>";
     if ($av_display_login)
         $log->loginform("login", "id", "");
     
 	echo "<br><br><small>$av_custom</small><br><br>";
 		
-    echo "<small>Για τη σωστή λειτουργία της εφαρμογής προτείνεται η χρήση<br>
-        ενός σύγχρονου προγράμματος περιήγησης (browser),<br>π.χ. Mozilla Firefox, Google Chrome ή Internet Explorer (έκδοση 7 ή νεότερη).</small>";
+    echo "<small>ΞΞΉΞ± ΟΞ· ΟΟΟΟΞ® Ξ»Ξ΅ΞΉΟΞΏΟΟΞ³Ξ―Ξ± ΟΞ·Ο Ξ΅ΟΞ±ΟΞΌΞΏΞ³Ξ®Ο ΟΟΞΏΟΞ΅Ξ―Ξ½Ξ΅ΟΞ±ΞΉ Ξ· ΟΟΞ®ΟΞ·<br>
+        Ξ΅Ξ½ΟΟ ΟΟΞ³ΟΟΞΏΞ½ΞΏΟ ΟΟΞΏΞ³ΟΞ¬ΞΌΞΌΞ±ΟΞΏΟ ΟΞ΅ΟΞΉΞ®Ξ³Ξ·ΟΞ·Ο (browser),<br>Ο.Ο. Mozilla Firefox, Google Chrome Ξ® Internet Explorer (Ξ­ΞΊΞ΄ΞΏΟΞ· 7 Ξ® Ξ½Ξ΅ΟΟΞ΅ΟΞ·).</small>";
 	echo "<br><br>";
-	echo "<strong><small>Ανάλυση / Σχεδίαση / Ανάπτυξη: <a href=\"mailto:sugarv@sch.gr?subject=Αποσπάσεις/Βελτιώσεις\">Ε.Ζαχαριουδάκης, ΠΕ20</a></small></strong>";
+	echo "<strong><small>ΞΞ½Ξ¬Ξ»ΟΟΞ· / Ξ£ΟΞ΅Ξ΄Ξ―Ξ±ΟΞ· / ΞΞ½Ξ¬ΟΟΟΞΎΞ·: <a href=\"mailto:sugarv@sch.gr?subject=ΞΟΞΏΟΟΞ¬ΟΞ΅ΞΉΟ/ΞΞ΅Ξ»ΟΞΉΟΟΞ΅ΞΉΟ\">Ξ.ΞΞ±ΟΞ±ΟΞΉΞΏΟΞ΄Ξ¬ΞΊΞ·Ο, Ξ Ξ20</a></small></strong>";
 }
 //if (!$_SESSION['timeout'])
 //    $_SESSION['timeout'] = time() + (30 * 60);
 //$timeout = time() > $_SESSION['timeout'];
 //if ($timeout){
-//    echo "Η συνεδρία σας έχει λήξει.<br>Παρακαλώ κάντε ξανά είσοδο στο σύστημα.";
-//    echo "<form action='login.php'><input type='submit' value='Είσοδος'></form>";
+//    echo "Ξ ΟΟΞ½Ξ΅Ξ΄ΟΞ―Ξ± ΟΞ±Ο Ξ­ΟΞ΅ΞΉ Ξ»Ξ®ΞΎΞ΅ΞΉ.<br>Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞΊΞ¬Ξ½ΟΞ΅ ΞΎΞ±Ξ½Ξ¬ Ξ΅Ξ―ΟΞΏΞ΄ΞΏ ΟΟΞΏ ΟΟΟΟΞ·ΞΌΞ±.";
+//    echo "<form action='login.php'><input type='submit' value='ΞΞ―ΟΞΏΞ΄ΞΏΟ'></form>";
 //    exit;
 //}
 //if($_REQUEST['action'] == "login" && !$timeout){
@@ -64,8 +63,8 @@ if($_REQUEST['action'] == "login"){
 		// if system inactive, allow only administrator
 		if (!$av_is_active && $_REQUEST['username'] != $av_admin)
 		{
-			echo "H είσοδος απέτυχε διότι το σύστημα δεν είναι ενεργό...";
-			echo "<FORM><INPUT Type='button' VALUE='Επιστροφή' onClick='history.go(-1);return true;'></FORM>";
+			echo "H Ξ΅Ξ―ΟΞΏΞ΄ΞΏΟ Ξ±ΟΞ­ΟΟΟΞ΅ Ξ΄ΞΉΟΟΞΉ ΟΞΏ ΟΟΟΟΞ·ΞΌΞ± Ξ΄Ξ΅Ξ½ Ξ΅Ξ―Ξ½Ξ±ΞΉ Ξ΅Ξ½Ξ΅ΟΞ³Ο...";
+			echo "<FORM><INPUT Type='button' VALUE='ΞΟΞΉΟΟΟΞΏΟΞ®' onClick='history.go(-1);return true;'></FORM>";
 			die();
 		}
         if ($av_type == 1){
@@ -84,9 +83,9 @@ if($_REQUEST['action'] == "login"){
         }
     }
 else{
-    echo "H είσοδος απέτυχε...";
-    echo "<br>Δοκιμάστε ξανά με έναν έγκυρο συνδυασμό Α.Μ. - Α.Φ.Μ.";
-    echo "<FORM><INPUT Type='button' VALUE='Επιστροφή' onClick='history.go(-1);return true;'></FORM>";
+    echo "H Ξ΅Ξ―ΟΞΏΞ΄ΞΏΟ Ξ±ΟΞ­ΟΟΟΞ΅...";
+    echo "<br>ΞΞΏΞΊΞΉΞΌΞ¬ΟΟΞ΅ ΞΎΞ±Ξ½Ξ¬ ΞΌΞ΅ Ξ­Ξ½Ξ±Ξ½ Ξ­Ξ³ΞΊΟΟΞΏ ΟΟΞ½Ξ΄ΟΞ±ΟΞΌΟ Ξ.Ξ. - Ξ.Ξ¦.Ξ.";
+    echo "<FORM><INPUT Type='button' VALUE='ΞΟΞΉΟΟΟΞΏΟΞ®' onClick='history.go(-1);return true;'></FORM>";
 }
 }
 ?>

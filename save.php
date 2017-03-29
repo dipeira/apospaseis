@@ -1,24 +1,17 @@
 <?php   
-	header('Content-type: text/html; charset=iso8859-7'); 
+	header('Content-type: text/html; charset=utf-8'); 
         session_start();
 ?>
 <html>
-  <head><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-7">
-    
-    <title>Αποθήκευση</title>
-    <LINK href="style.css" rel="stylesheet" type="text/css">
-    <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic&subset=greek,latin' rel='stylesheet' type='text/css'>
-  </head>
+  <?php require_once('head.php'); ?>
   <body> 
 <?php
   $error_found = 0;
   Require "config.php";
   require_once 'functions.php';
       
-  $mysqlconnection = mysql_connect($db_host, $db_user, $db_password);
-  mysql_select_db($db_name, $mysqlconnection);
-  mysql_query("SET NAMES 'greek'", $mysqlconnection);
-  mysql_query("SET CHARACTER SET 'greek'", $mysqlconnection);
+  $mysqlconnection = mysqli_connect($db_host, $db_user, $db_password, $db_name);
+  mysqli_set_charset($mysqlconnection,"utf8");
 
 
   // checks for blanks
@@ -83,22 +76,22 @@
 		  
 	  if (!$_POST['ypdil'])
       {
-        echo "<h2>Λάθος!</h2>";
-        echo "Για να συνεχίσετε, πρέπει <strong>υποχρεωτικά</strong> να διαβάσετε και να τσεκάρετε την υπεύθυνη δήλωση στο τέλος της προηγούμενης σελίδας.<br><br>";
-        echo "<form action='index.php'><input type='submit' value='Επιστροφή'></form>";
+        echo "<h2>ΞΞ¬ΞΈΞΏΟ!</h2>";
+        echo "ΞΞΉΞ± Ξ½Ξ± ΟΟΞ½Ξ΅ΟΞ―ΟΞ΅ΟΞ΅, ΟΟΞ­ΟΞ΅ΞΉ <strong>ΟΟΞΏΟΟΞ΅ΟΟΞΉΞΊΞ¬</strong> Ξ½Ξ± Ξ΄ΞΉΞ±Ξ²Ξ¬ΟΞ΅ΟΞ΅ ΞΊΞ±ΞΉ Ξ½Ξ± ΟΟΞ΅ΞΊΞ¬ΟΞ΅ΟΞ΅ ΟΞ·Ξ½ ΟΟΞ΅ΟΞΈΟΞ½Ξ· Ξ΄Ξ®Ξ»ΟΟΞ· ΟΟΞΏ ΟΞ­Ξ»ΞΏΟ ΟΞ·Ο ΟΟΞΏΞ·Ξ³ΞΏΟΞΌΞ΅Ξ½Ξ·Ο ΟΞ΅Ξ»Ξ―Ξ΄Ξ±Ο.<br><br>";
+        echo "<form action='index.php'><input type='submit' value='ΞΟΞΉΟΟΟΞΏΟΞ®'></form>";
         exit;
       }
       
         $emp_id = $_POST['id'];
         
         $query = "SELECT * from $av_ait WHERE emp_id = $emp_id";
-        $result = mysql_query($query, $mysqlconnection);
-        if (mysql_num_rows($result) > 0)
+        $result = mysqli_query($mysqlconnection, $query);
+        if (mysqli_num_rows($result) > 0)
         {
             $query = "UPDATE $av_ait SET gamos=$gamos,paidia=$paidia,aitisi=$aitisi,dhmos_anhk='$dhmos_anhk',dhmos_ent=$dhmos_ent,dhmos_syn=$dhmos_syn,eidikh=$eidikh,
                 apospash=$apospash,didakt=$didakt,metapt=$metapt,didask=$didask,eth=$eth,mhnes=$mhnes,hmeres=$hmeres,ygeia=$ygeia,ygeia_g=$ygeia_g,ygeia_a=$ygeia_a,eksw=$eksw,
                 comments='$comments',org_eid=$org_eid,allo='$allo',ypdil=1,paidag=$paidag WHERE emp_id='$emp_id'";
-            mysql_query($query,$mysqlconnection);
+            mysqli_query($mysqlconnection, $query);
         }
         else
         {
@@ -106,7 +99,7 @@
                 $qry1 = "values ($emp_id,$gamos,$paidia,$aitisi,'$dhmos_anhk',$dhmos_ent,$dhmos_syn,$eidikh,$apospash,$didakt,$metapt,$didask,$eth,$mhnes,$hmeres,$ygeia,$ygeia_g,$ygeia_a,$eksw,'$comments',$org_eid,'$allo',1,$paidag)";
                 $query = $qry0.$qry1;
         }
-            mysql_query($query,$mysqlconnection);
+            mysqli_query($mysqlconnection, $query);
                 
         // if save button was pressed return, else proceed to 2nd page
         if (isset($_POST['save']))
@@ -126,15 +119,15 @@
     $sum = 0;
     foreach ($sch_arr as $el)
         $sum += strlen ($el);
-    // only for apospaseis (επιτρέπει αρνητική δήλωση (χωρίς καμία επιλογή) μόνο στις βελτιώσεις, στις αποσπάσεις βγάζει μήνυμα λάθους)
+    // only for apospaseis (Ξ΅ΟΞΉΟΟΞ­ΟΞ΅ΞΉ Ξ±ΟΞ½Ξ·ΟΞΉΞΊΞ® Ξ΄Ξ®Ξ»ΟΟΞ· (ΟΟΟΞ―Ο ΞΊΞ±ΞΌΞ―Ξ± Ξ΅ΟΞΉΞ»ΞΏΞ³Ξ®) ΞΌΟΞ½ΞΏ ΟΟΞΉΟ Ξ²Ξ΅Ξ»ΟΞΉΟΟΞ΅ΞΉΟ, ΟΟΞΉΟ Ξ±ΟΞΏΟΟΞ¬ΟΞ΅ΞΉΟ Ξ²Ξ³Ξ¬ΞΆΞ΅ΞΉ ΞΌΞ®Ξ½ΟΞΌΞ± Ξ»Ξ¬ΞΈΞΏΟΟ)
 	if (!$sum && $av_type == 1){
-        echo "Πρέπει να εισάγετε τουλάχιστον μία επιλογή";
+        echo "Ξ ΟΞ­ΟΞ΅ΞΉ Ξ½Ξ± Ξ΅ΞΉΟΞ¬Ξ³Ξ΅ΟΞ΅ ΟΞΏΟΞ»Ξ¬ΟΞΉΟΟΞΏΞ½ ΞΌΞ―Ξ± Ξ΅ΟΞΉΞ»ΞΏΞ³Ξ®";
         $error_found = 1;
     }
     // if blanks
     if (!empty($error)){
         $error_found = 1;
-        echo "<br>ΛΑΘΟΣ στην(-ις) προτίμηση(-εις): ";
+        echo "<br>ΞΞΞΞΞ£ ΟΟΞ·Ξ½(-ΞΉΟ) ΟΟΞΏΟΞ―ΞΌΞ·ΟΞ·(-Ξ΅ΞΉΟ): ";
         foreach ($error as $ar_er)
             $ret .= ($ar_er+1).", ";
         $ret = rtrim($ret,", ");
@@ -144,7 +137,7 @@
     if ($dbl)
     {
         $error_found = 1;
-        echo "<br>ΛΑΘΟΣ: H αίτηση περιέχει διπλές προτιμήσεις:";
+        echo "<br>ΞΞΞΞΞ£: H Ξ±Ξ―ΟΞ·ΟΞ· ΟΞ΅ΟΞΉΞ­ΟΞ΅ΞΉ Ξ΄ΞΉΟΞ»Ξ­Ο ΟΟΞΏΟΞΉΞΌΞ®ΟΞ΅ΞΉΟ:";
         $arr2 = array_diff_key($sch_arr, array_unique($sch_arr));
         //print_r($arr2);
         foreach ($arr2 as $ar1)
@@ -156,14 +149,14 @@
 
     if ($error_found && $_POST['submit'])
     {
-        echo "<br><br><strong>Βρέθηκαν λάθη και η υποβολή δεν μπορεί να πραγματοποιηθεί.</strong>";
-        echo "<form action='index2.php'><input type='submit' value='Επιστροφή'></form>";
+        echo "<br><br><strong>ΞΟΞ­ΞΈΞ·ΞΊΞ±Ξ½ Ξ»Ξ¬ΞΈΞ· ΞΊΞ±ΞΉ Ξ· ΟΟΞΏΞ²ΞΏΞ»Ξ® Ξ΄Ξ΅Ξ½ ΞΌΟΞΏΟΞ΅Ξ― Ξ½Ξ± ΟΟΞ±Ξ³ΞΌΞ±ΟΞΏΟΞΏΞΉΞ·ΞΈΞ΅Ξ―.</strong>";
+        echo "<form action='index2.php'><input type='submit' value='ΞΟΞΉΟΟΟΞΏΟΞ®'></form>";
         exit;
     }
     if ($error_found)
     {
-        echo "<br><br>Παρακαλώ διορθώστε.";
-        echo "<form action='index2.php'><input type='submit' value='Επιστροφή'></form>";
+        echo "<br><br>Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο Ξ΄ΞΉΞΏΟΞΈΟΟΟΞ΅.";
+        echo "<form action='index2.php'><input type='submit' value='ΞΟΞΉΟΟΟΞΏΟΞ®'></form>";
     }
 
     $p1 = $_POST['p1'] ? getSchoolcode($_POST['p1'],$mysqlconnection) : 0;
@@ -193,8 +186,8 @@
         $submit=1;
 
     $query = "SELECT * from $av_ait WHERE emp_id = $emp_id";
-    $result = mysql_query($query, $mysqlconnection);
-    $result ? $num_rows = mysql_num_rows($result) : $num_rows = 0;
+    $result = mysqli_query($mysqlconnection, $query);
+    $result ? $num_rows = mysqli_num_rows($result) : $num_rows = 0;
     if ($num_rows > 0)
         $exists = 1;
 
@@ -207,7 +200,7 @@
         }
         else
             $query = "UPDATE $av_ait SET p1=$p1,p2=$p2,p3=$p3,p4=$p4,p5=$p5,p6=$p6,p7=$p7,p8=$p8,p9=$p9,p10=$p10,p11=$p11,p12=$p12,p13=$p13,p14=$p14,p15=$p15,p16=$p16,p17=$p17,p18=$p18,p19=$p19,p20=$p20 WHERE emp_id='$emp_id'";
-        mysql_query($query,$mysqlconnection);
+        mysqli_query($mysqlconnection, $query);
     }
     else
     {
@@ -223,9 +216,9 @@
             $qry1 = "values ($emp_id,$p1,$p2,$p3,$p4,$p5,$p6,$p7,$p8,$p9,$p10,$p11,$p12,$p13,$p14,$p15,$p16,$p17,$p18,$p19,$p20)";
             $query = $qry0.$qry1;
         }
-        mysql_query($query,$mysqlconnection);
+        mysqli_query($mysqlconnection, $query);
     }
-    mysql_close();
+    mysqli_close($mysqlconnection);
 
         if (!$error_found)
             echo "  <meta http-equiv=\"refresh\" content=\"0; URL=index2.php\">";

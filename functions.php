@@ -5,11 +5,13 @@ function getSchooledc ($id,$conn)
 {
         global $av_sch;
         $query = "SELECT name from $av_sch where kwdikos=".$id;
-        $result = mysql_query($query, $conn);
-        if (mysql_num_rows($result)==0) 
+        $result = mysqli_query($conn, $query);
+        if (mysqli_num_rows($result)==0) 
             return "";
-        else
-            return mysql_result($result, 0);	
+        else {
+          $row = mysqli_fetch_array($result);
+          return $row['name'];
+        }
 }
 function getSchool ($id,$conn)
 {
@@ -17,31 +19,37 @@ function getSchool ($id,$conn)
     if (!$id)
         return "";
         $query = "SELECT name from $av_sch where id=".$id;
-        $result = mysql_query($query, $conn);
-        if (mysql_num_rows($result)==0) 
+        $result = mysqli_query($conn, $query);
+        if (mysqli_num_rows($result)==0) 
             return "";
-        else
-            return mysql_result($result, 0);	
+        else {
+          $row = mysqli_fetch_array($result);
+          return $row['name'];
+        }
 }
 function getSchoolID ($name,$conn)
 {
     global $av_sch;
     $query = "SELECT id from $av_sch where name='".$name."'";
-    $result = mysql_query($query, $conn);
-    if (mysql_num_rows($result)==0) 
+    $result = mysqli_query($conn, $query);
+    if (mysqli_num_rows($result)==0) 
         return 0;
-    else
-        return mysql_result($result, 0);	
+    else {
+          $row = mysqli_fetch_array($result);
+          return $row['id'];
+    }
 }
 function getSchoolcode ($id, $conn)
 {
     global $av_sch;
     $query = "SELECT kwdikos from $av_sch where id=".$id;
-    $result = mysql_query($query, $conn);
-    if (mysql_num_rows($result)==0) 
+    $result = mysqli_query($conn, $query);
+    if (mysqli_num_rows($result)==0) 
         return 0;
-    else
-        return mysql_result($result, 0);	
+    else {
+          $row = mysqli_fetch_array($result);
+          return $row['kwdikos'];
+    }
 }
 
 // epil: epilogh 1-20 / dim: 2 dhmotiko,1 nip,0 ola / omada / sch: sxoleio (lektiko)
@@ -55,8 +63,8 @@ function getSchools ($epil, $dim, $omada, $conn, $sch)
     if ($omada && $dim)
         $query = "select DISTINCT name,id from $av_sch where dim=$dim AND omada <> $omada AND inactive<>1 order by name";
     $arr = array();
-    $result = mysql_query($query, $conn);
-    while ($ar = mysql_fetch_array($result))
+    $result = mysqli_query($conn, $query);
+    while ($ar = mysqli_fetch_array($result))
         $arr[] = $ar;
     $ret = "<select name='p".$epil."' id='p".$epil."'>";
     $ret .= "<option value=\"\"></option>";
@@ -76,12 +84,12 @@ function getGamos ($gamos)
 {
     switch ($gamos)
     {
-        case 0:$ret = "¶γαμος";break;
-        case 1:$ret = "Έγγαμος";break;
-        case 2:$ret = "Διαζευγμένος/σε διάσταση με επιμέλεια παιδιού ανήλικου ή σπουδάζοντος";break;
-        case 3:$ret = "Σε χηρεία χωρίς παιδιά ανήλικα ή σπουδάζοντα";break;
-        case 4:$ret = "Σε χηρεία με παιδιά ανήλικα ή σπουδάζοντα";break;
-        case 5:$ret = "Μονογονεϊκή οικογένεια (χωρίς γάμο) με παιδιά ανήλικα ή σπουδάζοντα";break;
+        case 0:$ret = "Ξ†Ξ³Ξ±ΞΌΞΏΟ‚";break;
+        case 1:$ret = "ΞΞ³Ξ³Ξ±ΞΌΞΏΟ‚";break;
+        case 2:$ret = "Ξ”ΞΉΞ±Ξ¶ΞµΟ…Ξ³ΞΌΞ­Ξ½ΞΏΟ‚/ΟƒΞµ Ξ΄ΞΉΞ¬ΟƒΟ„Ξ±ΟƒΞ· ΞΌΞµ ΞµΟ€ΞΉΞΌΞ­Ξ»ΞµΞΉΞ± Ο€Ξ±ΞΉΞ΄ΞΉΞΏΟ Ξ±Ξ½Ξ®Ξ»ΞΉΞΊΞΏΟ… Ξ® ΟƒΟ€ΞΏΟ…Ξ΄Ξ¬Ξ¶ΞΏΞ½Ο„ΞΏΟ‚";break;
+        case 3:$ret = "Ξ£Ξµ Ο‡Ξ·ΟΞµΞ―Ξ± Ο‡Ο‰ΟΞ―Ο‚ Ο€Ξ±ΞΉΞ΄ΞΉΞ¬ Ξ±Ξ½Ξ®Ξ»ΞΉΞΊΞ± Ξ® ΟƒΟ€ΞΏΟ…Ξ΄Ξ¬Ξ¶ΞΏΞ½Ο„Ξ±";break;
+        case 4:$ret = "Ξ£Ξµ Ο‡Ξ·ΟΞµΞ―Ξ± ΞΌΞµ Ο€Ξ±ΞΉΞ΄ΞΉΞ¬ Ξ±Ξ½Ξ®Ξ»ΞΉΞΊΞ± Ξ® ΟƒΟ€ΞΏΟ…Ξ΄Ξ¬Ξ¶ΞΏΞ½Ο„Ξ±";break;
+        case 5:$ret = "ΞΞΏΞ½ΞΏΞ³ΞΏΞ½ΞµΟΞΊΞ® ΞΏΞΉΞΊΞΏΞ³Ξ­Ξ½ΞµΞΉΞ± (Ο‡Ο‰ΟΞ―Ο‚ Ξ³Ξ¬ΞΌΞΏ) ΞΌΞµ Ο€Ξ±ΞΉΞ΄ΞΉΞ¬ Ξ±Ξ½Ξ®Ξ»ΞΉΞΊΞ± Ξ® ΟƒΟ€ΞΏΟ…Ξ΄Ξ¬Ξ¶ΞΏΞ½Ο„Ξ±";break;
     }
     return $ret;
 }
@@ -89,29 +97,31 @@ function getDimos ($dimos_code, $conn)
 {
     global $av_dimos;
     $query = "SELECT name from $av_dimos where id=$dimos_code";
-        $result = mysql_query($query, $conn);
-        if (mysql_num_rows($result)==0) 
+        $result = mysqli_query($conn, $query);
+        if (mysqli_num_rows($result)==0) 
             echo "";
-        else
-            echo mysql_result($result, 0);
+        else {
+          $row = mysqli_fetch_array($result);
+          return $row['name'];
+        }
 }
 function cmbGamos ()
 {
     echo "<select name=\"gamos\" style=\"width:200px\">";
-    echo "<option value=\"\" selected>(Παρακαλώ επιλέξτε:)</option>";
-    echo "<option value=\"0\">¶γαμος</option>";
-    echo "<option value=\"1\">Έγγαμος</option>";
-    echo "<option value=\"2\">Διαζευγμένος/σε διάσταση με επιμέλεια παιδιού ανήλικου ή σπουδάζοντος</option>";
-    echo "<option value=\"3\">Σε χηρεία χωρίς παιδιά ανήλικα ή σπουδάζοντα</option>";
-    echo "<option value=\"4\">Σε χηρεία με παιδιά ανήλικα ή σπουδάζοντα</option>";
-    echo "<option value=\"5\">Μονογονεϊκή οικογένεια (χωρίς γάμο) με παιδιά ανήλικα ή σπουδάζοντα</option>";
+    echo "<option value=\"\" selected>(Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΟ€ΞΉΞ»Ξ­ΞΎΟ„Ξµ:)</option>";
+    echo "<option value=\"0\">Ξ†Ξ³Ξ±ΞΌΞΏΟ‚</option>";
+    echo "<option value=\"1\">ΞΞ³Ξ³Ξ±ΞΌΞΏΟ‚</option>";
+    echo "<option value=\"2\">Ξ”ΞΉΞ±Ξ¶ΞµΟ…Ξ³ΞΌΞ­Ξ½ΞΏΟ‚/ΟƒΞµ Ξ΄ΞΉΞ¬ΟƒΟ„Ξ±ΟƒΞ· ΞΌΞµ ΞµΟ€ΞΉΞΌΞ­Ξ»ΞµΞΉΞ± Ο€Ξ±ΞΉΞ΄ΞΉΞΏΟ Ξ±Ξ½Ξ®Ξ»ΞΉΞΊΞΏΟ… Ξ® ΟƒΟ€ΞΏΟ…Ξ΄Ξ¬Ξ¶ΞΏΞ½Ο„ΞΏΟ‚</option>";
+    echo "<option value=\"3\">Ξ£Ξµ Ο‡Ξ·ΟΞµΞ―Ξ± Ο‡Ο‰ΟΞ―Ο‚ Ο€Ξ±ΞΉΞ΄ΞΉΞ¬ Ξ±Ξ½Ξ®Ξ»ΞΉΞΊΞ± Ξ® ΟƒΟ€ΞΏΟ…Ξ΄Ξ¬Ξ¶ΞΏΞ½Ο„Ξ±</option>";
+    echo "<option value=\"4\">Ξ£Ξµ Ο‡Ξ·ΟΞµΞ―Ξ± ΞΌΞµ Ο€Ξ±ΞΉΞ΄ΞΉΞ¬ Ξ±Ξ½Ξ®Ξ»ΞΉΞΊΞ± Ξ® ΟƒΟ€ΞΏΟ…Ξ΄Ξ¬Ξ¶ΞΏΞ½Ο„Ξ±</option>";
+    echo "<option value=\"5\">ΞΞΏΞ½ΞΏΞ³ΞΏΞ½ΞµΟΞΊΞ® ΞΏΞΉΞΊΞΏΞ³Ξ­Ξ½ΞµΞΉΞ± (Ο‡Ο‰ΟΞ―Ο‚ Ξ³Ξ¬ΞΌΞΏ) ΞΌΞµ Ο€Ξ±ΞΉΞ΄ΞΉΞ¬ Ξ±Ξ½Ξ®Ξ»ΞΉΞΊΞ± Ξ® ΟƒΟ€ΞΏΟ…Ξ΄Ξ¬Ξ¶ΞΏΞ½Ο„Ξ±</option>";
     
     echo "</select>";
 }
 function cmbPaidia ()
 {
     echo "<select name=\"paidia\">";
-    echo "<option value=\"\" selected>(Παρακαλώ επιλέξτε:)</option>";
+    echo "<option value=\"\" selected>(Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΟ€ΞΉΞ»Ξ­ΞΎΟ„Ξµ:)</option>";
     echo "<option value=\"0\">0</option>";
     echo "<option value=\"1\">1</option>";
     echo "<option value=\"2\">2</option>";
@@ -123,11 +133,11 @@ function cmbPaidia ()
 function cmbDimos ($str,$conn)
 {
     echo "<select name=\"dhmos_$str\">";
-    echo "<option value=\"0\" selected>(Παρακαλώ επιλέξτε:)</option>";
+    echo "<option value=\"0\" selected>(Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΟ€ΞΉΞ»Ξ­ΞΎΟ„Ξµ:)</option>";
     global $av_dimos;
     $query = "SELECT * from $av_dimos";
-    $result = mysql_query($query, $conn);
-    while ($arr = mysql_fetch_array($result)){
+    $result = mysqli_query($conn, $query);
+    while ($arr = mysqli_fetch_array($result)){
         echo "<option value=".$arr['id'].">".$arr['name']."</option>";
     }
     echo "</select>";
@@ -137,8 +147,8 @@ function cmbDimos_edit ($str, $epil, $conn)
     echo "<select name=\"dhmos_$str\">";
     global $av_dimos;
     $query = "SELECT * from $av_dimos";
-    $result = mysql_query($query, $conn);
-    while ($arr = mysql_fetch_array($result)){
+    $result = mysqli_query($conn, $query);
+    while ($arr = mysqli_fetch_array($result)){
         if ($epil == $arr['id'])
             echo "<option value=".$arr['id']." selected>".$arr['name']."</option>";
         else
@@ -149,8 +159,8 @@ function cmbDimos_edit ($str, $epil, $conn)
 function cmbPaidia_edit ($epil)
 {
     echo "<select name=\"paidia\">";
-    if ($epil=='') echo "<option value=\"\" selected>(Παρακαλώ επιλέξτε:)</option>";
-    else echo "<option value=\"\">(Παρακαλώ επιλέξτε:)</option>";
+    if ($epil=='') echo "<option value=\"\" selected>(Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΟ€ΞΉΞ»Ξ­ΞΎΟ„Ξµ:)</option>";
+    else echo "<option value=\"\">(Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΟ€ΞΉΞ»Ξ­ΞΎΟ„Ξµ:)</option>";
     if ($epil==0) echo "<option value=\"0\" selected>0</option>";
     else echo "<option value=\"0\">0</option>";
     if ($epil==1) echo "<option value=\"1\" selected>1</option>";
@@ -168,54 +178,54 @@ function cmbPaidia_edit ($epil)
 function cmbGamos_edit ($epil)
 {
     echo "<select name=\"gamos\" style=\"width:200px\">";
-    if ($epil=='') echo "<option value=\"\" selected>(Παρακαλώ επιλέξτε:)</option>";
-    else echo "<option value=\"\">(Παρακαλώ επιλέξτε:)</option>";
-    if ($epil==0) echo "<option value=\"0\" selected>¶γαμος</option>";
-    else echo "<option value=\"0\">¶γαμος</option>";
-    if ($epil==1) echo "<option value=\"1\" selected>Έγγαμος</option>";
-    else echo "<option value=\"1\">Έγγαμος</option>";
-    if ($epil==2) echo "<option value=\"2\" selected>Διαζευγμένος/σε διάσταση με επιμέλεια παιδιού ανήλικου ή σπουδάζοντος</option>";
-    else echo "<option value=\"2\">Διαζευγμένος/σε διάσταση με επιμέλεια παιδιού ανήλικου ή σπουδάζοντος</option>";
-    if ($epil==3) echo "<option value=\"3\" selected>Σε χηρεία χωρίς παιδιά ανήλικα ή σπουδάζοντα</option>";
-    else echo "<option value=\"3\">Σε χηρεία χωρίς παιδιά ανήλικα ή σπουδάζοντα</option>";
-    if ($epil==4) echo "<option value=\"4\" selected>Σε χηρεία με παιδιά ανήλικα ή σπουδάζοντα</option>";
-    else echo "<option value=\"4\">Σε χηρεία με παιδιά ανήλικα ή σπουδάζοντα</option>";
-    if ($epil==5) echo "<option value=\"1\" selected>Μονογονεϊκή οικογένεια (χωρίς γάμο) με παιδιά ανήλικα ή σπουδάζοντα</option>";
-    else echo "<option value=\"1\">Μονογονεϊκή οικογένεια (χωρίς γάμο) με παιδιά ανήλικα ή σπουδάζοντα</option>";
+    if ($epil=='') echo "<option value=\"\" selected>(Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΟ€ΞΉΞ»Ξ­ΞΎΟ„Ξµ:)</option>";
+    else echo "<option value=\"\">(Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΟ€ΞΉΞ»Ξ­ΞΎΟ„Ξµ:)</option>";
+    if ($epil==0) echo "<option value=\"0\" selected>Ξ†Ξ³Ξ±ΞΌΞΏΟ‚</option>";
+    else echo "<option value=\"0\">Ξ†Ξ³Ξ±ΞΌΞΏΟ‚</option>";
+    if ($epil==1) echo "<option value=\"1\" selected>ΞΞ³Ξ³Ξ±ΞΌΞΏΟ‚</option>";
+    else echo "<option value=\"1\">ΞΞ³Ξ³Ξ±ΞΌΞΏΟ‚</option>";
+    if ($epil==2) echo "<option value=\"2\" selected>Ξ”ΞΉΞ±Ξ¶ΞµΟ…Ξ³ΞΌΞ­Ξ½ΞΏΟ‚/ΟƒΞµ Ξ΄ΞΉΞ¬ΟƒΟ„Ξ±ΟƒΞ· ΞΌΞµ ΞµΟ€ΞΉΞΌΞ­Ξ»ΞµΞΉΞ± Ο€Ξ±ΞΉΞ΄ΞΉΞΏΟ Ξ±Ξ½Ξ®Ξ»ΞΉΞΊΞΏΟ… Ξ® ΟƒΟ€ΞΏΟ…Ξ΄Ξ¬Ξ¶ΞΏΞ½Ο„ΞΏΟ‚</option>";
+    else echo "<option value=\"2\">Ξ”ΞΉΞ±Ξ¶ΞµΟ…Ξ³ΞΌΞ­Ξ½ΞΏΟ‚/ΟƒΞµ Ξ΄ΞΉΞ¬ΟƒΟ„Ξ±ΟƒΞ· ΞΌΞµ ΞµΟ€ΞΉΞΌΞ­Ξ»ΞµΞΉΞ± Ο€Ξ±ΞΉΞ΄ΞΉΞΏΟ Ξ±Ξ½Ξ®Ξ»ΞΉΞΊΞΏΟ… Ξ® ΟƒΟ€ΞΏΟ…Ξ΄Ξ¬Ξ¶ΞΏΞ½Ο„ΞΏΟ‚</option>";
+    if ($epil==3) echo "<option value=\"3\" selected>Ξ£Ξµ Ο‡Ξ·ΟΞµΞ―Ξ± Ο‡Ο‰ΟΞ―Ο‚ Ο€Ξ±ΞΉΞ΄ΞΉΞ¬ Ξ±Ξ½Ξ®Ξ»ΞΉΞΊΞ± Ξ® ΟƒΟ€ΞΏΟ…Ξ΄Ξ¬Ξ¶ΞΏΞ½Ο„Ξ±</option>";
+    else echo "<option value=\"3\">Ξ£Ξµ Ο‡Ξ·ΟΞµΞ―Ξ± Ο‡Ο‰ΟΞ―Ο‚ Ο€Ξ±ΞΉΞ΄ΞΉΞ¬ Ξ±Ξ½Ξ®Ξ»ΞΉΞΊΞ± Ξ® ΟƒΟ€ΞΏΟ…Ξ΄Ξ¬Ξ¶ΞΏΞ½Ο„Ξ±</option>";
+    if ($epil==4) echo "<option value=\"4\" selected>Ξ£Ξµ Ο‡Ξ·ΟΞµΞ―Ξ± ΞΌΞµ Ο€Ξ±ΞΉΞ΄ΞΉΞ¬ Ξ±Ξ½Ξ®Ξ»ΞΉΞΊΞ± Ξ® ΟƒΟ€ΞΏΟ…Ξ΄Ξ¬Ξ¶ΞΏΞ½Ο„Ξ±</option>";
+    else echo "<option value=\"4\">Ξ£Ξµ Ο‡Ξ·ΟΞµΞ―Ξ± ΞΌΞµ Ο€Ξ±ΞΉΞ΄ΞΉΞ¬ Ξ±Ξ½Ξ®Ξ»ΞΉΞΊΞ± Ξ® ΟƒΟ€ΞΏΟ…Ξ΄Ξ¬Ξ¶ΞΏΞ½Ο„Ξ±</option>";
+    if ($epil==5) echo "<option value=\"1\" selected>ΞΞΏΞ½ΞΏΞ³ΞΏΞ½ΞµΟΞΊΞ® ΞΏΞΉΞΊΞΏΞ³Ξ­Ξ½ΞµΞΉΞ± (Ο‡Ο‰ΟΞ―Ο‚ Ξ³Ξ¬ΞΌΞΏ) ΞΌΞµ Ο€Ξ±ΞΉΞ΄ΞΉΞ¬ Ξ±Ξ½Ξ®Ξ»ΞΉΞΊΞ± Ξ® ΟƒΟ€ΞΏΟ…Ξ΄Ξ¬Ξ¶ΞΏΞ½Ο„Ξ±</option>";
+    else echo "<option value=\"1\">ΞΞΏΞ½ΞΏΞ³ΞΏΞ½ΞµΟΞΊΞ® ΞΏΞΉΞΊΞΏΞ³Ξ­Ξ½ΞµΞΉΞ± (Ο‡Ο‰ΟΞ―Ο‚ Ξ³Ξ¬ΞΌΞΏ) ΞΌΞµ Ο€Ξ±ΞΉΞ΄ΞΉΞ¬ Ξ±Ξ½Ξ®Ξ»ΞΉΞΊΞ± Ξ® ΟƒΟ€ΞΏΟ…Ξ΄Ξ¬Ξ¶ΞΏΞ½Ο„Ξ±</option>";
     echo "</select>";    
 }
 
 function cmbYgeia_edit ($epil)
 {
     echo "<select name=\"ygeia\">";
-    if ($epil==0) echo "<option value=\"0\" selected>(Παρακαλώ επιλέξτε:)</option>";
-        else echo "<option value=\"0\">(Παρακαλώ επιλέξτε:)</option>";
+    if ($epil==0) echo "<option value=\"0\" selected>(Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΟ€ΞΉΞ»Ξ­ΞΎΟ„Ξµ:)</option>";
+        else echo "<option value=\"0\">(Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΟ€ΞΉΞ»Ξ­ΞΎΟ„Ξµ:)</option>";
     if ($epil==1) echo "<option value=\"1\" selected>50-60%</option>";
         else echo "<option value=\"1\">50-60%</option>";
     if ($epil==2) echo "<option value=\"2\" selected>67-79%</option>";
         else echo "<option value=\"2\">67-79%</option>";
-    if ($epil==3) echo "<option value=\"3\" selected>80% και άνω</option>";
-        else echo "<option value=\"3\">80% και άνω</option>";
+    if ($epil==3) echo "<option value=\"3\" selected>80% ΞΊΞ±ΞΉ Ξ¬Ξ½Ο‰</option>";
+        else echo "<option value=\"3\">80% ΞΊΞ±ΞΉ Ξ¬Ξ½Ο‰</option>";
     echo "</select>";
 }
 function cmbYgeia_g_edit ($epil)
 {
     echo "<select name=\"ygeia_g\">";
-    if ($epil==0) echo "<option value=\"0\" selected>(Παρακαλώ επιλέξτε:)</option>";
-        else echo "<option value=\"0\">(Παρακαλώ επιλέξτε:)</option>";
+    if ($epil==0) echo "<option value=\"0\" selected>(Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΟ€ΞΉΞ»Ξ­ΞΎΟ„Ξµ:)</option>";
+        else echo "<option value=\"0\">(Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΟ€ΞΉΞ»Ξ­ΞΎΟ„Ξµ:)</option>";
     if ($epil==1) echo "<option value=\"1\" selected>50-66%</option>";
         else echo "<option value=\"1\">50-66%</option>";
-    if ($epil==2) echo "<option value=\"2\" selected>67% και άνω</option>";
-        else echo "<option value=\"2\">67% και άνω</option>";
+    if ($epil==2) echo "<option value=\"2\" selected>67% ΞΊΞ±ΞΉ Ξ¬Ξ½Ο‰</option>";
+        else echo "<option value=\"2\">67% ΞΊΞ±ΞΉ Ξ¬Ξ½Ο‰</option>";
     echo "</select>";
 }
 function cmbYgeia_a_edit ($epil)
 {
     echo "<select name=\"ygeia_a\">";
-    if ($epil==0) echo "<option value=\"0\" selected>(Παρακαλώ επιλέξτε:)</option>";
-        else echo "<option value=\"0\">(Παρακαλώ επιλέξτε:)</option>";
-    if ($epil==1) echo "<option value=\"1\" selected>67% και άνω</option>";
-        else echo "<option value=\"1\">67% και άνω</option>";
+    if ($epil==0) echo "<option value=\"0\" selected>(Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΟ€ΞΉΞ»Ξ­ΞΎΟ„Ξµ:)</option>";
+        else echo "<option value=\"0\">(Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΟ€ΞΉΞ»Ξ­ΞΎΟ„Ξµ:)</option>";
+    if ($epil==1) echo "<option value=\"1\" selected>67% ΞΊΞ±ΞΉ Ξ¬Ξ½Ο‰</option>";
+        else echo "<option value=\"1\">67% ΞΊΞ±ΞΉ Ξ¬Ξ½Ο‰</option>";
     echo "</select>";
 }
 function getYgeia ($y)
@@ -223,7 +233,7 @@ function getYgeia ($y)
     switch ($y)
     {
         case 0:
-            $ret = "Όχι";
+            $ret = "ΞΟ‡ΞΉ";
             break;
         case 1:
             $ret = "50-60%";
@@ -232,7 +242,7 @@ function getYgeia ($y)
             $ret = "67-79%";
             break;
         case 3:
-            $ret = "80% και άνω";
+            $ret = "80% ΞΊΞ±ΞΉ Ξ¬Ξ½Ο‰";
             break;
     }
     return $ret;
@@ -242,13 +252,13 @@ function getYgeia_g ($y)
     switch ($y)
     {
         case 0:
-            $ret = "Όχι";
+            $ret = "ΞΟ‡ΞΉ";
             break;
         case 1:
             $ret = "50-66%";
             break;
         case 2:
-            $ret = "67% και άνω";
+            $ret = "67% ΞΊΞ±ΞΉ Ξ¬Ξ½Ο‰";
             break;
     }
     return $ret;
@@ -258,10 +268,10 @@ function getYgeia_a ($y)
     switch ($y)
     {
         case 0:
-            $ret = "Όχι";
+            $ret = "ΞΟ‡ΞΉ";
             break;
         case 1:
-            $ret = "67% και άνω";
+            $ret = "67% ΞΊΞ±ΞΉ Ξ¬Ξ½Ο‰";
             break;
     }
     return $ret;

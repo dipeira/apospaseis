@@ -1,22 +1,10 @@
 <?php
   session_start();
-  header('Content-type: text/html; charset=iso8859-7'); 
   Require "config.php";
   require_once 'functions.php';
 ?>
 <html>
-  <head><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-7">
-	<LINK href="style.css" rel="stylesheet" type="text/css">
-        
-        <title><?php echo "$av_title ($av_dnsh)"; ?></title>
-	<script type="text/javascript" src="js/jquery.js"></script>
-	<script type="text/javascript" src="js/jquery.validate.js"></script>
-        <script type="text/javascript" src="js/jquery.clearableTextField.js"></script>
-        <link rel="stylesheet" href="js/jquery.clearableTextField.css" type="text/css" media="screen" />
-	<script type='text/javascript' src='js/jquery.autocomplete.js'></script>
-	<link rel="stylesheet" type="text/css" href="js/jquery.autocomplete.css" />
-        <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic&subset=greek,latin' rel='stylesheet' type='text/css'>
-  </head>
+  <?php require_once('head.php'); ?>
 <?php
   $timeout = 0;
 
@@ -26,43 +14,41 @@
   //if($log->logincheck($_SESSION['loggedin']) == false && $_SESSION['timeout']<time())
   {   
       //header("Location: login.php");
-      $page = 'login.php';
-	echo '<script type="text/javascript">';
-	echo 'window.location.href="'.$page.'";';
-	echo '</script>';
-
+    $page = 'login.php';
+    echo '<script type="text/javascript">';
+    echo 'window.location.href="'.$page.'";';
+    echo '</script>';
   }
-  else
+  else {
       $loggedin = 1;
+  }
   // if veltiwseis, goto index2.php
   if ($av_type == 2){
-      //header("Location: index2.php");
-      $page = 'index2.php';
-	echo '<script type="text/javascript">';
-	echo 'window.location.href="'.$page.'";';
-	echo '</script>';
+    //header("Location: index2.php");
+    $page = 'index2.php';
+    echo '<script type="text/javascript">';
+    echo 'window.location.href="'.$page.'";';
+    echo '</script>';
   }
   if (time() > $_SESSION['timeout'])  
     $timeout = 1;
   $diff = $_SESSION['timeout'] - time();
 
   if ($timeout){
-//    echo "<body>Η συνεδρία σας έχει λήξει.<br>Παρακαλώ κάντε είσοδο στο σύστημα.";
-//    echo "<form action='login.php'><input type='submit' value='Είσοδος'></form></body></html>";
+//    echo "<body>Ξ ΟΟΞ½Ξ΅Ξ΄ΟΞ―Ξ± ΟΞ±Ο Ξ­ΟΞ΅ΞΉ Ξ»Ξ®ΞΎΞ΅ΞΉ.<br>Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞΊΞ¬Ξ½ΟΞ΅ Ξ΅Ξ―ΟΞΏΞ΄ΞΏ ΟΟΞΏ ΟΟΟΟΞ·ΞΌΞ±.";
+//    echo "<form action='login.php'><input type='submit' value='ΞΞ―ΟΞΏΞ΄ΞΏΟ'></form></body></html>";
 //    exit;
 //    header("Location: login.php");
-	$page = 'login.php';
-	echo '<script type="text/javascript">';
-	echo 'window.location.href="'.$page.'";';
-	echo '</script>';
+    $page = 'login.php';
+    echo '<script type="text/javascript">';
+    echo 'window.location.href="'.$page.'";';
+    echo '</script>';
   }
 
   if ($loggedin)
   {
     // if admin redirect to admin page
     if ($_SESSION['user']=="$av_admin")
-        //$isadmin = 1;
-        //header("Location: admin.php");
         echo "  <meta http-equiv=\"refresh\" content=\"0; URL=admin.php\">";
 ?>
   <div id="left1">
@@ -70,29 +56,30 @@
   </div>
   <div id="right1">
 <?php
-    $mysqlconnection = mysql_connect($db_host, $db_user, $db_password);
-    mysql_select_db($db_name, $mysqlconnection);
-    mysql_query("SET NAMES 'greek'", $mysqlconnection);
-    mysql_query("SET CHARACTER SET 'greek'", $mysqlconnection);
+    $mysqlconnection = mysqli_connect($db_host, $db_user, $db_password, $db_name);
+    mysqli_set_charset($mysqlconnection,"utf8");
+    //mysqli_query("SET NAMES 'greek'", $mysqlconnection);
+    //mysqli_query("SET CHARACTER SET 'greek'", $mysqlconnection);
   
     echo "<center><h2>$av_title ($av_foreas)</h2></center>";
     
     $query = "SELECT * from $av_emp WHERE am = ".$_SESSION['user'];
-    $result = mysql_query($query, $mysqlconnection);
-    $name = mysql_result($result, 0, "name");
-    $surname = mysql_result($result, 0, "surname");
-    $patrwnymo = mysql_result($result, 0, "patrwnymo");
-    $klados = mysql_result($result, 0, "klados");
-    $id = mysql_result($result, 0, "id");
+    $result = mysqli_query($mysqlconnection, $query);
+    $row = mysqli_fetch_assoc($result);
+    $name = $row['name'];
+    $surname = $row['surname'];
+    $patrwnymo = $row['patrwnymo'];
+    $klados = $row['klados'];
+    $id = $row['id'];
     $am = $_SESSION['user'];
-    $organ = mysql_result($result, 0, "org");
+    $organ = $row['org'];
     $organ = getSchooledc($organ, $mysqlconnection);
-    $eth = mysql_result($result, 0, "eth");
-    $mhnes = mysql_result($result, 0, "mhnes");
-    $hmeres = mysql_result($result, 0, "hmeres");
+    $eth = $row['eth'];
+    $mhnes = $row['mhnes'];
+    $hmeres = $row['hmeres'];
     if ($av_athmia)
     {
-        if (strpos($klados,"ΠΕ6") !== false)
+        if (strpos($klados,"Ξ Ξ6") !== false)
             $dim = 1;
         else
             $dim = 2;
@@ -111,7 +98,7 @@
 
                 function toggleFormElements() {
                     var inputs = document.getElementsByTagName("input");
-                    ret=confirm("Είστε σίγουροι;");
+                    ret=confirm("ΞΞ―ΟΟΞ΅ ΟΞ―Ξ³ΞΏΟΟΞΏΞΉ;");
                     if (ret){
                         for (var i = 0; i < 40; i++) {    
                             inputs[i].value = '';
@@ -123,9 +110,9 @@
                     }
                     mytag = document.getElementById("null_btn").value;
                     if (inputs[0].disabled == 1)
-                        document.getElementById("null_btn").value = "Απενεργοποίηση Αρνητικής Δήλωσης";
+                        document.getElementById("null_btn").value = "ΞΟΞ΅Ξ½Ξ΅ΟΞ³ΞΏΟΞΏΞ―Ξ·ΟΞ· ΞΟΞ½Ξ·ΟΞΉΞΊΞ®Ο ΞΞ®Ξ»ΟΟΞ·Ο";
                     else
-                        document.getElementById("null_btn").value = "Αρνητική Δήλωση";  
+                        document.getElementById("null_btn").value = "ΞΟΞ½Ξ·ΟΞΉΞΊΞ® ΞΞ®Ξ»ΟΟΞ·";  
                 }
                 
                 $(document).ready(function(){
@@ -145,132 +132,133 @@
         <?php
     //check if employee has aitisi
     $query = "SELECT * from $av_ait WHERE emp_id=$id";
-    $result = mysql_query($query, $mysqlconnection);
-    if (mysql_num_rows($result)>0)
+    $result = mysqli_query($mysqlconnection, $query);
+    $row = mysqli_fetch_assoc($result);
+    if (mysqli_num_rows($result)>0)
     {
         $has_aitisi = 1;
-        $submitted = mysql_result($result, 0, "submitted");
+        $submitted = $row['submitted'];
     }
     
     // if user has already saved an application
     if ($has_aitisi)
     {
-        $gamos = mysql_result($result, 0, "gamos");
-        $paidia = mysql_result($result, 0, "paidia");
-        $dhmos_anhk = mysql_result($result, 0, "dhmos_anhk");
+        $gamos = $row['gamos'];
+        $paidia = $row['paidia'];
+        $dhmos_anhk = $row['dhmos_anhk'];
         $dhmos_anhk = str_replace(" ", "&nbsp;", $dhmos_anhk);
-        $dhmos_ent = mysql_result($result, 0, "dhmos_ent");
-        $dhmos_syn = mysql_result($result, 0, "dhmos_syn");
-        $aitisi = mysql_result($result, 0, "aitisi");
-        $eidikh = mysql_result($result, 0, "eidikh");
-        $apospash = mysql_result($result, 0, "apospash");
-        $didakt = mysql_result($result, 0, "didakt");
-        $metapt = mysql_result($result, 0, "metapt");
-        $didask = mysql_result($result, 0, "didask");
-        $paidag = mysql_result($result, 0, "paidag");
-        $ethea = mysql_result($result, 0, "eth");
-        $mhnesea = mysql_result($result, 0, "mhnes");
-        $hmeresea = mysql_result($result, 0, "hmeres");
-        $ygeia = mysql_result($result, 0, "ygeia");
-        $ygeia_g = mysql_result($result, 0, "ygeia_g");
-        $ygeia_a = mysql_result($result, 0, "ygeia_a");
-        $eksw = mysql_result($result, 0, "eksw");
-        $comments = mysql_result($result, 0, "comments");
-        $ypdil = mysql_result($result, 0, "ypdil");
-        $org_eid = mysql_result($result, 0, "org_eid");
-        $allo = mysql_result($result, 0, "allo");
+        $dhmos_ent = $row['dhmos_ent'];
+        $dhmos_syn = $row['dhmos_syn'];
+        $aitisi = $row['aitisi'];
+        $eidikh = $row['eidikh'];
+        $apospash = $row['apospash'];
+        $didakt = $row['didakt'];
+        $metapt = $row['metapt'];
+        $didask = $row['didask'];
+        $paidag = $row['paidag'];
+        $ethea = $row['eth'];
+        $mhnesea = $row['mhnes'];
+        $hmeresea = $row['hmeres'];
+        $ygeia = $row['ygeia'];
+        $ygeia_g = $row['ygeia_g'];
+        $ygeia_a = $row['ygeia_a'];
+        $eksw = $row['eksw'];
+        $comments = $row['comments'];
+        $ypdil = $row['ypdil'];
+        $org_eid = $row['org_eid'];
+        $allo = $row['allo'];
         $allo = str_replace(" ", "&nbsp;", $allo);
         
         if ($submitted)
-            echo "<h3><center>Η αίτηση έχει υποβληθεί και δεν μπορείτε να την επεξεργαστείτε.</center></h3>";
+            echo "<h3><center>Ξ Ξ±Ξ―ΟΞ·ΟΞ· Ξ­ΟΞ΅ΞΉ ΟΟΞΏΞ²Ξ»Ξ·ΞΈΞ΅Ξ― ΞΊΞ±ΞΉ Ξ΄Ξ΅Ξ½ ΞΌΟΞΏΟΞ΅Ξ―ΟΞ΅ Ξ½Ξ± ΟΞ·Ξ½ Ξ΅ΟΞ΅ΞΎΞ΅ΟΞ³Ξ±ΟΟΞ΅Ξ―ΟΞ΅.</center></h3>";
         echo "<center>";
         echo "<table id=\"mytbl\" class=\"imagetable\" border=\"2\">\n";
-        echo "<thead><th colspan=7>Βήμα 1: Υποβολή στοιχείων</th></thead>";
-        echo "<tr><td colspan=2>Ονοματεπώνυμο Εκπ/κού:</td><td colspan=5>".$name." ".$surname."</td></tr>";
-        echo "<tr><td colspan=2>Πατρώνυμο: </td><td colspan=5>".$patrwnymo."</td></tr>";
-        echo "<tr><td colspan=2>Κλάδος: </td><td colspan=5>".$klados."</td></tr>";
+        echo "<thead><th colspan=7>ΞΞ®ΞΌΞ± 1: Ξ₯ΟΞΏΞ²ΞΏΞ»Ξ® ΟΟΞΏΞΉΟΞ΅Ξ―ΟΞ½</th></thead>";
+        echo "<tr><td colspan=2>ΞΞ½ΞΏΞΌΞ±ΟΞ΅ΟΟΞ½ΟΞΌΞΏ ΞΞΊΟ/ΞΊΞΏΟ:</td><td colspan=5>".$name." ".$surname."</td></tr>";
+        echo "<tr><td colspan=2>Ξ Ξ±ΟΟΟΞ½ΟΞΌΞΏ: </td><td colspan=5>".$patrwnymo."</td></tr>";
+        echo "<tr><td colspan=2>ΞΞ»Ξ¬Ξ΄ΞΏΟ: </td><td colspan=5>".$klados."</td></tr>";
         echo "<tr><td colspan=2>A.M.: </td><td colspan=5>".$am."</td></tr>";
-        echo "<tr><td colspan=2>Οργανική θέση: </td><td colspan=5>".$organ."</td></tr>";
-        echo "<tr><td colspan=2>Συνολική υπηρεσία: <small>(Έως $av_endofyear)</small></td><td colspan=5>$eth Έτη, $mhnes Μήνες, $hmeres Ημέρες</td></tr>";
+        echo "<tr><td colspan=2>ΞΟΞ³Ξ±Ξ½ΞΉΞΊΞ® ΞΈΞ­ΟΞ·: </td><td colspan=5>".$organ."</td></tr>";
+        echo "<tr><td colspan=2>Ξ£ΟΞ½ΞΏΞ»ΞΉΞΊΞ® ΟΟΞ·ΟΞ΅ΟΞ―Ξ±: <small>(ΞΟΟ $av_endofyear)</small></td><td colspan=5>$eth ΞΟΞ·, $mhnes ΞΞ®Ξ½Ξ΅Ο, $hmeres ΞΞΌΞ­ΟΞ΅Ο</td></tr>";
         
         // if user has submitted
         if ($submitted)
         {
             echo "<form id='src' name='src' action='index2.php' method='POST'>\n";
             if ($org_eid)
-                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='org_eid' value='1' checked disabled>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
+                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='org_eid' value='1' checked disabled>ΞΟΟ ΞΏΟΞ³Ξ±Ξ½ΞΉΞΊΞ® ΟΟΞ·Ξ½ Ξ΅ΞΉΞ΄ΞΉΞΊΞ® Ξ±Ξ³ΟΞ³Ξ® (ΟΞ΅ ΞΞΉΞ΄ΞΉΞΊΟ ΟΟΞΏΞ»Ξ΅Ξ―ΞΏ Ξ® ΟΞΌΞ®ΞΌΞ± Ξ­Ξ½ΟΞ±ΞΎΞ·Ο)</td></tr>";
             else
-                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='org_eid' value='1' disabled>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
+                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='org_eid' value='1' disabled>ΞΟΟ ΞΏΟΞ³Ξ±Ξ½ΞΉΞΊΞ® ΟΟΞ·Ξ½ Ξ΅ΞΉΞ΄ΞΉΞΊΞ® Ξ±Ξ³ΟΞ³Ξ® (ΟΞ΅ ΞΞΉΞ΄ΞΉΞΊΟ ΟΟΞΏΞ»Ξ΅Ξ―ΞΏ Ξ® ΟΞΌΞ®ΞΌΞ± Ξ­Ξ½ΟΞ±ΞΎΞ·Ο)</td></tr>";
             if ($aitisi)
-                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='aitisi' value='1' disabled checked>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
+                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='aitisi' value='1' disabled checked>Ξ₯ΟΞ­Ξ²Ξ±Ξ»Ξ± Ξ±Ξ―ΟΞ·ΟΞ· Ξ²Ξ΅Ξ»ΟΞ―ΟΟΞ·Ο ΞΈΞ­ΟΞ·Ο / ΞΏΟΞΉΟΟΞΉΞΊΞ®Ο ΟΞΏΟΞΏΞΈΞ­ΟΞ·ΟΞ·Ο ΟΞΏ $av_etos</td></tr>";
             else
-                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='aitisi' value='1' disabled>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
-            echo "<tr height=20></tr><tr><td colspan=7><center>Οικογενειακή Κατάσταση</center></td></tr>";
-            echo "<tr><td>Γάμος</td><td>";
+                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='aitisi' value='1' disabled>Ξ₯ΟΞ­Ξ²Ξ±Ξ»Ξ± Ξ±Ξ―ΟΞ·ΟΞ· Ξ²Ξ΅Ξ»ΟΞ―ΟΟΞ·Ο ΞΈΞ­ΟΞ·Ο / ΞΏΟΞΉΟΟΞΉΞΊΞ®Ο ΟΞΏΟΞΏΞΈΞ­ΟΞ·ΟΞ·Ο ΟΞΏ $av_etos</td></tr>";
+            echo "<tr height=20></tr><tr><td colspan=7><center>ΞΞΉΞΊΞΏΞ³Ξ΅Ξ½Ξ΅ΞΉΞ±ΞΊΞ® ΞΞ±ΟΞ¬ΟΟΞ±ΟΞ·</center></td></tr>";
+            echo "<tr><td>ΞΞ¬ΞΌΞΏΟ</td><td>";
             echo getGamos($gamos);
-            echo "</td><td>Παιδιά</td><td>$paidia</td><td>Δήμος</td><td>$dhmos_anhk</td></tr>";
-            echo "<tr height=20></tr><tr><td colspan=7><center>Εντοπιότητα</center></td></tr>";
-            echo "<tr><td colspan=2>Δήμος της Περιφερειακής Ενότητας $av_nomos που έχω εντοπιότητα</td><td colspan=5>";
+            echo "</td><td>Ξ Ξ±ΞΉΞ΄ΞΉΞ¬</td><td>$paidia</td><td>ΞΞ®ΞΌΞΏΟ</td><td>$dhmos_anhk</td></tr>";
+            echo "<tr height=20></tr><tr><td colspan=7><center>ΞΞ½ΟΞΏΟΞΉΟΟΞ·ΟΞ±</center></td></tr>";
+            echo "<tr><td colspan=2>ΞΞ®ΞΌΞΏΟ ΟΞ·Ο Ξ Ξ΅ΟΞΉΟΞ΅ΟΞ΅ΞΉΞ±ΞΊΞ®Ο ΞΞ½ΟΟΞ·ΟΞ±Ο $av_nomos ΟΞΏΟ Ξ­ΟΟ Ξ΅Ξ½ΟΞΏΟΞΉΟΟΞ·ΟΞ±</td><td colspan=5>";
             getDimos($dhmos_ent,$mysqlconnection);
             echo "</td></tr>";
-            echo "<tr height=20></tr><tr><td colspan=7><center>Συνυπηρέτηση</center></td></tr>";
-            echo "<tr><td colspan=2>Δήμος της Περιφερειακής Ενότητας $av_nomos που έχω συνυπηρέτηση</td><td colspan=5>";
+            echo "<tr height=20></tr><tr><td colspan=7><center>Ξ£ΟΞ½ΟΟΞ·ΟΞ­ΟΞ·ΟΞ·</center></td></tr>";
+            echo "<tr><td colspan=2>ΞΞ®ΞΌΞΏΟ ΟΞ·Ο Ξ Ξ΅ΟΞΉΟΞ΅ΟΞ΅ΞΉΞ±ΞΊΞ®Ο ΞΞ½ΟΟΞ·ΟΞ±Ο $av_nomos ΟΞΏΟ Ξ­ΟΟ ΟΟΞ½ΟΟΞ·ΟΞ­ΟΞ·ΟΞ·</td><td colspan=5>";
             getDimos($dhmos_syn, $mysqlconnection);
             echo "</td></tr>";
             if ($eidikh)
-                echo "<tr height=20></tr><tr><td colspan=2><center>Ειδική Κατηγορία (κατά προτεραιότητα)</center></td><td colspan=5><input type='checkbox' name='eidikh' value='1' disabled checked>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
+                echo "<tr height=20></tr><tr><td colspan=2><center>ΞΞΉΞ΄ΞΉΞΊΞ® ΞΞ±ΟΞ·Ξ³ΞΏΟΞ―Ξ± (ΞΊΞ±ΟΞ¬ ΟΟΞΏΟΞ΅ΟΞ±ΞΉΟΟΞ·ΟΞ±)</center></td><td colspan=5><input type='checkbox' name='eidikh' value='1' disabled checked>ΞΟΞΉΞΈΟΞΌΟ Ξ½Ξ± ΟΟΞ±ΟΞΈΟ ΟΞ΅ Ξ΅ΞΉΞ΄ΞΉΞΊΞ® ΞΊΞ±ΟΞ·Ξ³ΞΏΟΞ―Ξ± Ξ±ΟΞΏΟΟΞ¬ΟΞ΅ΟΞ½</td></tr>";
             else
-                echo "<tr height=20></tr><tr><td colspan=2><center>Ειδική Κατηγορία (κατά προτεραιότητα)</center></td><td colspan=5><input type='checkbox' name='eidikh' value='1' disabled>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
+                echo "<tr height=20></tr><tr><td colspan=2><center>ΞΞΉΞ΄ΞΉΞΊΞ® ΞΞ±ΟΞ·Ξ³ΞΏΟΞ―Ξ± (ΞΊΞ±ΟΞ¬ ΟΟΞΏΟΞ΅ΟΞ±ΞΉΟΟΞ·ΟΞ±)</center></td><td colspan=5><input type='checkbox' name='eidikh' value='1' disabled>ΞΟΞΉΞΈΟΞΌΟ Ξ½Ξ± ΟΟΞ±ΟΞΈΟ ΟΞ΅ Ξ΅ΞΉΞ΄ΞΉΞΊΞ® ΞΊΞ±ΟΞ·Ξ³ΞΏΟΞ―Ξ± Ξ±ΟΞΏΟΟΞ¬ΟΞ΅ΟΞ½</td></tr>";
             if ($apospash)
-                echo "<tr height=20></tr><tr><td colspan=2><center>Επιθυμώ απόσπαση</center></td><td colspan=5><input type='checkbox' name='apospash' value='1' disabled checked>Απο τη Γενική στην Ειδική Αγωγή</td></tr>";
+                echo "<tr height=20></tr><tr><td colspan=2><center>ΞΟΞΉΞΈΟΞΌΟ Ξ±ΟΟΟΟΞ±ΟΞ·</center></td><td colspan=5><input type='checkbox' name='apospash' value='1' disabled checked>ΞΟΞΏ ΟΞ· ΞΞ΅Ξ½ΞΉΞΊΞ® ΟΟΞ·Ξ½ ΞΞΉΞ΄ΞΉΞΊΞ® ΞΞ³ΟΞ³Ξ®</td></tr>";
             else
-                echo "<tr height=20></tr><tr><td colspan=2><center>Επιθυμώ απόσπαση</center></td><td colspan=5><input type='checkbox' name='apospash' value='1' disabled>Απο τη Γενική στην Ειδική Αγωγή</td></tr>";
+                echo "<tr height=20></tr><tr><td colspan=2><center>ΞΟΞΉΞΈΟΞΌΟ Ξ±ΟΟΟΟΞ±ΟΞ·</center></td><td colspan=5><input type='checkbox' name='apospash' value='1' disabled>ΞΟΞΏ ΟΞ· ΞΞ΅Ξ½ΞΉΞΊΞ® ΟΟΞ·Ξ½ ΞΞΉΞ΄ΞΉΞΊΞ® ΞΞ³ΟΞ³Ξ®</td></tr>";
             echo "<div id='ea'><tr><td colspan=2></td><td colspan=5>";
             if ($didakt)
-                echo "α) Διδακτορικό Ειδ.Αγωγής<input type='checkbox' name='didakt' value='1' disabled checked><br>";
+                echo "Ξ±) ΞΞΉΞ΄Ξ±ΞΊΟΞΏΟΞΉΞΊΟ ΞΞΉΞ΄.ΞΞ³ΟΞ³Ξ®Ο<input type='checkbox' name='didakt' value='1' disabled checked><br>";
             else
-                echo "α) Διδακτορικό Ειδ.Αγωγής<input type='checkbox' name='didakt' value='1' disabled><br>";
+                echo "Ξ±) ΞΞΉΞ΄Ξ±ΞΊΟΞΏΟΞΉΞΊΟ ΞΞΉΞ΄.ΞΞ³ΟΞ³Ξ®Ο<input type='checkbox' name='didakt' value='1' disabled><br>";
             if ($metapt)
-                echo "β) Μεταπτυχιακό Ειδ.Αγωγής<input type='checkbox' name='metapt' value='1' disabled checked><br>";
+                echo "Ξ²) ΞΞ΅ΟΞ±ΟΟΟΟΞΉΞ±ΞΊΟ ΞΞΉΞ΄.ΞΞ³ΟΞ³Ξ®Ο<input type='checkbox' name='metapt' value='1' disabled checked><br>";
             else
-                echo "β) Μεταπτυχιακό Ειδ.Αγωγής<input type='checkbox' name='metapt' value='1' disabled><br>";
+                echo "Ξ²) ΞΞ΅ΟΞ±ΟΟΟΟΞΉΞ±ΞΊΟ ΞΞΉΞ΄.ΞΞ³ΟΞ³Ξ®Ο<input type='checkbox' name='metapt' value='1' disabled><br>";
             if ($didask)
-                echo "γ) Διδασκαλείο Ειδ.Αγωγής<input type='checkbox' name='didask' value='1' disabled checked><br>";
+                echo "Ξ³) ΞΞΉΞ΄Ξ±ΟΞΊΞ±Ξ»Ξ΅Ξ―ΞΏ ΞΞΉΞ΄.ΞΞ³ΟΞ³Ξ®Ο<input type='checkbox' name='didask' value='1' disabled checked><br>";
             else
-                echo "γ) Διδασκαλείο Ειδ.Αγωγής<input type='checkbox' name='didask' value='1' disabled><br>";
+                echo "Ξ³) ΞΞΉΞ΄Ξ±ΟΞΊΞ±Ξ»Ξ΅Ξ―ΞΏ ΞΞΉΞ΄.ΞΞ³ΟΞ³Ξ®Ο<input type='checkbox' name='didask' value='1' disabled><br>";
             if ($paidag)
-                echo "δ) Πτυχίο παιδαγωγικών τμημάτων με αντικείμενο στην ειδική αγωγή<input type='checkbox' name='paidag' value='1' disabled checked><br>";
+                echo "Ξ΄) Ξ ΟΟΟΞ―ΞΏ ΟΞ±ΞΉΞ΄Ξ±Ξ³ΟΞ³ΞΉΞΊΟΞ½ ΟΞΌΞ·ΞΌΞ¬ΟΟΞ½ ΞΌΞ΅ Ξ±Ξ½ΟΞΉΞΊΞ΅Ξ―ΞΌΞ΅Ξ½ΞΏ ΟΟΞ·Ξ½ Ξ΅ΞΉΞ΄ΞΉΞΊΞ® Ξ±Ξ³ΟΞ³Ξ®<input type='checkbox' name='paidag' value='1' disabled checked><br>";
             else
-                echo "δ) Πτυχίο παιδαγωγικών τμημάτων με αντικείμενο στην ειδική αγωγή<input type='checkbox' name='paidag' value='1' disabled><br>";
-            echo "ε) Προϋπηρεσία στην Ειδ.Αγωγή: $ethea Έτη, $mhnesea Μήνες, $hmeresea Ημέρες<br>";
-            echo "στ) Άλλο προσόν (π.χ. Braille, νοηματική): $allo";
-            echo "<tr><td colspan=7><small>Αν επιθυμείτε απόσπαση ΚΑΙ σε σχολεία της Γενικής εκπ/σης, συμπληρώστε τη <a href='aposp2013.doc'>φόρμα</a> και στείλτε την στο $av_foreas</small></td></tr>";
+                echo "Ξ΄) Ξ ΟΟΟΞ―ΞΏ ΟΞ±ΞΉΞ΄Ξ±Ξ³ΟΞ³ΞΉΞΊΟΞ½ ΟΞΌΞ·ΞΌΞ¬ΟΟΞ½ ΞΌΞ΅ Ξ±Ξ½ΟΞΉΞΊΞ΅Ξ―ΞΌΞ΅Ξ½ΞΏ ΟΟΞ·Ξ½ Ξ΅ΞΉΞ΄ΞΉΞΊΞ® Ξ±Ξ³ΟΞ³Ξ®<input type='checkbox' name='paidag' value='1' disabled><br>";
+            echo "Ξ΅) Ξ ΟΞΏΟΟΞ·ΟΞ΅ΟΞ―Ξ± ΟΟΞ·Ξ½ ΞΞΉΞ΄.ΞΞ³ΟΞ³Ξ®: $ethea ΞΟΞ·, $mhnesea ΞΞ®Ξ½Ξ΅Ο, $hmeresea ΞΞΌΞ­ΟΞ΅Ο<br>";
+            echo "ΟΟ) ΞΞ»Ξ»ΞΏ ΟΟΞΏΟΟΞ½ (Ο.Ο. Braille, Ξ½ΞΏΞ·ΞΌΞ±ΟΞΉΞΊΞ®): $allo";
+            echo "<tr><td colspan=7><small>ΞΞ½ Ξ΅ΟΞΉΞΈΟΞΌΞ΅Ξ―ΟΞ΅ Ξ±ΟΟΟΟΞ±ΟΞ· ΞΞΞ ΟΞ΅ ΟΟΞΏΞ»Ξ΅Ξ―Ξ± ΟΞ·Ο ΞΞ΅Ξ½ΞΉΞΊΞ®Ο Ξ΅ΞΊΟ/ΟΞ·Ο, ΟΟΞΌΟΞ»Ξ·ΟΟΟΟΞ΅ ΟΞ· <a href='aposp2013.doc'>ΟΟΟΞΌΞ±</a> ΞΊΞ±ΞΉ ΟΟΞ΅Ξ―Ξ»ΟΞ΅ ΟΞ·Ξ½ ΟΟΞΏ $av_foreas</small></td></tr>";
             echo "</td></tr>";
             
             echo "</div>";
             
-            echo "<tr height=20></tr><tr><td colspan=7><center>Σοβαροί λόγοι υγείας</center></td></tr>";
-            echo "<tr><td colspan=2><center>Του ιδίου, παιδιών ή συζύγου</center></td><td colspan=5>";
+            echo "<tr height=20></tr><tr><td colspan=7><center>Ξ£ΞΏΞ²Ξ±ΟΞΏΞ― Ξ»ΟΞ³ΞΏΞΉ ΟΞ³Ξ΅Ξ―Ξ±Ο</center></td></tr>";
+            echo "<tr><td colspan=2><center>Ξ€ΞΏΟ ΞΉΞ΄Ξ―ΞΏΟ, ΟΞ±ΞΉΞ΄ΞΉΟΞ½ Ξ® ΟΟΞΆΟΞ³ΞΏΟ</center></td><td colspan=5>";
             echo getYgeia($ygeia);
             echo "</td></tr>";
-            echo "<tr><td colspan=2><center>Γονέων</center></td><td colspan=5>";
+            echo "<tr><td colspan=2><center>ΞΞΏΞ½Ξ­ΟΞ½</center></td><td colspan=5>";
             echo getYgeia_g($ygeia_g);
             echo "</td></tr>";
-            echo "<tr><td colspan=2><center>Αδελφών</center></td><td colspan=5>";
+            echo "<tr><td colspan=2><center>ΞΞ΄Ξ΅Ξ»ΟΟΞ½</center></td><td colspan=5>";
             echo getYgeia_a($ygeia_a);
             echo "</td></tr>";
             if ($eksw)
-                echo "<tr><td colspan=2><center>Θεραπεία για εξωσωματική γονιμοποίηση</center></td><td colspan=5><input type='checkbox' name='eksw' value='1' checked disabled></td></tr>";
+                echo "<tr><td colspan=2><center>ΞΞ΅ΟΞ±ΟΞ΅Ξ―Ξ± Ξ³ΞΉΞ± Ξ΅ΞΎΟΟΟΞΌΞ±ΟΞΉΞΊΞ® Ξ³ΞΏΞ½ΞΉΞΌΞΏΟΞΏΞ―Ξ·ΟΞ·</center></td><td colspan=5><input type='checkbox' name='eksw' value='1' checked disabled></td></tr>";
             else
-                echo "<tr><td colspan=2><center>Θεραπεία για εξωσωματική γονιμοποίηση</center></td><td colspan=5><input type='checkbox' name='eksw' value='1' disabled></td></tr>";
-            echo "<tr height=20></tr><tr><td colspan=2>Σχόλια - Παρατηρήσεις</td><td colspan=5>$comments</td></tr>";
-            $blabla = "Δηλώνω υπεύθυνα ότι δεν έχω οριστεί στέλεχος εκπαίδευσης (λ.χ. προϊστάμενος/μένη ολιγοθέσιας σχολικής μονάδας, διευθυντής/ντρια σχολ. μονάδας) και ότι δεν υπηρετώ σε θέση με θητεία που λήγει μετά τις $av_endofyear.";
+                echo "<tr><td colspan=2><center>ΞΞ΅ΟΞ±ΟΞ΅Ξ―Ξ± Ξ³ΞΉΞ± Ξ΅ΞΎΟΟΟΞΌΞ±ΟΞΉΞΊΞ® Ξ³ΞΏΞ½ΞΉΞΌΞΏΟΞΏΞ―Ξ·ΟΞ·</center></td><td colspan=5><input type='checkbox' name='eksw' value='1' disabled></td></tr>";
+            echo "<tr height=20></tr><tr><td colspan=2>Ξ£ΟΟΞ»ΞΉΞ± - Ξ Ξ±ΟΞ±ΟΞ·ΟΞ®ΟΞ΅ΞΉΟ</td><td colspan=5>$comments</td></tr>";
+            $blabla = "ΞΞ·Ξ»ΟΞ½Ο ΟΟΞ΅ΟΞΈΟΞ½Ξ± ΟΟΞΉ Ξ΄Ξ΅Ξ½ Ξ­ΟΟ ΞΏΟΞΉΟΟΞ΅Ξ― ΟΟΞ­Ξ»Ξ΅ΟΞΏΟ Ξ΅ΞΊΟΞ±Ξ―Ξ΄Ξ΅ΟΟΞ·Ο (Ξ».Ο. ΟΟΞΏΟΟΟΞ¬ΞΌΞ΅Ξ½ΞΏΟ/ΞΌΞ­Ξ½Ξ· ΞΏΞ»ΞΉΞ³ΞΏΞΈΞ­ΟΞΉΞ±Ο ΟΟΞΏΞ»ΞΉΞΊΞ®Ο ΞΌΞΏΞ½Ξ¬Ξ΄Ξ±Ο, Ξ΄ΞΉΞ΅ΟΞΈΟΞ½ΟΞ®Ο/Ξ½ΟΟΞΉΞ± ΟΟΞΏΞ». ΞΌΞΏΞ½Ξ¬Ξ΄Ξ±Ο) ΞΊΞ±ΞΉ ΟΟΞΉ Ξ΄Ξ΅Ξ½ ΟΟΞ·ΟΞ΅ΟΟ ΟΞ΅ ΞΈΞ­ΟΞ· ΞΌΞ΅ ΞΈΞ·ΟΞ΅Ξ―Ξ± ΟΞΏΟ Ξ»Ξ®Ξ³Ξ΅ΞΉ ΞΌΞ΅ΟΞ¬ ΟΞΉΟ $av_endofyear.";
             echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='ypdil' value='1' checked disabled>$blabla</td></tr>";
-            echo "<tr><td colspan=7><small>Υποβλήθηκε στις: ".  date("d-m-Y, H:i:s", strtotime(mysql_result($result, 0, "submit_date")))."</small></td></tr>";
+            echo "<tr><td colspan=7><small>Ξ₯ΟΞΏΞ²Ξ»Ξ®ΞΈΞ·ΞΊΞ΅ ΟΟΞΉΟ: ".  date("d-m-Y, H:i:s", strtotime(mysql_result($result, 0, "submit_date")))."</small></td></tr>";
             echo "<input type='hidden' name = 'id' value='$id'>";
             echo "</form>";
-            echo "<tr><td colspan=7><center><form action='index2.php' method='POST'><input type='submit' value='Συνέχεια στο Βήμα 2'></form></center></td></tr>";
-            echo "<tr><td colspan=7><center><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' value='Έξοδος'></form></center></td></tr>";
+            echo "<tr><td colspan=7><center><form action='index2.php' method='POST'><input type='submit' value='Ξ£ΟΞ½Ξ­ΟΞ΅ΞΉΞ± ΟΟΞΏ ΞΞ®ΞΌΞ± 2'></form></center></td></tr>";
+            echo "<tr><td colspan=7><center><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' value='ΞΞΎΞΏΞ΄ΞΏΟ'></form></center></td></tr>";
         }
         // if not submitted
         else
@@ -278,96 +266,96 @@
             //form
             echo "<form id='src' name='src' action='save.php' method='POST'>\n";
             if ($org_eid)
-                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='org_eid' value='1' checked>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
+                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='org_eid' value='1' checked>ΞΟΟ ΞΏΟΞ³Ξ±Ξ½ΞΉΞΊΞ® ΟΟΞ·Ξ½ Ξ΅ΞΉΞ΄ΞΉΞΊΞ® Ξ±Ξ³ΟΞ³Ξ® (ΟΞ΅ ΞΞΉΞ΄ΞΉΞΊΟ ΟΟΞΏΞ»Ξ΅Ξ―ΞΏ Ξ® ΟΞΌΞ®ΞΌΞ± Ξ­Ξ½ΟΞ±ΞΎΞ·Ο)</td></tr>";
             else
-                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='org_eid' value='1'>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
+                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='org_eid' value='1'>ΞΟΟ ΞΏΟΞ³Ξ±Ξ½ΞΉΞΊΞ® ΟΟΞ·Ξ½ Ξ΅ΞΉΞ΄ΞΉΞΊΞ® Ξ±Ξ³ΟΞ³Ξ® (ΟΞ΅ ΞΞΉΞ΄ΞΉΞΊΟ ΟΟΞΏΞ»Ξ΅Ξ―ΞΏ Ξ® ΟΞΌΞ®ΞΌΞ± Ξ­Ξ½ΟΞ±ΞΎΞ·Ο)</td></tr>";
             if ($aitisi)
-                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='aitisi' value='1' checked>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
+                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='aitisi' value='1' checked>Ξ₯ΟΞ­Ξ²Ξ±Ξ»Ξ± Ξ±Ξ―ΟΞ·ΟΞ· Ξ²Ξ΅Ξ»ΟΞ―ΟΟΞ·Ο ΞΈΞ­ΟΞ·Ο / ΞΏΟΞΉΟΟΞΉΞΊΞ®Ο ΟΞΏΟΞΏΞΈΞ­ΟΞ·ΟΞ·Ο ΟΞΏ $av_etos</td></tr>";
             else
-                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='aitisi' value='1'>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
-            echo "<tr height=20></tr><tr><td colspan=7><center>Οικογενειακή Κατάσταση</center></td></tr>";
-            echo "<tr><td>Γάμος</td><td>";
+                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='aitisi' value='1'>Ξ₯ΟΞ­Ξ²Ξ±Ξ»Ξ± Ξ±Ξ―ΟΞ·ΟΞ· Ξ²Ξ΅Ξ»ΟΞ―ΟΟΞ·Ο ΞΈΞ­ΟΞ·Ο / ΞΏΟΞΉΟΟΞΉΞΊΞ®Ο ΟΞΏΟΞΏΞΈΞ­ΟΞ·ΟΞ·Ο ΟΞΏ $av_etos</td></tr>";
+            echo "<tr height=20></tr><tr><td colspan=7><center>ΞΞΉΞΊΞΏΞ³Ξ΅Ξ½Ξ΅ΞΉΞ±ΞΊΞ® ΞΞ±ΟΞ¬ΟΟΞ±ΟΞ·</center></td></tr>";
+            echo "<tr><td>ΞΞ¬ΞΌΞΏΟ</td><td>";
             cmbGamos_edit($gamos);
-            echo "</td><td>Παιδιά</td><td>";
+            echo "</td><td>Ξ Ξ±ΞΉΞ΄ΞΉΞ¬</td><td>";
             cmbPaidia_edit($paidia);
-            echo "</td><td>Δήμος</td><td>";
+            echo "</td><td>ΞΞ®ΞΌΞΏΟ</td><td>";
             //cmbDimos_edit('anhk',$dhmos_anhk);
             echo "<input size=30 name='dhmos_anhk' value=$dhmos_anhk>";
             echo "</td></tr>";
-            echo "<tr height=20></tr><tr><td colspan=7><center>Εντοπιότητα</center></td></tr>";
-            echo "<tr><td colspan=2>Δήμος της Περιφερειακής Ενότητας $av_nomos που έχω εντοπιότητα</td><td colspan=5>";
+            echo "<tr height=20></tr><tr><td colspan=7><center>ΞΞ½ΟΞΏΟΞΉΟΟΞ·ΟΞ±</center></td></tr>";
+            echo "<tr><td colspan=2>ΞΞ®ΞΌΞΏΟ ΟΞ·Ο Ξ Ξ΅ΟΞΉΟΞ΅ΟΞ΅ΞΉΞ±ΞΊΞ®Ο ΞΞ½ΟΟΞ·ΟΞ±Ο $av_nomos ΟΞΏΟ Ξ­ΟΟ Ξ΅Ξ½ΟΞΏΟΞΉΟΟΞ·ΟΞ±</td><td colspan=5>";
             cmbDimos_edit('ent',$dhmos_ent,$mysqlconnection);
             echo "</td></tr>";
-            echo "<tr height=20></tr><tr><td colspan=7><center>Συνυπηρέτηση</center></td></tr>";
-            echo "<tr><td colspan=2>Δήμος της Περιφερειακής Ενότητας $av_nomos που έχω συνυπηρέτηση</td><td colspan=5>";
+            echo "<tr height=20></tr><tr><td colspan=7><center>Ξ£ΟΞ½ΟΟΞ·ΟΞ­ΟΞ·ΟΞ·</center></td></tr>";
+            echo "<tr><td colspan=2>ΞΞ®ΞΌΞΏΟ ΟΞ·Ο Ξ Ξ΅ΟΞΉΟΞ΅ΟΞ΅ΞΉΞ±ΞΊΞ®Ο ΞΞ½ΟΟΞ·ΟΞ±Ο $av_nomos ΟΞΏΟ Ξ­ΟΟ ΟΟΞ½ΟΟΞ·ΟΞ­ΟΞ·ΟΞ·</td><td colspan=5>";
             cmbDimos_edit('syn',$dhmos_syn,$mysqlconnection);
             echo "</td></tr>";
             if ($eidikh)
-                echo "<tr height=20></tr><tr><td colspan=2><center>Ειδική Κατηγορία (κατά προτεραιότητα)</center></td><td colspan=5><input type='checkbox' name='eidikh' value='1' checked>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
+                echo "<tr height=20></tr><tr><td colspan=2><center>ΞΞΉΞ΄ΞΉΞΊΞ® ΞΞ±ΟΞ·Ξ³ΞΏΟΞ―Ξ± (ΞΊΞ±ΟΞ¬ ΟΟΞΏΟΞ΅ΟΞ±ΞΉΟΟΞ·ΟΞ±)</center></td><td colspan=5><input type='checkbox' name='eidikh' value='1' checked>ΞΟΞΉΞΈΟΞΌΟ Ξ½Ξ± ΟΟΞ±ΟΞΈΟ ΟΞ΅ Ξ΅ΞΉΞ΄ΞΉΞΊΞ® ΞΊΞ±ΟΞ·Ξ³ΞΏΟΞ―Ξ± Ξ±ΟΞΏΟΟΞ¬ΟΞ΅ΟΞ½</td></tr>";
             else
-                echo "<tr height=20></tr><tr><td colspan=2><center>Ειδική Κατηγορία (κατά προτεραιότητα)</center></td><td colspan=5><input type='checkbox' name='eidikh' value='1'>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
+                echo "<tr height=20></tr><tr><td colspan=2><center>ΞΞΉΞ΄ΞΉΞΊΞ® ΞΞ±ΟΞ·Ξ³ΞΏΟΞ―Ξ± (ΞΊΞ±ΟΞ¬ ΟΟΞΏΟΞ΅ΟΞ±ΞΉΟΟΞ·ΟΞ±)</center></td><td colspan=5><input type='checkbox' name='eidikh' value='1'>ΞΟΞΉΞΈΟΞΌΟ Ξ½Ξ± ΟΟΞ±ΟΞΈΟ ΟΞ΅ Ξ΅ΞΉΞ΄ΞΉΞΊΞ® ΞΊΞ±ΟΞ·Ξ³ΞΏΟΞ―Ξ± Ξ±ΟΞΏΟΟΞ¬ΟΞ΅ΟΞ½</td></tr>";
 
             if ($apospash)
-                echo "<tr height=20></tr><tr><td colspan=2><center>Επιθυμώ απόσπαση</center></td><td colspan=5><div name='main'><input type='checkbox' id='apospash' name='apospash' value='1' checked='1'>Απο τη Γενική στην Ειδική Αγωγή</div></td></tr>";
+                echo "<tr height=20></tr><tr><td colspan=2><center>ΞΟΞΉΞΈΟΞΌΟ Ξ±ΟΟΟΟΞ±ΟΞ·</center></td><td colspan=5><div name='main'><input type='checkbox' id='apospash' name='apospash' value='1' checked='1'>ΞΟΞΏ ΟΞ· ΞΞ΅Ξ½ΞΉΞΊΞ® ΟΟΞ·Ξ½ ΞΞΉΞ΄ΞΉΞΊΞ® ΞΞ³ΟΞ³Ξ®</div></td></tr>";
             else
-                echo "<tr height=20></tr><tr><td colspan=2><center>Επιθυμώ απόσπαση</center></td><td colspan=5><div name='main'><input type='checkbox' id='apospash' name='apospash' value='1'>Απο τη Γενική στην Ειδική Αγωγή</div></td></tr>";
+                echo "<tr height=20></tr><tr><td colspan=2><center>ΞΟΞΉΞΈΟΞΌΟ Ξ±ΟΟΟΟΞ±ΟΞ·</center></td><td colspan=5><div name='main'><input type='checkbox' id='apospash' name='apospash' value='1'>ΞΟΞΏ ΟΞ· ΞΞ΅Ξ½ΞΉΞΊΞ® ΟΟΞ·Ξ½ ΞΞΉΞ΄ΞΉΞΊΞ® ΞΞ³ΟΞ³Ξ®</div></td></tr>";
             if (!$apospash)
                 $style = "display:none;";
             else $style = '';
             echo "<tr><td colspan=2></td><td colspan=5><div class='other' name='other' id='other' style='$style'>";
             if ($didakt)
-                echo "α) Διδακτορικό Ειδ.Αγωγής<input type='checkbox' name='didakt' value='1' checked><br>";
+                echo "Ξ±) ΞΞΉΞ΄Ξ±ΞΊΟΞΏΟΞΉΞΊΟ ΞΞΉΞ΄.ΞΞ³ΟΞ³Ξ®Ο<input type='checkbox' name='didakt' value='1' checked><br>";
             else
-                echo "α) Διδακτορικό Ειδ.Αγωγής<input type='checkbox' name='didakt' value='1'><br>";
+                echo "Ξ±) ΞΞΉΞ΄Ξ±ΞΊΟΞΏΟΞΉΞΊΟ ΞΞΉΞ΄.ΞΞ³ΟΞ³Ξ®Ο<input type='checkbox' name='didakt' value='1'><br>";
             if ($metapt)
-                echo "β) Μεταπτυχιακό Ειδ.Αγωγής<input type='checkbox' name='metapt' value='1' checked><br>";
+                echo "Ξ²) ΞΞ΅ΟΞ±ΟΟΟΟΞΉΞ±ΞΊΟ ΞΞΉΞ΄.ΞΞ³ΟΞ³Ξ®Ο<input type='checkbox' name='metapt' value='1' checked><br>";
             else
-                echo "β) Μεταπτυχιακό Ειδ.Αγωγής<input type='checkbox' name='metapt' value='1'><br>";
+                echo "Ξ²) ΞΞ΅ΟΞ±ΟΟΟΟΞΉΞ±ΞΊΟ ΞΞΉΞ΄.ΞΞ³ΟΞ³Ξ®Ο<input type='checkbox' name='metapt' value='1'><br>";
             if ($didask)
-                echo "γ) Διδασκαλείο Ειδ.Αγωγής<input type='checkbox' name='didask' value='1' checked><br>";
+                echo "Ξ³) ΞΞΉΞ΄Ξ±ΟΞΊΞ±Ξ»Ξ΅Ξ―ΞΏ ΞΞΉΞ΄.ΞΞ³ΟΞ³Ξ®Ο<input type='checkbox' name='didask' value='1' checked><br>";
             else
-                echo "γ) Διδασκαλείο Ειδ.Αγωγής<input type='checkbox' name='didask' value='1'><br>";
+                echo "Ξ³) ΞΞΉΞ΄Ξ±ΟΞΊΞ±Ξ»Ξ΅Ξ―ΞΏ ΞΞΉΞ΄.ΞΞ³ΟΞ³Ξ®Ο<input type='checkbox' name='didask' value='1'><br>";
             if ($paidag)
-                echo "δ) Πτυχίο παιδαγωγικών τμημάτων με αντικείμενο στην ειδική αγωγή<input type='checkbox' name='paidag' value='1' checked><br>";
+                echo "Ξ΄) Ξ ΟΟΟΞ―ΞΏ ΟΞ±ΞΉΞ΄Ξ±Ξ³ΟΞ³ΞΉΞΊΟΞ½ ΟΞΌΞ·ΞΌΞ¬ΟΟΞ½ ΞΌΞ΅ Ξ±Ξ½ΟΞΉΞΊΞ΅Ξ―ΞΌΞ΅Ξ½ΞΏ ΟΟΞ·Ξ½ Ξ΅ΞΉΞ΄ΞΉΞΊΞ® Ξ±Ξ³ΟΞ³Ξ®<input type='checkbox' name='paidag' value='1' checked><br>";
             else
-                echo "δ) Πτυχίο παιδαγωγικών τμημάτων με αντικείμενο στην ειδική αγωγή<input type='checkbox' name='paidag' value='1'><br>";
-            echo "ε) Προϋπηρεσία στην Ειδ.Αγωγή: <input size=2 name='eth' value=$ethea> Έτη,<input size=2 name='mhnes' value=$mhnesea> Μήνες,<input size=2 name='hmeres' value=$hmeresea> Ημέρες<br>";
-            echo "στ) Άλλο προσόν (π.χ. Braille, νοηματική): <input size=25 name='allo' value=$allo>";
-            echo "<br><small>Αν επιθυμείτε απόσπαση ΚΑΙ σε σχολεία της Γενικής εκπ/σης, συμπληρώστε τη <a href='aposp2013.doc'>φόρμα</a> και στείλτε την στο $av_foreas </small></div></td></div></tr>";
+                echo "Ξ΄) Ξ ΟΟΟΞ―ΞΏ ΟΞ±ΞΉΞ΄Ξ±Ξ³ΟΞ³ΞΉΞΊΟΞ½ ΟΞΌΞ·ΞΌΞ¬ΟΟΞ½ ΞΌΞ΅ Ξ±Ξ½ΟΞΉΞΊΞ΅Ξ―ΞΌΞ΅Ξ½ΞΏ ΟΟΞ·Ξ½ Ξ΅ΞΉΞ΄ΞΉΞΊΞ® Ξ±Ξ³ΟΞ³Ξ®<input type='checkbox' name='paidag' value='1'><br>";
+            echo "Ξ΅) Ξ ΟΞΏΟΟΞ·ΟΞ΅ΟΞ―Ξ± ΟΟΞ·Ξ½ ΞΞΉΞ΄.ΞΞ³ΟΞ³Ξ®: <input size=2 name='eth' value=$ethea> ΞΟΞ·,<input size=2 name='mhnes' value=$mhnesea> ΞΞ®Ξ½Ξ΅Ο,<input size=2 name='hmeres' value=$hmeresea> ΞΞΌΞ­ΟΞ΅Ο<br>";
+            echo "ΟΟ) ΞΞ»Ξ»ΞΏ ΟΟΞΏΟΟΞ½ (Ο.Ο. Braille, Ξ½ΞΏΞ·ΞΌΞ±ΟΞΉΞΊΞ®): <input size=25 name='allo' value=$allo>";
+            echo "<br><small>ΞΞ½ Ξ΅ΟΞΉΞΈΟΞΌΞ΅Ξ―ΟΞ΅ Ξ±ΟΟΟΟΞ±ΟΞ· ΞΞΞ ΟΞ΅ ΟΟΞΏΞ»Ξ΅Ξ―Ξ± ΟΞ·Ο ΞΞ΅Ξ½ΞΉΞΊΞ®Ο Ξ΅ΞΊΟ/ΟΞ·Ο, ΟΟΞΌΟΞ»Ξ·ΟΟΟΟΞ΅ ΟΞ· <a href='aposp2013.doc'>ΟΟΟΞΌΞ±</a> ΞΊΞ±ΞΉ ΟΟΞ΅Ξ―Ξ»ΟΞ΅ ΟΞ·Ξ½ ΟΟΞΏ $av_foreas </small></div></td></div></tr>";
             //echo "</div>";
             
-            echo "<tr height=20></tr><tr><td colspan=7><center>Σοβαροί λόγοι υγείας</center></td></tr>";
-            echo "<tr><td colspan=2><center>Ποσοστό αναπηρίας του ιδίου, παιδιών ή συζύγου</center></td><td colspan=5>";
+            echo "<tr height=20></tr><tr><td colspan=7><center>Ξ£ΞΏΞ²Ξ±ΟΞΏΞ― Ξ»ΟΞ³ΞΏΞΉ ΟΞ³Ξ΅Ξ―Ξ±Ο</center></td></tr>";
+            echo "<tr><td colspan=2><center>Ξ ΞΏΟΞΏΟΟΟ Ξ±Ξ½Ξ±ΟΞ·ΟΞ―Ξ±Ο ΟΞΏΟ ΞΉΞ΄Ξ―ΞΏΟ, ΟΞ±ΞΉΞ΄ΞΉΟΞ½ Ξ® ΟΟΞΆΟΞ³ΞΏΟ</center></td><td colspan=5>";
             cmbYgeia_edit($ygeia);
             echo "</td></tr>";
-            echo "<tr><td colspan=2><center>Ποσοστό αναπηρίας Γονέων</center></td><td colspan=5>";
+            echo "<tr><td colspan=2><center>Ξ ΞΏΟΞΏΟΟΟ Ξ±Ξ½Ξ±ΟΞ·ΟΞ―Ξ±Ο ΞΞΏΞ½Ξ­ΟΞ½</center></td><td colspan=5>";
             cmbYgeia_g_edit($ygeia_g);
             echo "</td></tr>";
-            echo "<tr><td colspan=2><center>Ποσοστό αναπηρίας Αδελφών</center></td><td colspan=5>";
+            echo "<tr><td colspan=2><center>Ξ ΞΏΟΞΏΟΟΟ Ξ±Ξ½Ξ±ΟΞ·ΟΞ―Ξ±Ο ΞΞ΄Ξ΅Ξ»ΟΟΞ½</center></td><td colspan=5>";
             cmbYgeia_a_edit($ygeia_a);
             echo "</td></tr>";
             if ($eksw)
-                echo "<tr><td colspan=2><center>Θεραπεία για εξωσωματική γονιμοποίηση</center></td><td colspan=5><input type='checkbox' name='eksw' value='1' checked></td></tr>";
+                echo "<tr><td colspan=2><center>ΞΞ΅ΟΞ±ΟΞ΅Ξ―Ξ± Ξ³ΞΉΞ± Ξ΅ΞΎΟΟΟΞΌΞ±ΟΞΉΞΊΞ® Ξ³ΞΏΞ½ΞΉΞΌΞΏΟΞΏΞ―Ξ·ΟΞ·</center></td><td colspan=5><input type='checkbox' name='eksw' value='1' checked></td></tr>";
             else
-                echo "<tr><td colspan=2><center>Θεραπεία για εξωσωματική γονιμοποίηση</center></td><td colspan=5><input type='checkbox' name='eksw' value='1'></td></tr>";
-            echo "<tr height=20></tr><tr><td colspan=2>Σχόλια - Παρατηρήσεις</td><td colspan=5><textarea cols=60 name='comments' >$comments</textarea></td></tr>";
+                echo "<tr><td colspan=2><center>ΞΞ΅ΟΞ±ΟΞ΅Ξ―Ξ± Ξ³ΞΉΞ± Ξ΅ΞΎΟΟΟΞΌΞ±ΟΞΉΞΊΞ® Ξ³ΞΏΞ½ΞΉΞΌΞΏΟΞΏΞ―Ξ·ΟΞ·</center></td><td colspan=5><input type='checkbox' name='eksw' value='1'></td></tr>";
+            echo "<tr height=20></tr><tr><td colspan=2>Ξ£ΟΟΞ»ΞΉΞ± - Ξ Ξ±ΟΞ±ΟΞ·ΟΞ®ΟΞ΅ΞΉΟ</td><td colspan=5><textarea cols=60 name='comments' >$comments</textarea></td></tr>";
             
-            $blabla = "Δηλώνω υπεύθυνα ότι δεν έχω οριστεί στέλεχος εκπαίδευσης (λ.χ. προϊστάμενος/μένη ολιγοθέσιας σχολικής μονάδας, διευθυντής/ντρια σχολ. μονάδας) και ότι δεν υπηρετώ σε θέση με θητεία που λήγει μετά τις 31-08-$av_etos.";
+            $blabla = "ΞΞ·Ξ»ΟΞ½Ο ΟΟΞ΅ΟΞΈΟΞ½Ξ± ΟΟΞΉ Ξ΄Ξ΅Ξ½ Ξ­ΟΟ ΞΏΟΞΉΟΟΞ΅Ξ― ΟΟΞ­Ξ»Ξ΅ΟΞΏΟ Ξ΅ΞΊΟΞ±Ξ―Ξ΄Ξ΅ΟΟΞ·Ο (Ξ».Ο. ΟΟΞΏΟΟΟΞ¬ΞΌΞ΅Ξ½ΞΏΟ/ΞΌΞ­Ξ½Ξ· ΞΏΞ»ΞΉΞ³ΞΏΞΈΞ­ΟΞΉΞ±Ο ΟΟΞΏΞ»ΞΉΞΊΞ®Ο ΞΌΞΏΞ½Ξ¬Ξ΄Ξ±Ο, Ξ΄ΞΉΞ΅ΟΞΈΟΞ½ΟΞ®Ο/Ξ½ΟΟΞΉΞ± ΟΟΞΏΞ». ΞΌΞΏΞ½Ξ¬Ξ΄Ξ±Ο) ΞΊΞ±ΞΉ ΟΟΞΉ Ξ΄Ξ΅Ξ½ ΟΟΞ·ΟΞ΅ΟΟ ΟΞ΅ ΞΈΞ­ΟΞ· ΞΌΞ΅ ΞΈΞ·ΟΞ΅Ξ―Ξ± ΟΞΏΟ Ξ»Ξ®Ξ³Ξ΅ΞΉ ΞΌΞ΅ΟΞ¬ ΟΞΉΟ 31-08-$av_etos.";
             if ($ypdil)
                 echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='ypdil' value='1' checked>$blabla</td></tr>";
             else
                 echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='ypdil' value='1'>$blabla</td></tr>";
-            echo "<tr><td colspan=7><small>Τελευταία ενημέρωση: ". date("d-m-Y, H:i:s", strtotime(mysql_result($result, 0, "updated")))."</small></td></tr>";
+            echo "<tr><td colspan=7><small>Ξ€Ξ΅Ξ»Ξ΅ΟΟΞ±Ξ―Ξ± Ξ΅Ξ½Ξ·ΞΌΞ­ΟΟΟΞ·: ". date("d-m-Y, H:i:s", strtotime($row['updated']))."</small></td></tr>";
             echo "<input type='hidden' name = 'id' value='$id'>";
             echo "<input type='hidden' name = 'part' value='1'>";
-            echo "<tr><td colspan=7><center><INPUT TYPE='submit' name='save' VALUE='Αποθήκευση'></center></td></tr>";
-            echo "<tr><td colspan=7><center><INPUT TYPE='submit' name='next' VALUE='Συνέχεια στο Βήμα 2'></center></td></tr>";
+            echo "<tr><td colspan=7><center><INPUT TYPE='submit' name='save' VALUE='ΞΟΞΏΞΈΞ®ΞΊΞ΅ΟΟΞ·'></center></td></tr>";
+            echo "<tr><td colspan=7><center><INPUT TYPE='submit' name='next' VALUE='Ξ£ΟΞ½Ξ­ΟΞ΅ΞΉΞ± ΟΟΞΏ ΞΞ®ΞΌΞ± 2'></center></td></tr>";
             echo "</form>";
-            //echo "<tr><td colspan=7><center><form action='index2.php' method='POST'><input type='submit' value='Επόμενη σελίδα'></form></center></td></tr>";            
-            //echo "<tr><td colspan=4><center><INPUT TYPE='submit' onclick='return myaction()' name='submit' VALUE='Οριστική Υποβολή'></center></td>\n";
+            //echo "<tr><td colspan=7><center><form action='index2.php' method='POST'><input type='submit' value='ΞΟΟΞΌΞ΅Ξ½Ξ· ΟΞ΅Ξ»Ξ―Ξ΄Ξ±'></form></center></td></tr>";            
+            //echo "<tr><td colspan=4><center><INPUT TYPE='submit' onclick='return myaction()' name='submit' VALUE='ΞΟΞΉΟΟΞΉΞΊΞ® Ξ₯ΟΞΏΞ²ΞΏΞ»Ξ®'></center></td>\n";
             echo "</tr>\n";
             echo "</form>";
-            echo "<tr><td colspan=7><center><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' value='Έξοδος'></form></center></td></tr>";
+            echo "<tr><td colspan=7><center><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' value='ΞΞΎΞΏΞ΄ΞΏΟ'></form></center></td></tr>";
         }
         echo "</table>";
         echo "</center>";
@@ -377,71 +365,71 @@
     {
         echo "<center>";        
         echo "<table id=\"mytbl\" class=\"imagetable\" border=\"2\">\n";
-        echo "<thead><th colspan=7>Φόρμα υποβολής στοιχείων</th></thead>";
-        echo "<tr><td colspan=2>Ονοματεπώνυμο Εκπ/κού:</td><td colspan=5>".$name." ".$surname."</td></tr>";
-        echo "<tr><td colspan=2>Πατρώνυμο: </td><td colspan=5>".$patrwnymo."</td></tr>";
-        echo "<tr><td colspan=2>Κλάδος: </td><td colspan=5>".$klados."</td></tr>";
+        echo "<thead><th colspan=7>Ξ¦ΟΟΞΌΞ± ΟΟΞΏΞ²ΞΏΞ»Ξ®Ο ΟΟΞΏΞΉΟΞ΅Ξ―ΟΞ½</th></thead>";
+        echo "<tr><td colspan=2>ΞΞ½ΞΏΞΌΞ±ΟΞ΅ΟΟΞ½ΟΞΌΞΏ ΞΞΊΟ/ΞΊΞΏΟ:</td><td colspan=5>".$name." ".$surname."</td></tr>";
+        echo "<tr><td colspan=2>Ξ Ξ±ΟΟΟΞ½ΟΞΌΞΏ: </td><td colspan=5>".$patrwnymo."</td></tr>";
+        echo "<tr><td colspan=2>ΞΞ»Ξ¬Ξ΄ΞΏΟ: </td><td colspan=5>".$klados."</td></tr>";
         echo "<tr><td colspan=2>A.M.: </td><td colspan=5>".$am."</td></tr>";
-        echo "<tr><td colspan=2>Οργανική θέση: </td><td colspan=5>".$organ."</td></tr>";
-        echo "<tr><td colspan=2>Συνολική υπηρεσία: <small>(Έως $av_endofyear)</small></td><td colspan=5>$eth Έτη, $mhnes Μήνες, $hmeres Ημέρες</td></tr>";
+        echo "<tr><td colspan=2>ΞΟΞ³Ξ±Ξ½ΞΉΞΊΞ® ΞΈΞ­ΟΞ·: </td><td colspan=5>".$organ."</td></tr>";
+        echo "<tr><td colspan=2>Ξ£ΟΞ½ΞΏΞ»ΞΉΞΊΞ® ΟΟΞ·ΟΞ΅ΟΞ―Ξ±: <small>(ΞΟΟ $av_endofyear)</small></td><td colspan=5>$eth ΞΟΞ·, $mhnes ΞΞ®Ξ½Ξ΅Ο, $hmeres ΞΞΌΞ­ΟΞ΅Ο</td></tr>";
         
         echo "<form id='src' name='src' action='save.php' method='POST'>\n";
-        echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='org_eid' value='1'>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
-        echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='aitisi' value='1'>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
-        echo "<tr height=20></tr><tr><td colspan=7><center>Οικογενειακή Κατάσταση</center></td></tr>";
-        echo "<tr><td>Γάμος</td><td>";
+        echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='org_eid' value='1'>ΞΟΟ ΞΏΟΞ³Ξ±Ξ½ΞΉΞΊΞ® ΟΟΞ·Ξ½ Ξ΅ΞΉΞ΄ΞΉΞΊΞ® Ξ±Ξ³ΟΞ³Ξ® (ΟΞ΅ ΞΞΉΞ΄ΞΉΞΊΟ ΟΟΞΏΞ»Ξ΅Ξ―ΞΏ Ξ® ΟΞΌΞ®ΞΌΞ± Ξ­Ξ½ΟΞ±ΞΎΞ·Ο)</td></tr>";
+        echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='aitisi' value='1'>Ξ₯ΟΞ­Ξ²Ξ±Ξ»Ξ± Ξ±Ξ―ΟΞ·ΟΞ· Ξ²Ξ΅Ξ»ΟΞ―ΟΟΞ·Ο ΞΈΞ­ΟΞ·Ο / ΞΏΟΞΉΟΟΞΉΞΊΞ®Ο ΟΞΏΟΞΏΞΈΞ­ΟΞ·ΟΞ·Ο ΟΞΏ $av_etos</td></tr>";
+        echo "<tr height=20></tr><tr><td colspan=7><center>ΞΞΉΞΊΞΏΞ³Ξ΅Ξ½Ξ΅ΞΉΞ±ΞΊΞ® ΞΞ±ΟΞ¬ΟΟΞ±ΟΞ·</center></td></tr>";
+        echo "<tr><td>ΞΞ¬ΞΌΞΏΟ</td><td>";
         cmbGamos();
-        echo "</td><td>Παιδιά</td><td>";
+        echo "</td><td>Ξ Ξ±ΞΉΞ΄ΞΉΞ¬</td><td>";
         cmbPaidia();
-        echo "</td><td>Δήμος</td><td>";
+        echo "</td><td>ΞΞ®ΞΌΞΏΟ</td><td>";
         echo "<input size=30 name='dhmos_anhk'>";
         echo "</td><td></td></tr>";
-        echo "<tr height=20></tr><tr><td colspan=7><center>Εντοπιότητα</center></td></tr>";
-        echo "<tr><td colspan=2>Δήμος της Περιφερειακής Ενότητας $av_nomos που έχω εντοπιότητα</td><td colspan=5>";
+        echo "<tr height=20></tr><tr><td colspan=7><center>ΞΞ½ΟΞΏΟΞΉΟΟΞ·ΟΞ±</center></td></tr>";
+        echo "<tr><td colspan=2>ΞΞ®ΞΌΞΏΟ ΟΞ·Ο Ξ Ξ΅ΟΞΉΟΞ΅ΟΞ΅ΞΉΞ±ΞΊΞ®Ο ΞΞ½ΟΟΞ·ΟΞ±Ο $av_nomos ΟΞΏΟ Ξ­ΟΟ Ξ΅Ξ½ΟΞΏΟΞΉΟΟΞ·ΟΞ±</td><td colspan=5>";
         cmbDimos('ent',$mysqlconnection);
         echo "</td></tr>";
-        echo "<tr height=20></tr><tr><td colspan=7><center>Συνυπηρέτηση</center></td></tr>";
-        echo "<tr><td colspan=2>Δήμος της Περιφερειακής Ενότητας $av_nomos που έχω συνυπηρέτηση</td><td colspan=5>";
+        echo "<tr height=20></tr><tr><td colspan=7><center>Ξ£ΟΞ½ΟΟΞ·ΟΞ­ΟΞ·ΟΞ·</center></td></tr>";
+        echo "<tr><td colspan=2>ΞΞ®ΞΌΞΏΟ ΟΞ·Ο Ξ Ξ΅ΟΞΉΟΞ΅ΟΞ΅ΞΉΞ±ΞΊΞ®Ο ΞΞ½ΟΟΞ·ΟΞ±Ο $av_nomos ΟΞΏΟ Ξ­ΟΟ ΟΟΞ½ΟΟΞ·ΟΞ­ΟΞ·ΟΞ·</td><td colspan=5>";
         cmbDimos('syn',$mysqlconnection);
         echo "</td></tr>";
-        echo "<tr height=20></tr><tr><td colspan=2><center>Ειδική Κατηγορία (κατά προτεραιότητα)</center></td><td colspan=5><input type='checkbox' name='eidikh' value='1'>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
+        echo "<tr height=20></tr><tr><td colspan=2><center>ΞΞΉΞ΄ΞΉΞΊΞ® ΞΞ±ΟΞ·Ξ³ΞΏΟΞ―Ξ± (ΞΊΞ±ΟΞ¬ ΟΟΞΏΟΞ΅ΟΞ±ΞΉΟΟΞ·ΟΞ±)</center></td><td colspan=5><input type='checkbox' name='eidikh' value='1'>ΞΟΞΉΞΈΟΞΌΟ Ξ½Ξ± ΟΟΞ±ΟΞΈΟ ΟΞ΅ Ξ΅ΞΉΞ΄ΞΉΞΊΞ® ΞΊΞ±ΟΞ·Ξ³ΞΏΟΞ―Ξ± Ξ±ΟΞΏΟΟΞ¬ΟΞ΅ΟΞ½</td></tr>";
 
-            echo "<tr height=20></tr><tr><td colspan=2><center>Επιθυμώ απόσπαση</center></td><td colspan=5><div name='main'><input type='checkbox' id='apospash' name='apospash' value='1'>Απο τη Γενική στην Ειδική Αγωγή</div></td></tr>";
+            echo "<tr height=20></tr><tr><td colspan=2><center>ΞΟΞΉΞΈΟΞΌΟ Ξ±ΟΟΟΟΞ±ΟΞ·</center></td><td colspan=5><div name='main'><input type='checkbox' id='apospash' name='apospash' value='1'>ΞΟΞΏ ΟΞ· ΞΞ΅Ξ½ΞΉΞΊΞ® ΟΟΞ·Ξ½ ΞΞΉΞ΄ΞΉΞΊΞ® ΞΞ³ΟΞ³Ξ®</div></td></tr>";
             $style = "display:none;";
             echo "<tr><td colspan=2></td><td colspan=5><div class='other' name='other' id='other' style='$style'>";
-            echo "α) Διδακτορικό Ειδ.Αγωγής<input type='checkbox' name='didakt' value='1'><br>";
-            echo "β) Μεταπτυχιακό Ειδ.Αγωγής<input type='checkbox' name='metapt' value='1'><br>";
-            echo "γ) Διδασκαλείο Ειδ.Αγωγής<input type='checkbox' name='didask' value='1'><br>";
-            echo "δ) Πτυχίο παιδαγωγικών τμημάτων με αντικείμενο στην ειδική αγωγή<input type='checkbox' name='paidag' value='1'><br>";
-            echo "ε) Προϋπηρεσία στην Ειδ.Αγωγή: <input size=2 name='eth'> Έτη,<input size=2 name='mhnes'> Μήνες,<input size=2 name='hmeres'> Ημέρες<br>";
-            echo "στ) Άλλο προσόν (π.χ. Braille, νοηματική): <input size=25 name='allo' value=$allo>";
-            echo "<br><small>Αν επιθυμείτε απόσπαση ΚΑΙ σε σχολεία της Γενικής εκπ/σης, συμπληρώστε τη <a href='aposp2013.doc'>φόρμα</a> και στείλτε την στο $av_foreas </small></div></td></div></tr>";
+            echo "Ξ±) ΞΞΉΞ΄Ξ±ΞΊΟΞΏΟΞΉΞΊΟ ΞΞΉΞ΄.ΞΞ³ΟΞ³Ξ®Ο<input type='checkbox' name='didakt' value='1'><br>";
+            echo "Ξ²) ΞΞ΅ΟΞ±ΟΟΟΟΞΉΞ±ΞΊΟ ΞΞΉΞ΄.ΞΞ³ΟΞ³Ξ®Ο<input type='checkbox' name='metapt' value='1'><br>";
+            echo "Ξ³) ΞΞΉΞ΄Ξ±ΟΞΊΞ±Ξ»Ξ΅Ξ―ΞΏ ΞΞΉΞ΄.ΞΞ³ΟΞ³Ξ®Ο<input type='checkbox' name='didask' value='1'><br>";
+            echo "Ξ΄) Ξ ΟΟΟΞ―ΞΏ ΟΞ±ΞΉΞ΄Ξ±Ξ³ΟΞ³ΞΉΞΊΟΞ½ ΟΞΌΞ·ΞΌΞ¬ΟΟΞ½ ΞΌΞ΅ Ξ±Ξ½ΟΞΉΞΊΞ΅Ξ―ΞΌΞ΅Ξ½ΞΏ ΟΟΞ·Ξ½ Ξ΅ΞΉΞ΄ΞΉΞΊΞ® Ξ±Ξ³ΟΞ³Ξ®<input type='checkbox' name='paidag' value='1'><br>";
+            echo "Ξ΅) Ξ ΟΞΏΟΟΞ·ΟΞ΅ΟΞ―Ξ± ΟΟΞ·Ξ½ ΞΞΉΞ΄.ΞΞ³ΟΞ³Ξ®: <input size=2 name='eth'> ΞΟΞ·,<input size=2 name='mhnes'> ΞΞ®Ξ½Ξ΅Ο,<input size=2 name='hmeres'> ΞΞΌΞ­ΟΞ΅Ο<br>";
+            echo "ΟΟ) ΞΞ»Ξ»ΞΏ ΟΟΞΏΟΟΞ½ (Ο.Ο. Braille, Ξ½ΞΏΞ·ΞΌΞ±ΟΞΉΞΊΞ®): <input size=25 name='allo' value=$allo>";
+            echo "<br><small>ΞΞ½ Ξ΅ΟΞΉΞΈΟΞΌΞ΅Ξ―ΟΞ΅ Ξ±ΟΟΟΟΞ±ΟΞ· ΞΞΞ ΟΞ΅ ΟΟΞΏΞ»Ξ΅Ξ―Ξ± ΟΞ·Ο ΞΞ΅Ξ½ΞΉΞΊΞ®Ο Ξ΅ΞΊΟ/ΟΞ·Ο, ΟΟΞΌΟΞ»Ξ·ΟΟΟΟΞ΅ ΟΞ· <a href='aposp2013.doc'>ΟΟΟΞΌΞ±</a> ΞΊΞ±ΞΉ ΟΟΞ΅Ξ―Ξ»ΟΞ΅ ΟΞ·Ξ½ ΟΟΞΏ $av_foreas </small></div></td></div></tr>";
         
-        echo "<tr height=20></tr><tr><td colspan=7><center>Σοβαροί λόγοι υγείας</center></td></tr>";
-        echo "<tr><td colspan=2><center>Ποσοστό αναπηρίας του ιδίου, παιδιών ή συζύγου</center></td><td colspan=5>";
+        echo "<tr height=20></tr><tr><td colspan=7><center>Ξ£ΞΏΞ²Ξ±ΟΞΏΞ― Ξ»ΟΞ³ΞΏΞΉ ΟΞ³Ξ΅Ξ―Ξ±Ο</center></td></tr>";
+        echo "<tr><td colspan=2><center>Ξ ΞΏΟΞΏΟΟΟ Ξ±Ξ½Ξ±ΟΞ·ΟΞ―Ξ±Ο ΟΞΏΟ ΞΉΞ΄Ξ―ΞΏΟ, ΟΞ±ΞΉΞ΄ΞΉΟΞ½ Ξ® ΟΟΞΆΟΞ³ΞΏΟ</center></td><td colspan=5>";
         cmbYgeia_edit(0);
         echo "</td></tr>";
-        echo "<tr><td colspan=2><center>Ποσοστό αναπηρίας Γονέων</center></td><td colspan=5>";
+        echo "<tr><td colspan=2><center>Ξ ΞΏΟΞΏΟΟΟ Ξ±Ξ½Ξ±ΟΞ·ΟΞ―Ξ±Ο ΞΞΏΞ½Ξ­ΟΞ½</center></td><td colspan=5>";
         cmbYgeia_g_edit(0);
         echo "</td></tr>";
-        echo "<tr><td colspan=2><center>Ποσοστό αναπηρίας Αδελφών</center></td><td colspan=5>";
+        echo "<tr><td colspan=2><center>Ξ ΞΏΟΞΏΟΟΟ Ξ±Ξ½Ξ±ΟΞ·ΟΞ―Ξ±Ο ΞΞ΄Ξ΅Ξ»ΟΟΞ½</center></td><td colspan=5>";
         cmbYgeia_a_edit(0);
         echo "</td></tr>";
-        echo "<tr><td colspan=2><center>Θεραπεία για εξωσωματική γονιμοποίηση</center></td><td colspan=5><input type='checkbox' name='eksw' value='1'></td></tr>";
-        echo "<tr height=20></tr><tr><td colspan=2>Σχόλια - Παρατηρήσεις</td><td colspan=5><textarea cols=60 name='comments' value='$comments'></textarea></td></tr>";        
-        $blabla = "Δηλώνω υπεύθυνα ότι δεν έχω οριστεί στέλεχος εκπαίδευσης (λ.χ. προϊστάμενος/μένη ολιγοθέσιας σχολικής μονάδας, διευθυντής/ντρια σχολ. μονάδας) και ότι δεν υπηρετώ σε θέση με θητεία που λήγει μετά τις 31-08-$av_etos.";
+        echo "<tr><td colspan=2><center>ΞΞ΅ΟΞ±ΟΞ΅Ξ―Ξ± Ξ³ΞΉΞ± Ξ΅ΞΎΟΟΟΞΌΞ±ΟΞΉΞΊΞ® Ξ³ΞΏΞ½ΞΉΞΌΞΏΟΞΏΞ―Ξ·ΟΞ·</center></td><td colspan=5><input type='checkbox' name='eksw' value='1'></td></tr>";
+        echo "<tr height=20></tr><tr><td colspan=2>Ξ£ΟΟΞ»ΞΉΞ± - Ξ Ξ±ΟΞ±ΟΞ·ΟΞ®ΟΞ΅ΞΉΟ</td><td colspan=5><textarea cols=60 name='comments' value='$comments'></textarea></td></tr>";        
+        $blabla = "ΞΞ·Ξ»ΟΞ½Ο ΟΟΞ΅ΟΞΈΟΞ½Ξ± ΟΟΞΉ Ξ΄Ξ΅Ξ½ Ξ­ΟΟ ΞΏΟΞΉΟΟΞ΅Ξ― ΟΟΞ­Ξ»Ξ΅ΟΞΏΟ Ξ΅ΞΊΟΞ±Ξ―Ξ΄Ξ΅ΟΟΞ·Ο (Ξ».Ο. ΟΟΞΏΟΟΟΞ¬ΞΌΞ΅Ξ½ΞΏΟ/ΞΌΞ­Ξ½Ξ· ΞΏΞ»ΞΉΞ³ΞΏΞΈΞ­ΟΞΉΞ±Ο ΟΟΞΏΞ»ΞΉΞΊΞ®Ο ΞΌΞΏΞ½Ξ¬Ξ΄Ξ±Ο, Ξ΄ΞΉΞ΅ΟΞΈΟΞ½ΟΞ®Ο/Ξ½ΟΟΞΉΞ± ΟΟΞΏΞ». ΞΌΞΏΞ½Ξ¬Ξ΄Ξ±Ο) ΞΊΞ±ΞΉ ΟΟΞΉ Ξ΄Ξ΅Ξ½ ΟΟΞ·ΟΞ΅ΟΟ ΟΞ΅ ΞΈΞ­ΟΞ· ΞΌΞ΅ ΞΈΞ·ΟΞ΅Ξ―Ξ± ΟΞΏΟ Ξ»Ξ®Ξ³Ξ΅ΞΉ ΞΌΞ΅ΟΞ¬ ΟΞΉΟ 31-08-$av_etos.";
         echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='ypdil' value='1'>$blabla</td></tr>";
-        echo "<tr height=20><tr><tr><td colspan=7><small>Αποθηκεύστε για να μπορέσετε να προχωρήσετε στην υποβολή προτιμήσεων.</small></td></tr>";
+        echo "<tr height=20><tr><tr><td colspan=7><small>ΞΟΞΏΞΈΞ·ΞΊΞ΅ΟΟΟΞ΅ Ξ³ΞΉΞ± Ξ½Ξ± ΞΌΟΞΏΟΞ­ΟΞ΅ΟΞ΅ Ξ½Ξ± ΟΟΞΏΟΟΟΞ®ΟΞ΅ΟΞ΅ ΟΟΞ·Ξ½ ΟΟΞΏΞ²ΞΏΞ»Ξ® ΟΟΞΏΟΞΉΞΌΞ®ΟΞ΅ΟΞ½.</small></td></tr>";
         echo "<input type='hidden' name = 'id' value='$id'>";
         echo "<input type='hidden' name = 'part' value='1'>";
-        echo "<tr><td colspan=7><center><INPUT TYPE='submit' name='save' VALUE='Αποθήκευση'></center></td></tr>";
-        echo "<tr><td colspan=7><center><INPUT TYPE='submit' name='submit' VALUE='Συνέχεια στο Βήμα 2' disabled></center></td></tr>";
+        echo "<tr><td colspan=7><center><INPUT TYPE='submit' name='save' VALUE='ΞΟΞΏΞΈΞ®ΞΊΞ΅ΟΟΞ·'></center></td></tr>";
+        echo "<tr><td colspan=7><center><INPUT TYPE='submit' name='submit' VALUE='Ξ£ΟΞ½Ξ­ΟΞ΅ΞΉΞ± ΟΟΞΏ ΞΞ®ΞΌΞ± 2' disabled></center></td></tr>";
         echo "</form>";
-        echo "<tr><td colspan=7><center><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' value='Έξοδος'></form></center></td></tr>";
+        echo "<tr><td colspan=7><center><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' value='ΞΞΎΞΏΞ΄ΞΏΟ'></form></center></td></tr>";
         echo "</table>";
         echo "</center>";
     }
-     mysql_close();   
+     mysqli_close($mysqlconnection);   
     }
 ?>
   </div>
