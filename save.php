@@ -7,7 +7,7 @@
   <body> 
 <?php
   $error_found = 0;
-  Require "config.php";
+  require_once "config.php";
   require_once 'functions.php';
       
   $mysqlconnection = mysqli_connect($db_host, $db_user, $db_password, $db_name);
@@ -133,7 +133,7 @@
         $ret = rtrim($ret,", ");
         echo $ret;
     }
-	// if doubles
+    // if doubles
     if ($dbl)
     {
         $error_found = 1;
@@ -159,26 +159,9 @@
         echo "<form action='index2.php'><input type='submit' value='Επιστροφή'></form>";
     }
 
-    $p1 = $_POST['p1'] ? getSchoolcode($_POST['p1'],$mysqlconnection) : 0;
-    $p2 = $_POST['p2'] ? getSchoolcode($_POST['p2'],$mysqlconnection) : 0;
-    $p3 = $_POST['p3'] ? getSchoolcode($_POST['p3'],$mysqlconnection) : 0;
-    $p4 = $_POST['p4'] ? getSchoolcode($_POST['p4'],$mysqlconnection) : 0;
-    $p5 = $_POST['p5'] ? getSchoolcode($_POST['p5'],$mysqlconnection) : 0;
-    $p6 = $_POST['p6'] ? getSchoolcode($_POST['p6'],$mysqlconnection) : 0;
-    $p7 = $_POST['p7'] ? getSchoolcode($_POST['p7'],$mysqlconnection) : 0;
-    $p8 = $_POST['p8'] ? getSchoolcode($_POST['p8'],$mysqlconnection) : 0;
-    $p9 = $_POST['p9'] ? getSchoolcode($_POST['p9'],$mysqlconnection) : 0;
-    $p10 = $_POST['p10'] ? getSchoolcode($_POST['p10'],$mysqlconnection) : 0;
-    $p11 = $_POST['p11'] ? getSchoolcode($_POST['p11'],$mysqlconnection) : 0;
-    $p12 = $_POST['p12'] ? getSchoolcode($_POST['p12'],$mysqlconnection) : 0;
-    $p13 = $_POST['p13'] ? getSchoolcode($_POST['p13'],$mysqlconnection) : 0;
-    $p14 = $_POST['p14'] ? getSchoolcode($_POST['p14'],$mysqlconnection) : 0;
-    $p15 = $_POST['p15'] ? getSchoolcode($_POST['p15'],$mysqlconnection) : 0;
-    $p16 = $_POST['p16'] ? getSchoolcode($_POST['p16'],$mysqlconnection) : 0;
-    $p17 = $_POST['p17'] ? getSchoolcode($_POST['p17'],$mysqlconnection) : 0;
-    $p18 = $_POST['p18'] ? getSchoolcode($_POST['p18'],$mysqlconnection) : 0;
-    $p19 = $_POST['p19'] ? getSchoolcode($_POST['p19'],$mysqlconnection) : 0;
-    $p20 = $_POST['p20'] ? getSchoolcode($_POST['p20'],$mysqlconnection) : 0;
+    for ($i = 1; $i < 21; $i++) {
+      ${'p'.$i} = $_POST['p'.$i] ? getSchoolcode($_POST['p'.$i], $mysqlconnection) : 0;
+    }
 
     $emp_id = $_POST['id'];
 
@@ -220,15 +203,15 @@
     }
     mysqli_close($mysqlconnection);
 
-        if (!$error_found)
-            echo "  <meta http-equiv=\"refresh\" content=\"0; URL=index2.php\">";
-        else
-            exit;
+    if (!$error_found)
+        echo "  <meta http-equiv=\"refresh\" content=\"0; URL=index2.php\">";
+    else
+        exit;
 
     if (isset($_POST['save']))
-           echo "  <meta http-equiv=\"refresh\" content=\"0; URL=index2.php\">";
-        else
-           echo "  <meta http-equiv=\"refresh\" content=\"0; URL=index.php\">";
+        echo "  <meta http-equiv=\"refresh\" content=\"0; URL=index2.php\">";
+    else
+        echo "  <meta http-equiv=\"refresh\" content=\"0; URL=index.php\">";
 }
 echo "</body>";
 echo "</html>";

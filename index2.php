@@ -17,6 +17,7 @@
   <?php require_once('head.php'); ?>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+  <body>
 <?php
   $timeout = 0;
 
@@ -55,8 +56,6 @@
 <?php
   if ($loggedin)
   {
-    
-
     $mysqlconnection = mysqli_connect($db_host, $db_user, $db_password,$db_name);
     mysqli_set_charset($mysqlconnection,"utf8");
   
@@ -122,8 +121,8 @@
                         document.getElementById("null_btn").value = "Αρνητική Δήλωση";
                     
                 }
-        </script>
-        <?php
+    </script>
+    <?php
     //check if employee has submitted aitisi
     $query = "SELECT * from $av_ait WHERE emp_id=$id";
     $result = mysqli_query($mysqlconnection, $query);
@@ -137,31 +136,14 @@
     // if user has already saved an application
     if ($has_aitisi)
     {
-        $s1 = getSchooledc($row['p1'], $mysqlconnection);
-        $s2 = getSchooledc($row['p2'], $mysqlconnection);
-        $s3 = getSchooledc($row['p3'], $mysqlconnection);
-        $s4 = getSchooledc($row['p4'], $mysqlconnection);
-        $s5 = getSchooledc($row['p5'], $mysqlconnection);
-        $s6 = getSchooledc($row['p6'], $mysqlconnection);
-        $s7 = getSchooledc($row['p7'], $mysqlconnection);
-        $s8 = getSchooledc($row['p8'], $mysqlconnection);
-        $s9 = getSchooledc($row['p9'], $mysqlconnection);
-        $s10 = getSchooledc($row['p10'], $mysqlconnection);
-        $s11 = getSchooledc($row['p11'], $mysqlconnection);
-        $s12 = getSchooledc($row['p12'], $mysqlconnection);
-        $s13 = getSchooledc($row['p13'], $mysqlconnection);
-        $s14 = getSchooledc($row['p14'], $mysqlconnection);
-        $s15 = getSchooledc($row['p15'], $mysqlconnection);
-        $s16 = getSchooledc($row['p16'], $mysqlconnection);
-        $s17 = getSchooledc($row['p17'], $mysqlconnection);
-        $s18 = getSchooledc($row['p18'], $mysqlconnection);
-        $s19 = getSchooledc($row['p19'], $mysqlconnection);
-        $s20 = getSchooledc($row['p20'], $mysqlconnection);
+          for ($i = 1; $i < 21; $i++) {
+            ${'s'.$i} = getSchooledc($row['p'.$i],$mysqlconnection);
+          }
         
-		// 26-07-2013: eksairesh gia genikh 2 eidikh agwgh
+        // 26-07-2013: eksairesh gia genikh 2 eidikh agwgh
         $apospash = $row['apospash'];
         if ($apospash == 1)
-            $omada = 0;
+          $omada = 0;
     }	
         if ($submitted)
             echo "<h3><center>Η αίτηση έχει υποβληθεί και δεν μπορείτε να την επεξεργαστείτε.</center></h3>";
@@ -184,31 +166,14 @@
         // if user has submitted
         if ($submitted)
         {
-            echo "<tr><td>1η προτίμηση</td><td>$s1</td></tr>\n";
-            echo "<tr><td>2η προτίμηση</td><td>$s2</td></tr>\n";
-            echo "<tr><td>3η προτίμηση</td><td>$s3</td></tr>\n";
-            echo "<tr><td>4η προτίμηση</td><td>$s4</td></tr>\n";
-            echo "<tr><td>5η προτίμηση</td><td>$s5</td></tr>\n";
-            echo "<tr><td>6η προτίμηση</td><td>$s6</td></tr>\n";
-            echo "<tr><td>7η προτίμηση</td><td>$s7</td></tr>\n";
-            echo "<tr><td>8η προτίμηση</td><td>$s8</td></tr>\n";
-            echo "<tr><td>9η προτίμηση</td><td>$s9</td></tr>\n";
-            echo "<tr><td>10η προτίμηση</td><td>$s10</td></tr>\n";
-            echo "<tr><td>11η προτίμηση</td><td>$s11</td></tr>\n";
-            echo "<tr><td>12η προτίμηση</td><td>$s12</td></tr>\n";
-            echo "<tr><td>13η προτίμηση</td><td>$s13</td></tr>\n";
-            echo "<tr><td>14η προτίμηση</td><td>$s14</td></tr>\n";
-            echo "<tr><td>15η προτίμηση</td><td>$s15</td></tr>\n";
-            echo "<tr><td>16η προτίμηση</td><td>$s16</td></tr>\n";
-            echo "<tr><td>17η προτίμηση</td><td>$s17</td></tr>\n";
-            echo "<tr><td>18η προτίμηση</td><td>$s18</td></tr>\n";
-            echo "<tr><td>19η προτίμηση</td><td>$s19</td></tr>\n";
-            echo "<tr><td>20η προτίμηση</td><td>$s20</td></tr>\n";
-            
+            for ($i = 1; $i < 21; $i++) {
+              echo "<tr><td>".$i."η προτίμηση</td><td>".${'s'.$i}."</td></tr>\n";
+            }
+          
             $sch_arr = array($s1, $s2, $s3, $s4, $s5, $s6, $s7, $s8, $s9, $s10, $s11, $s12, $s13, $s14, $s15, $s16, $s17, $s18, $s19, $s20);
-            echo "<tr><td colspan=4><small>Υποβλήθηκε στις: ".  date("d-m-Y, H:i:s", strtotime(mysql_result($result, 0, "updated")))."</small></td></tr>";
+            echo "<tr><td colspan=4><small>Υποβλήθηκε στις: ".  date("d-m-Y, H:i:s", strtotime($row['updated']))."</small></td></tr>";
             $ser = serialize($sch_arr);
-            echo "<tr><td colspan=4><center><form action='print.php' method='POST'><input type='hidden' name = 'cred_arr' value='$ser_cred'><input type='hidden' name = 'sch_arr' value='$ser'><input type='hidden' name = 'sql' value='$mysqlconnection'><input type='submit' value='Εκτύπωση'></form></center></td></tr>";
+            echo "<tr><td colspan=4><center><form action='print.php' method='POST'><input type='hidden' name = 'cred_arr' value='$ser_cred'><input type='hidden' name = 'sch_arr' value='$ser'><input type='submit' value='Εκτύπωση'></form></center></td></tr>";
             if ($av_type == 1)
                 echo "<tr><td colspan=4><center><form action='index.php'><input type='submit' value='Επιστροφή στο Βήμα 1'></form></center></td></tr>";
             echo "<tr><td colspan=4><center><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' value='Έξοδος'></form></center></td></tr>";
@@ -252,10 +217,11 @@
             echo "<tr><td colspan=4><center><INPUT TYPE='submit' name='save' VALUE='Αποθήκευση'></center></td></tr>";
             if ($av_type == 1)
                 echo "<tr><td colspan=4><center><INPUT TYPE='submit' name='prev' VALUE='Επιστροφή στο Βήμα 1'></center></td></tr>";
-			if (!$has_aitisi)
-				echo "<tr><td colspan=4><center><INPUT TYPE='submit' onclick='return myaction()' name='submit' VALUE='Οριστική Υποβολή' disabled></center></td>\n";
-			else
-				echo "<tr><td colspan=4><center><INPUT TYPE='submit' onclick='return myaction()' name='submit' VALUE='Οριστική Υποβολή'></center></td>\n";
+            if (!$has_aitisi){
+              echo "<tr><td colspan=4><center><INPUT TYPE='submit' onclick='return myaction()' name='submit' VALUE='Οριστική Υποβολή' disabled></center></td>\n";
+            } else {
+              echo "<tr><td colspan=4><center><INPUT TYPE='submit' onclick='return myaction()' name='submit' VALUE='Οριστική Υποβολή'></center></td>\n";
+            }
             echo "</tr>\n";
             echo "</form>";
             echo "<tr><td colspan=4><center><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' value='Έξοδος'></form></center></td></tr>";

@@ -37,48 +37,55 @@
 //  echo "<tr><td>A.M.: </td><td colspan=3>".$_SESSION['user']."</td></tr>";
 //  echo "<tr><td>Οργανική θέση: </td><td colspan=3>".$credarr[4]."</td></tr>";
     
+    $mysqlconnection = mysqli_connect($db_host, $db_user, $db_password,$db_name);
+    mysqli_set_charset($mysqlconnection,"utf8");
+    //user 
     $query = "SELECT * from $av_emp WHERE am = ".$_SESSION['user'];
-    $mysqlconnection = mysql_connect($db_host, $db_user, $db_password);
-    mysql_select_db($db_name, $mysqlconnection);
-    mysql_query("SET NAMES 'greek'", $mysqlconnection);
-    mysql_query("SET CHARACTER SET 'greek'", $mysqlconnection);
-    $result = mysql_query($query, $mysqlconnection);
-    $name = mysql_result($result, 0, "name");
-    $surname = mysql_result($result, 0, "surname");
-    $patrwnymo = mysql_result($result, 0, "patrwnymo");
-    $klados = mysql_result($result, 0, "klados");
-    $id = mysql_result($result, 0, "id");
+    $result = mysqli_query($mysqlconnection, $query);
+    $row = mysqli_fetch_assoc($result);
+    
+    $name = $row['name'];
+    $surname = $row['surname'];
+    $patrwnymo = $row['patrwnymo'];
+    $klados = $row['klados'];
+    $id = $row['id'];
     $am = $_SESSION['user'];
-    $organ = mysql_result($result, 0, "org");
-    $ethy = mysql_result($result, 0, "eth");
-    $mhnesy = mysql_result($result, 0, "mhnes");
-    $hmeresy = mysql_result($result, 0, "hmeres");
-
+    $organ = $row['org'];
+    $organ = getSchooledc($organ, $mysqlconnection);
+    $ethy = $row['eth'];
+    $mhnesy = $row['mhnes'];
+    $hmeresy = $row['hmeres'];
+    
+    // aithsh
     $query = "SELECT * from $av_ait WHERE emp_id=$id";
-    $result = mysql_query($query, $mysqlconnection);
-    $gamos = mysql_result($result, 0, "gamos");
-    $paidia = mysql_result($result, 0, "paidia");
-    $dhmos_anhk = mysql_result($result, 0, "dhmos_anhk");
-    $dhmos_ent = mysql_result($result, 0, "dhmos_ent");
-    $dhmos_syn = mysql_result($result, 0, "dhmos_syn");
-    $aitisi = mysql_result($result, 0, "aitisi");
-    $eidikh = mysql_result($result, 0, "eidikh");
-    $apospash = mysql_result($result, 0, "apospash");
-    $didakt = mysql_result($result, 0, "didakt");
-    $metapt = mysql_result($result, 0, "metapt");
-    $didask = mysql_result($result, 0, "didask");
-    $paidag = mysql_result($result, 0, "paidag");
-    $eth = mysql_result($result, 0, "eth");
-    $mhnes = mysql_result($result, 0, "mhnes");
-    $hmeres = mysql_result($result, 0, "hmeres");
-    $ygeia = mysql_result($result, 0, "ygeia");
-    $ygeia_g = mysql_result($result, 0, "ygeia_g");
-    $ygeia_a = mysql_result($result, 0, "ygeia_a");
-    $eksw = mysql_result($result, 0, "eksw");
-    $comments = mysql_result($result, 0, "comments");
-    $ypdil = mysql_result($result, 0, "ypdil");
-    $org_eid = mysql_result($result, 0, "org_eid");
-    $allo = mysql_result($result, 0, "allo");
+    $result = mysqli_query($mysqlconnection, $query);
+    $row = mysqli_fetch_assoc($result);
+    
+    $gamos = $row['gamos'];
+    $paidia = $row['paidia'];
+    $dhmos_anhk = $row['dhmos_anhk'];
+    $dhmos_anhk = str_replace(" ", "&nbsp;", $dhmos_anhk);
+    $dhmos_ent = $row['dhmos_ent'];
+    $dhmos_syn = $row['dhmos_syn'];
+    $aitisi = $row['aitisi'];
+    $eidikh = $row['eidikh'];
+    $apospash = $row['apospash'];
+    $didakt = $row['didakt'];
+    $metapt = $row['metapt'];
+    $didask = $row['didask'];
+    $paidag = $row['paidag'];
+    $eth = $row['eth'];
+    $mhnes = $row['mhnes'];
+    $hmeres = $row['hmeres'];
+    $ygeia = $row['ygeia'];
+    $ygeia_g = $row['ygeia_g'];
+    $ygeia_a = $row['ygeia_a'];
+    $eksw = $row['eksw'];
+    $comments = $row['comments'];
+    $ypdil = $row['ypdil'];
+    $org_eid = $row['org_eid'];
+    $allo = $row['allo'];
+   
     
     echo "<center>";
     echo "<table id=\"mytbl\" class=\"imagetable\" border=\"2\">\n";
@@ -87,7 +94,7 @@
     echo "<tr><td colspan=2>Πατρώνυμο: </td><td colspan=5>".$patrwnymo."</td></tr>";
     echo "<tr><td colspan=2>Κλάδος: </td><td colspan=5>".$klados."</td></tr>";
     echo "<tr><td colspan=2>A.M.: </td><td colspan=5>".$am."</td></tr>";
-    echo "<tr><td colspan=2>Οργανική θέση: </td><td colspan=5>".getSchooledc($organ, $mysqlconnection)."</td></tr>";    
+    echo "<tr><td colspan=2>Οργανική θέση: </td><td colspan=5>$organ</td></tr>";    
     if ($av_type == 1)
     {
 		echo "<tr><td colspan=2>Συνολική υπηρεσία: </td><td colspan=5>$ethy Έτη, $mhnesy Μήνες, $hmeresy Ημέρες</td></tr>";
@@ -137,7 +144,7 @@
         else
             echo "δ) Πτυχίο παιδαγωγικών τμημάτων με αντικείμενο στην ειδική αγωγή<input type='checkbox' name='paidag' value='1' disabled><br>";
         echo "ε) Προϋπηρεσία στην Ειδ.Αγωγή: $eth Έτη, $mhnes Μήνες, $hmeres Ημέρες<br>";
-        echo "στ) ¶λλο προσόν (π.χ. Braille, νοηματική): $allo";
+        echo "στ) Άλλο προσόν (π.χ. Braille, νοηματική): $allo";
         echo "</td></tr></div>";
 
         echo "<tr height=20></tr><tr><td colspan=7><center>Σοβαροί λόγοι υγείας</center></td></tr>";
@@ -177,7 +184,7 @@
   }
   //if (!$sum)
   //    echo "<tr><td colspan=2><center>ΑΡΝΗΤΙΚΗ ΔΗΛΩΣΗ</center></td></tr>\n";
-  echo "<tr><td colspan=7><small>Υποβλήθηκε στις: ".  date("d-m-Y, H:i:s", strtotime(mysql_result($result, 0, "submit_date")))."</small></td></tr>";
+  echo "<tr><td colspan=7><small>Υποβλήθηκε στις: ".  date("d-m-Y, H:i:s", strtotime($row['submit_date']))."</small></td></tr>";
   echo "<tr style='height:30px'><td colspan=7>&nbsp;</td></tr>";
   echo "<tr><td colspan=4></td><td align='center'>Ο/Η εκπαιδευτικός</td></tr>";
   echo "<tr style='height:60px'><td colspan=7>&nbsp;</td></tr>";

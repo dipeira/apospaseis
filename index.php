@@ -58,9 +58,7 @@
 <?php
     $mysqlconnection = mysqli_connect($db_host, $db_user, $db_password, $db_name);
     mysqli_set_charset($mysqlconnection,"utf8");
-    //mysqli_query("SET NAMES 'greek'", $mysqlconnection);
-    //mysqli_query("SET CHARACTER SET 'greek'", $mysqlconnection);
-  
+      
     echo "<center><h2>$av_title ($av_foreas)</h2></center>";
     
     $query = "SELECT * from $av_emp WHERE am = ".$_SESSION['user'];
@@ -254,7 +252,7 @@
             echo "<tr height=20></tr><tr><td colspan=2>Σχόλια - Παρατηρήσεις</td><td colspan=5>$comments</td></tr>";
             $blabla = "Δηλώνω υπεύθυνα ότι δεν έχω οριστεί στέλεχος εκπαίδευσης (λ.χ. προϊστάμενος/μένη ολιγοθέσιας σχολικής μονάδας, διευθυντής/ντρια σχολ. μονάδας) και ότι δεν υπηρετώ σε θέση με θητεία που λήγει μετά τις $av_endofyear.";
             echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='ypdil' value='1' checked disabled>$blabla</td></tr>";
-            echo "<tr><td colspan=7><small>Υποβλήθηκε στις: ".  date("d-m-Y, H:i:s", strtotime(mysql_result($result, 0, "submit_date")))."</small></td></tr>";
+            echo "<tr><td colspan=7><small>Υποβλήθηκε στις: ".  date("d-m-Y, H:i:s", strtotime($row['submit_date']))."</small></td></tr>";
             echo "<input type='hidden' name = 'id' value='$id'>";
             echo "</form>";
             echo "<tr><td colspan=7><center><form action='index2.php' method='POST'><input type='submit' value='Συνέχεια στο Βήμα 2'></form></center></td></tr>";

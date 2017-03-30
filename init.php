@@ -5,18 +5,7 @@
   require_once 'functions.php';
 ?>
 <html>
-  <head>
-	<LINK href="style.css" rel="stylesheet" type="text/css">
-        <meta http-equiv="content-type" content="text/html; charset=utf-8">
-        <title><?php echo "$av_title ($av_dnsh)"; ?></title>
-	<script type="text/javascript" src="js/jquery.js"></script>
-	<script type="text/javascript" src="js/jquery.validate.js"></script>
-        <script type="text/javascript" src="js/jquery.clearableTextField.js"></script>
-        <link rel="stylesheet" href="js/jquery.clearableTextField.css" type="text/css" media="screen" />
-	<script type='text/javascript' src='js/jquery.autocomplete.js'></script>
-	<link rel="stylesheet" type="text/css" href="js/jquery.autocomplete.css" />
-        <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic&subset=greek,latin' rel='stylesheet' type='text/css'>
-  </head>
+  <?php require_once('head.php'); ?>
   <body>
 <?php
 if (!isset($_POST['pass']) && !isset($_SESSION['auth']))

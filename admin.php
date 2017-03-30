@@ -50,24 +50,23 @@
     if ($_SESSION['user']!=$av_admin)
         die("Authentication error");
 
-    $mysqlconnection = mysql_connect($db_host, $db_user, $db_password);
-    mysql_select_db($db_name, $mysqlconnection);
-    mysql_query("SET NAMES 'greek'", $mysqlconnection);
-    mysql_query("SET CHARACTER SET 'greek'", $mysqlconnection);
+    $mysqlconnection = mysqli_connect($db_host, $db_user, $db_password, $db_name);
+    mysqli_set_charset($mysqlconnection,"utf8");
   
     // if POST change apo_employee organ & synolikh yphresia
     if (isset($_POST['porgan']))
     {
         $qry = "SELECT kwdikos FROM $av_sch WHERE name='".$_POST['porgan']."'";
-        $res = mysql_query($qry);
-        $organ = mysql_result($res, 0, 'kwdikos');
+        $res = mysqli_query($mysqlconnection, $qry);
+        $row = mysqli_fetch_assoc($res);
+        $organ = $row['kwdikos'];
         $eth = $_POST['ethy'];
         $mhnes = $_POST['mhnesy'];
         $hmeres = $_POST['hmeresy'];
         $emp_id = $_POST['emp_id'];
         $id = $_POST['id'];
         $query = "UPDATE $av_emp SET org=$organ, eth=$eth, mhnes=$mhnes, hmeres=$hmeres WHERE id=$emp_id";
-        $result = mysql_query($query);
+        $result = mysqli_query($mysqlconnection, $query);
         $url = "admin.php?id=$id&action=view";
         echo "<meta http-equiv=\"refresh\" content=\"0; URL=$url\">";
         exit;
@@ -78,7 +77,7 @@
     {
         $id = $_GET['id'];
         $query = "UPDATE $av_ait SET submitted=0, submit_date=NULL WHERE id=$id";
-        $result = mysql_query($query, $mysqlconnection);
+        $result = mysqli_query($mysqlconnection, $query);
         echo "Έγινε αναίρεση της υποβολής της αίτησης με Α/Α $id.";
         echo "<br>Παρακαλώ περιμένετε...";
         echo "<meta http-equiv=\"refresh\" content=\"3; URL=admin.php\">";
@@ -88,65 +87,52 @@
     {
         $id = $_GET['id'];
         $query = "SELECT * from $av_ait a JOIN $av_emp e ON a.emp_id=e.id WHERE a.id=$id";
-        $result = mysql_query($query);
-        $name = mysql_result($result, 0, "name");
-        $surname = mysql_result($result, 0, "surname");
-        $patrwnymo = mysql_result($result, 0, "patrwnymo");
-        $klados = mysql_result($result, 0, "klados");
-        $am = mysql_result($result, $i, "am");
-        $organ = mysql_result($result, 0, "org");
-        $organ = getSchooledc($organ, $mysqlconnection);
-        $ethy = mysql_result($result, 0, "e.eth");
-        $mhnesy = mysql_result($result, 0, "e.mhnes");
-        $hmeresy = mysql_result($result, 0, "e.hmeres");
-        $gamos = mysql_result($result, 0, "gamos");
-        $paidia = mysql_result($result, 0, "paidia");
-        $dhmos_anhk = mysql_result($result, 0, "dhmos_anhk");
-        $dhmos_ent = mysql_result($result, 0, "dhmos_ent");
-        $dhmos_syn = mysql_result($result, 0, "dhmos_syn");
-        $aitisi = mysql_result($result, 0, "aitisi");
-        $eidikh = mysql_result($result, 0, "eidikh");
-        $apospash = mysql_result($result, 0, "apospash");
-        $didakt = mysql_result($result, 0, "didakt");
-        $metapt = mysql_result($result, 0, "metapt");
-        $didask = mysql_result($result, 0, "didask");
-        $paidag = mysql_result($result, 0, "paidag");
-        $eth = mysql_result($result, 0, "eth");
-        $mhnes = mysql_result($result, 0, "mhnes");
-        $hmeres = mysql_result($result, 0, "hmeres");
-        $ygeia = mysql_result($result, 0, "ygeia");
-        $ygeia_g = mysql_result($result, 0, "ygeia_g");
-        $ygeia_a = mysql_result($result, 0, "ygeia_a");
-        $eksw = mysql_result($result, 0, "eksw");
-        $comments = mysql_result($result, 0, "comments");
-        $ypdil = mysql_result($result, 0, "ypdil");
-        $org_eid = mysql_result($result, 0, "org_eid");
-        $allo = mysql_result($result, 0, "allo");
-                
-        $s1 = getSchooledc(mysql_result($result, 0, "p1"), $mysqlconnection);
-        $s2 = getSchooledc(mysql_result($result, 0, "p2"), $mysqlconnection);
-        $s3 = getSchooledc(mysql_result($result, 0, "p3"), $mysqlconnection);
-        $s4 = getSchooledc(mysql_result($result, 0, "p4"), $mysqlconnection);
-        $s5 = getSchooledc(mysql_result($result, 0, "p5"), $mysqlconnection);
-        $s6 = getSchooledc(mysql_result($result, 0, "p6"), $mysqlconnection);
-        $s7 = getSchooledc(mysql_result($result, 0, "p7"), $mysqlconnection);
-        $s8 = getSchooledc(mysql_result($result, 0, "p8"), $mysqlconnection);
-        $s9 = getSchooledc(mysql_result($result, 0, "p9"), $mysqlconnection);
-        $s10 = getSchooledc(mysql_result($result, 0, "p10"), $mysqlconnection);
-        $s11 = getSchooledc(mysql_result($result, 0, "p11"), $mysqlconnection);
-        $s12 = getSchooledc(mysql_result($result, 0, "p12"), $mysqlconnection);
-        $s13 = getSchooledc(mysql_result($result, 0, "p13"), $mysqlconnection);
-        $s14 = getSchooledc(mysql_result($result, 0, "p14"), $mysqlconnection);
-        $s15 = getSchooledc(mysql_result($result, 0, "p15"), $mysqlconnection);
-        $s16 = getSchooledc(mysql_result($result, 0, "p16"), $mysqlconnection);
-        $s17 = getSchooledc(mysql_result($result, 0, "p17"), $mysqlconnection);
-        $s18 = getSchooledc(mysql_result($result, 0, "p18"), $mysqlconnection);
-        $s19 = getSchooledc(mysql_result($result, 0, "p19"), $mysqlconnection);
-        $s20 = getSchooledc(mysql_result($result, 0, "p20"), $mysqlconnection);
-        $submitted = mysql_result($result, 0, "submitted");
+        $result = mysqli_query($mysqlconnection, $query);
+        $row = mysqli_fetch_assoc($result);
         
-        $klados = mysql_result($result, 0, "klados");
-        $emp_id = mysql_result($result, 0, "emp_id");
+        
+        $name = $row['name'];
+        $surname = $row['surname'];
+        $patrwnymo = $row['patrwnymo'];
+        $klados = $row['klados'];
+        $am = $row['am'];
+        $organ = $row['org'];
+        $organ = getSchooledc($organ, $mysqlconnection);
+        $ethy = $row['eth'];
+        $mhnesy = $row['e.mhnes'];
+        $hmeresy = $row['e.hmeres'];
+        $gamos = $row['gamos'];
+        $paidia = $row['paidia'];
+        $dhmos_anhk = $row['dhmos_anhk'];
+        $dhmos_ent = $row['dhmos_ent'];
+        $dhmos_syn = $row['dhmos_syn'];
+        $aitisi = $row['aitisi'];
+        $eidikh = $row['eidikh'];
+        $apospash = $row['apospash'];
+        $didakt = $row['didakt'];
+        $metapt = $row['metapt'];
+        $didask = $row['didask'];
+        $paidag = $row['paidag'];
+        $eth = $row['eth'];
+        $mhnes = $row['mhnes'];
+        $hmeres = $row['hmeres'];
+        $ygeia = $row['ygeia'];
+        $ygeia_g = $row['ygeia_g'];
+        $ygeia_a = $row['ygeia_a'];
+        $eksw = $row['eksw'];
+        $comments = $row['comments'];
+        $ypdil = $row['ypdil'];
+        $org_eid = $row['org_eid'];
+        $allo = $row['allo'];
+        
+        for ($i = 1; $i < 21; $i++) {
+          ${'s'.$i} = getSchooledc($row['p'.$i],$mysqlconnection);
+        }
+
+        $submitted = $row['submitted'];
+        
+        $klados = $row['klados'];
+        $emp_id = $row['emp_id'];
         if ($av_athmia)
         {
             if (strpos($klados,"ΠΕ6") !== false)
@@ -174,11 +160,12 @@
         // if apospaseis, show related data
         if ($av_type == 1)
         {
-			if ($submitted || !$av_canalter)
-				echo "<tr><td colspan=2>Συνολική υπηρεσία: </td><td colspan=5>$ethy Έτη, $mhnesy Μήνες, $hmeresy Ημέρες</td></tr>";
-			else
-				echo "<tr><td colspan=2>Συνολική υπηρεσία: </td><td colspan=5><input size=2 name='ethy' value=$ethy> Έτη,<input size=2 name='mhnesy' value=$mhnesy> Μήνες,<input size=2 name='hmeresy' value=$hmeresy> Ημέρες</td></tr>";
-			// end of changeable elements
+            if ($submitted || !$av_canalter) {
+              echo "<tr><td colspan=2>Συνολική υπηρεσία: </td><td colspan=5>$ethy Έτη, $mhnesy Μήνες, $hmeresy Ημέρες</td></tr>";
+            } else {
+              echo "<tr><td colspan=2>Συνολική υπηρεσία: </td><td colspan=5><input size=2 name='ethy' value=$ethy> Έτη,<input size=2 name='mhnesy' value=$mhnesy> Μήνες,<input size=2 name='hmeresy' value=$hmeresy> Ημέρες</td></tr>";
+            }
+            // end of changeable elements
             if ($org_eid)
                 echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='org_eid' value='1' checked disabled>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
             else
@@ -250,30 +237,15 @@
         echo "<br>";
         echo "<table id=\"mytbl\" class=\"imagetable\" border=\"2\">\n";
         echo "<tr><td colspan=4><center><strong>Προτιμήσεις</strong></center></td></tr>";
-        echo "<tr><td>1η προτίμηση</td><td>$s1</td></tr>\n";
-        echo "<tr><td>2η προτίμηση</td><td>$s2</td></tr>\n";
-        echo "<tr><td>3η προτίμηση</td><td>$s3</td></tr>\n";
-        echo "<tr><td>4η προτίμηση</td><td>$s4</td></tr>\n";
-        echo "<tr><td>5η προτίμηση</td><td>$s5</td></tr>\n";
-        echo "<tr><td>6η προτίμηση</td><td>$s6</td></tr>\n";
-        echo "<tr><td>7η προτίμηση</td><td>$s7</td></tr>\n";
-        echo "<tr><td>8η προτίμηση</td><td>$s8</td></tr>\n";
-        echo "<tr><td>9η προτίμηση</td><td>$s9</td></tr>\n";
-        echo "<tr><td>10η προτίμηση</td><td>$s10</td></tr>\n";
-        echo "<tr><td>11η προτίμηση</td><td>$s11</td></tr>\n";
-        echo "<tr><td>12η προτίμηση</td><td>$s12</td></tr>\n";
-        echo "<tr><td>13η προτίμηση</td><td>$s13</td></tr>\n";
-        echo "<tr><td>14η προτίμηση</td><td>$s14</td></tr>\n";
-        echo "<tr><td>15η προτίμηση</td><td>$s15</td></tr>\n";
-        echo "<tr><td>16η προτίμηση</td><td>$s16</td></tr>\n";
-        echo "<tr><td>17η προτίμηση</td><td>$s17</td></tr>\n";
-        echo "<tr><td>18η προτίμηση</td><td>$s18</td></tr>\n";
-        echo "<tr><td>19η προτίμηση</td><td>$s19</td></tr>\n";
-        echo "<tr><td>20η προτίμηση</td><td>$s20</td></tr>\n";
+        
+        for ($i = 1; $i < 21; $i++) {
+          echo "<tr><td>$iη προτίμηση</td><td>".${'s'.$i}."</td></tr>\n";
+        }
+        
         if ($submitted)
-            echo "<tr><td colspan=4><small>Υποβλήθηκε στις: ".  date("d-m-Y, H:i:s", strtotime(mysql_result($result, 0, "updated")))."</small></td></tr>";
+            echo "<tr><td colspan=4><small>Υποβλήθηκε στις: ".  date("d-m-Y, H:i:s", strtotime($row['updated']))."</small></td></tr>";
         else
-            echo "<tr><td colspan=4><small>Αποθηκεύθηκε στις: ".  date("d-m-Y, H:i:s", strtotime(mysql_result($result, 0, "updated")))."</small></td></tr>";
+            echo "<tr><td colspan=4><small>Αποθηκεύθηκε στις: ".  date("d-m-Y, H:i:s", strtotime($row['updated']))."</small></td></tr>";
         echo "<tr><td colspan=4><center><input type='hidden' name='id' value=$id></td></tr>";
         echo "<tr><td colspan=4><center><input type='hidden' name='emp_id' value=$emp_id></td></tr>";
         // change employee elements
@@ -301,18 +273,18 @@
             JOIN $av_emp e ON a.emp_id=e.id 
             JOIN $av_sch s ON s.kwdikos = e.org 
             WHERE submitted=1";
-        $result = mysql_query($query, $mysqlconnection);
-        $num = mysql_num_rows($result);
-        while ($row0 = mysql_fetch_array($result,MYSQL_NUM))
+        $result = mysqli_query($mysqlconnection, $query);
+        $num = mysqli_num_rows($result);
+        while ($row0 = mysqli_fetch_array($result,MYSQL_NUM))
             $data[] = $row0;
         
         $columns = array();
         if ($apospaseis)
         {
             $qry1 = "SHOW COLUMNS FROM $av_ait";
-            $res1 = mysql_query($qry1, $mysqlconnection);
+            $res1 = mysqli_query($mysqlconnection, $qry1);
         
-            while ($row = mysql_fetch_array($res1,MYSQL_NUM))
+            while ($row = mysqli_fetch_array($res1,MYSQL_NUM))
                 $columns[] = $row[0];
         }
         else
@@ -339,21 +311,21 @@
         echo "</tbody></table>";
         echo "<br>";
         $page = ob_get_contents(); 
-	ob_end_flush();
+        ob_end_flush();
         
         echo "<form action='2excel.php' method='post'>";
-	$page = str_replace("'", "", $page);
-	echo "<input type='hidden' name = 'data' value='$page'>";
+        $page = str_replace("'", "", $page);
+        echo "<input type='hidden' name = 'data' value='$page'>";
 	
-	echo "<BUTTON TYPE='submit'>Εξαγωγή στο excel</BUTTON>";
+        echo "<BUTTON TYPE='submit'>Εξαγωγή στο excel</BUTTON>";
         echo "</form>";
         echo "<form action='admin.php'><input type='submit' value='Επιστροφή'></form>";
         //ob_end_clean();
     }
     // end of export
     // view employees that haven't submitted or done nothing.
-	elseif ($_GET['action'] == 'nothing' || $_GET['action'] == 'saved')
-	{
+    elseif ($_GET['action'] == 'nothing' || $_GET['action'] == 'saved')
+    {
             if ($_GET['action'] == 'nothing')
                     $nothing = 1;
 
@@ -368,8 +340,8 @@
                     $query = "SELECT * from $av_ait a JOIN $av_emp e ON a.emp_id=e.id WHERE submitted = 0";
                     echo "<h3>Εκπ/κοί που έχουν αποθηκεύσει αλλά δεν έχουν υποβάλει αίτηση</h3>";
             }
-            $result = mysql_query($query, $mysqlconnection);
-            $num = mysql_num_rows($result);
+            $result = mysqli_query($mysqlconnection, $query);
+            $num = mysqli_num_rows($result);
             echo "<table id=\"mytbl\" class=\"imagetable tablesorter\" border=\"2\">\n";
             echo "<thead>";
             echo "<tr><th>Α/Α</th>\n";
@@ -378,11 +350,12 @@
             echo "<th>Ειδικότητα</th>\n";
             echo "<th>A.M.</th>\n";
             while ($i < $num){
-                $id = mysql_result($result, $i, "id");
-                $surname = mysql_result($result, $i, "surname");
-                $name = mysql_result($result, $i, "name");
-                $klados = mysql_result($result, $i, "klados");
-                $am = mysql_result($result, $i, "am");
+                $row = mysqli_fetch_assoc($result);
+                $id = $row['id'];
+                $surname = $row['surname'];
+                $name = $row['name'];
+                $klados = $row['klados'];
+                $am = $row['am'];
                 echo "<tr><td>$id</td><td>$surname</td><td>$name</td><td>$klados</td><td>$am</td></tr>";
 
                 $i++;
@@ -390,82 +363,84 @@
             echo "</table>";
             echo "Σύνολο: $num";
             echo "<form action='admin.php'><input type='submit' value='Επιστροφή'></form>";	
-	}
-        // of nothing or not submitted
+    }
+    // of nothing or not submitted
     // Main admin view
     else
     {
-        echo "<center><h2>$av_title ($av_foreas) <br> Διαχείριση</h2></center>";
-        echo "<center>";
-        echo "<h3>Λίστα αιτήσεων</h3>";
+      echo "<center><h2>$av_title ($av_foreas) <br> Διαχείριση</h2></center>";
+      echo "<center>";
+      echo "<h3>Λίστα αιτήσεων</h3>";
 
-        $i=0;
-	$aa = 1;
-        $query = "SELECT * from $av_ait a JOIN $av_emp e ON a.emp_id=e.id";
+      $i=0;
+      $aa = 1;
+      $query = "SELECT * from $av_ait a JOIN $av_emp e ON a.emp_id=e.id";
 
-        $result = mysql_query($query, $mysqlconnection);
-		if ($result)
-			$num = mysql_num_rows($result);
-		else $num = 0;
+      $result = mysqli_query($mysqlconnection, $query);
+      if ($result)
+        $num = mysqli_num_rows($result);
+      else $num = 0;
 
-        echo "<table id=\"mytbl\" class=\"imagetable tablesorter\" border=\"2\">\n";
-        echo "<thead>";
-        echo "<tr><th>Α/Α</th>\n";
-        echo "<th>Επώνυμο</th>\n";
-        echo "<th>Όνομα</th>\n";
-        echo "<th>Ειδικότητα</th>\n";
-        echo "<th>A.M.</th>\n";
-        echo "<th>Υποβλήθηκε</th>\n";
-        echo "<th>Ημ/νία - Ώρα</th>\n";
+      echo "<table id=\"mytbl\" class=\"imagetable tablesorter\" border=\"2\">\n";
+      echo "<thead>";
+      echo "<tr><th>Α/Α</th>\n";
+      echo "<th>Επώνυμο</th>\n";
+      echo "<th>Όνομα</th>\n";
+      echo "<th>Ειδικότητα</th>\n";
+      echo "<th>A.M.</th>\n";
+      echo "<th>Υποβλήθηκε</th>\n";
+      echo "<th>Ημ/νία - Ώρα</th>\n";
         echo "</tr>\n</thead>\n";
-		$sub_total = $blanks = 0;
+      $sub_total = $blanks = 0;
 
-        while ($i < $num){
-            $id = mysql_result($result, $i, "id");
-            $surname = mysql_result($result, $i, "surname");
-            $name = mysql_result($result, $i, "name");
-            $klados = mysql_result($result, $i, "klados");
-            $submitted = mysql_result($result, $i, "submitted");
-            $am = mysql_result($result, $i, "am");
-			$p1 = mysql_result($result, $i, "p1");
-            if ($submitted==0)
-            {
-                $sub = "Όχι";
-                $my_date = date("d-m-Y, H:i:s", strtotime(mysql_result($result, $i, "updated")));
-            }
-            else
-            {
-                $sub = "Ναι";
-                $my_date = date("d-m-Y, H:i:s", strtotime(mysql_result($result, $i, "submit_date")));
-				$sub_total++;
-            }
-
-            echo "<tr><td>$aa</td><td><a href=\"admin.php?id=$id&action=view\">$surname</a></td><td>$name</td><td>$klados</td><td>$am</td><td>$sub";
-            if ($submitted && $av_canundo)
-			{
-                echo "&nbsp;<span title=\"Αναίρεση Υποβολής\"><a href=\"admin.php?id=$id&action=undo\"><img style=\"border: 0pt none;\" src=\"images/undo.png\" onclick='return myaction_yp()'/></a></span>";
-				if (!$p1)
-				{
-					echo "&nbsp;(KENH)";
-					$blanks++;
-				}
-					
-			}
-            echo "</td><td>$my_date</td></tr>";
-
-            $i++;
-            $aa++;
+      while ($i < $num){
+        $row = mysqli_fetch_assoc($result);
+        $id = $row['id'];
+        $surname = $row['surname'];
+        $name = $row['name'];
+        $klados = $row['klados'];
+        $submitted = $row['submitted'];
+        $am = $row['am'];
+        $p1 = $row['p1'];
+        if ($submitted==0)
+        {
+            $sub = "Όχι";
+            $my_date = date("d-m-Y, H:i:s", strtotime($row['updated']));
         }
-            echo "</table>";
+        else
+        {
+            $sub = "Ναι";
+            $my_date = date("d-m-Y, H:i:s", strtotime($row['submit_date']));
+            $sub_total++;
+        }
+
+        echo "<tr><td>$aa</td><td><a href=\"admin.php?id=$id&action=view\">$surname</a></td><td>$name</td><td>$klados</td><td>$am</td><td>$sub";
+        if ($submitted && $av_canundo)
+        {
+            echo "&nbsp;<span title=\"Αναίρεση Υποβολής\"><a href=\"admin.php?id=$id&action=undo\"><img style=\"border: 0pt none;\" src=\"images/undo.png\" onclick='return myaction_yp()'/></a></span>";
+            if (!$p1)
+            {
+              echo "&nbsp;(KENH)";
+              $blanks++;
+            }
+      
+        }
+        echo "</td><td>$my_date</td></tr>";
+
+        $i++;
+        $aa++;
+      }
+      echo "</table>";
 			
 			$query = "select count(*) as plithos from $av_emp";
-			$result = mysql_query($query, $mysqlconnection);
+			$result = mysqli_query($mysqlconnection, $query);
+      $row = mysqli_fetch_assoc($result);
 			// -1 because of admin account
-			$total_ypal = mysql_result($result, 0, "plithos") - 1;
+			$total_ypal = $row['plithos'] - 1;
 			$saved = $num - $sub_total;
 			$nothing = $total_ypal - $sub_total - $saved;
 			//echo "Έχουν υποβληθεί <strong>$sub_total</strong> από $total_ypal αιτήσεις.<br>";
-                        echo "Έχουν υποβληθεί <strong>$sub_total</strong> αιτήσεις.<br>";
+      echo "Έχουν υποβληθεί <strong>$sub_total</strong> αιτήσεις.<br>";
 			if ($blanks)
 				echo "<strong>$blanks</strong> κενές (αρνητικές) αιτήσεις.<br>";
 			//echo "<br><a href='admin.php?action=nothing'>Εκπ/κοί που δεν έχουν κάνει καμία αποθήκευση ή υποβολή ($nothing)</a>";
@@ -477,8 +452,8 @@
             echo "</center>";
     }   
 
-     mysql_close();   
-    } // of if($loggedin)
+     mysqli_close($mysqlconnection);   
+  } // of if($loggedin)
     
 ?>
 </center>

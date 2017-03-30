@@ -15,18 +15,7 @@
       $loggedin = 1;
 ?>
 <html>
-  <head>
-	<LINK href="style.css" rel="stylesheet" type="text/css">
-        <meta http-equiv="content-type" content="text/html; charset=utf-8">
-        <title><?php echo "$av_title ($av_dnsh)"; ?></title>
-	<script type="text/javascript" src="js/jquery.js"></script>
-	<script type="text/javascript" src="js/jquery.validate.js"></script>
-        <script type="text/javascript" src="js/jquery.clearableTextField.js"></script>
-        <link rel="stylesheet" href="js/jquery.clearableTextField.css" type="text/css" media="screen" />
-	<script type='text/javascript' src='js/jquery.autocomplete.js'></script>
-	<link rel="stylesheet" type="text/css" href="js/jquery.autocomplete.css" />
-        <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic&subset=greek,latin' rel='stylesheet' type='text/css'>
-  </head>
+  <?php require_once('head.php'); ?>
   <body>
 <?php
 if (!isset($_POST['submit']))
@@ -49,10 +38,8 @@ if (!isset($_POST['submit']))
 	exit;
 }
 
-    $mysqlconnection = mysql_connect($db_host, $db_user, $db_password);
-    mysql_select_db($db_name, $mysqlconnection);
-    mysql_query("SET NAMES 'greek'", $mysqlconnection);
-    mysql_query("SET CHARACTER SET 'GREEK'", $mysqlconnection);
+    $mysqlconnection = mysqli_connect($db_host, $db_user, $db_password, $db_name);
+    mysqli_set_charset($mysqlconnection,"utf8");
     
     //Upload File
     if (is_uploaded_file($_FILES['filename']['tmp_name'])) {
@@ -80,8 +67,8 @@ if (!isset($_POST['submit']))
         $data = fgetcsv($handle, 1000, ";");
         $csvcols = count($data);
         $qry = "SELECT count(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE table_schema = '$db_name' AND table_name = '$tbl'";
-        $res = mysql_query($qry);
-        $tblcols = mysql_result($res, 0);
+        $res = mysqli_query($mysqlconnection, $qry);
+        $tblcols = mysqli_num_fields($res);
         // if error exit, else proceed to data deletion
         if ($csvcols <> $tblcols)
         {
@@ -92,7 +79,7 @@ if (!isset($_POST['submit']))
         }
         else
         {
-            mysql_query($del_qry);
+            mysqli_query($mysqlconnection, $del_qry);
         }
         
         $num = 0;
@@ -113,7 +100,7 @@ if (!isset($_POST['submit']))
             }
             // set max execution time (for large files)
             set_time_limit (480);
-                $ret = mysql_query($import);
+                $ret = mysqli_query($mysqlconnection, $import);
             $num++;
         }
 
@@ -126,7 +113,7 @@ if (!isset($_POST['submit']))
         {
             echo "<h3>Παρουσιάστηκε σφάλμα κατά την εισαγωγή</h3>";
             echo "Ελέγξτε το αρχείο ή επικοινωνήστε με το διαχειριστή.<br>";
-            echo mysql_error() ? "Μήνυμα λάθους:".mysql_error() : '';
+            echo mysqli_error($mysqlconnection) ? "Μήνυμα λάθους:".mysqli_error($mysqlconnection) : '';
             echo $num ? "Έγινε εισαγωγή $num εγγραφών στον πίνακα $tbl.<br>" : '';
         }
     }

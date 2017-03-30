@@ -1,10 +1,8 @@
 <?php
 //header('Content-type: text/html; charset=utf-8');
 require_once "config.php";
-$conn = mysql_connect($db_host, $db_user, $db_password) or die ('Error connecting to mysql');
-mysql_select_db($db_name);
-mysql_query("SET NAMES 'greek'", $conn);
-mysql_query("SET CHARACTER SET 'greek'", $conn);
+$conn = mysqli_connect($db_host, $db_user, $db_password, $db_name) or die ('Error connecting to mysql');
+mysqli_set_charset($mysqlconnection,"utf8");
 
 $q = strtolower($_GET["q"]);
 $dim = $_GET['dim'];
@@ -21,8 +19,8 @@ if (!$q) return;
 $sql = "select DISTINCT name from apo_school where name LIKE '%$q%' AND dim='$dim' AND omada <> $omada";
 //$sql = mb_convert_encoding($sql, "iso-8859-7", "utf-8");
 //echo $sql;
-$rsd = mysql_query($sql,$conn);
-while($rs = mysql_fetch_array($rsd)) {
+$rsd = mysqli_query($conn, $sql);
+while($rs = mysqli_fetch_array($rsd)) {
 	$cname = $rs['name'];
 	echo "$cname\n";
 }
