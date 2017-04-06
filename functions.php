@@ -314,6 +314,9 @@ function run_sql_file($location, $av_emp, $av_dimos, $av_ait, $av_sch, $db_name)
     );
 }
 
+function mb_helper($v){
+  return mb_convert_encoding($v,'utf-8','iso-8859-7');
+}
 
 // Here's a startsWith function
 function startsWith($haystack, $needle){
