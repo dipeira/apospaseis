@@ -276,45 +276,8 @@ function getYgeia_a ($y)
     }
     return $ret;
 }
-// source: http://stackoverflow.com/questions/4027769/running-mysql-sql-files-in-php
-// Run .sql files in PHP
-function run_sql_file($location, $av_emp, $av_dimos, $av_ait, $av_sch, $db_name){
-    //load file & replace table names
-    $tags = array ('apo_employee', 'apo_dimos','apo_aitisi','apo_school','%aposp%');
-    $elem = array ( $av_emp, $av_dimos, $av_ait, $av_sch, $db_name );
-    $commands = str_replace($tags, $elem, file_get_contents($location));
 
-    //delete comments
-    $lines = explode("\n",$commands);
-    $commands = '';
-    foreach($lines as $line){
-        $line = trim($line);
-        if( $line && !startsWith($line,'--') ){
-            $commands .= $line . "\n";
-        }
-    }
-
-    //convert to array
-    $commands = explode(";", $commands);
-
-    //run commands
-    $total = $success = 0;
-    foreach($commands as $command){
-	
-        if(trim($command)){
-            $success += (@mysql_query($command)==false ? 0 : 1);
-            $total += 1;
-        }
-    }
-
-    //return number of successful queries and total number of queries found
-    return array(
-        "success" => $success,
-        "total" => $total
-    );
-}
-
-function mb_helper($v){
+function mb_helper($v) {
   return mb_convert_encoding($v,'utf-8','iso-8859-7');
 }
 
