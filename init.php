@@ -61,7 +61,6 @@ if ($_SESSION['auth'])
     mysqli_set_charset($mysqlconnection,"utf8");    
         
     //Upload File
-    
     if (isset($_POST['submit'])) {
       if (is_uploaded_file($_FILES['filename']['tmp_name'])) {
           echo "<h3>" . "To αρχείο ". $_FILES['filename']['name'] ." ανέβηκε με επιτυχία." . "</h3>";
@@ -72,9 +71,9 @@ if ($_SESSION['auth'])
           switch ($_POST['type'])
           {
               case 1:
-                  mysqli_query($mysqlconnection, "DELETE FROM $av_emp WHERE am <> '$av_admin'");
-                  $tbl = $av_emp;
+                  mysqli_query($mysqlconnection, "TRUNCATE $av_emp");
                   mysqli_query($mysqlconnection, "TRUNCATE $av_ait");
+                  $tbl = $av_emp;
                   break;
               case 2:
                   mysqli_query($mysqlconnection, "TRUNCATE $av_sch");
