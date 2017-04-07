@@ -1,6 +1,6 @@
 <?php
 
-  header('Content-type: text/html; charset=iso8859-7'); 
+  header('Content-type: text/html; charset=utf-8'); 
   require_once "config.php";
   require_once 'functions.php';
   session_start();
@@ -16,9 +16,9 @@
 ?>
 <html>
   <head>
-	<title>Μεταβολή παραμέτρων</title>
-	<h2>Μεταβολή παραμέτρων</h2>
-	<h4>ΣΗΜ.: αλλάξτε με προσοχή...</h4>
+	<title>ΞΞµΟ„Ξ±Ξ²ΞΏΞ»Ξ® Ο€Ξ±ΟΞ±ΞΌΞ­Ο„ΟΟ‰Ξ½</title>
+	<h2>ΞΞµΟ„Ξ±Ξ²ΞΏΞ»Ξ® Ο€Ξ±ΟΞ±ΞΌΞ­Ο„ΟΟ‰Ξ½</h2>
+	<h4>Ξ£Ξ—Ξ.: Ξ±Ξ»Ξ»Ξ¬ΞΎΟ„Ξµ ΞΌΞµ Ο€ΟΞΏΟƒΞΏΟ‡Ξ®...</h4>
   </head>
   <body>
 
@@ -52,9 +52,9 @@
 	<form action="" method="post">
 	<textarea name="text" style="width: 700px; height: 740px;"><?php echo $text; ?></textarea>
 	<br>
-	<input type="submit" value="Μεταβολή" />
+	<input type="submit" value="ΞΞµΟ„Ξ±Ξ²ΞΏΞ»Ξ®" />
 	<br>
-	<a href="admin.php">Επιστροφή</a>
+	<a href="admin.php">Ξ•Ο€ΞΉΟƒΟ„ΟΞΏΟ†Ξ®</a>
 	</form>
 
   </body>

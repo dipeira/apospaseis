@@ -2,7 +2,7 @@
 
 table.imagetable {
 	font-size : 70%;
-	font-family : 'Roboto',"Myriad Web",Verdana,Helvetica,Arial,sans-serif;
+	font-family : 'Roboto Condensed',"Myriad Web",Verdana,Helvetica,Arial,sans-serif;
 	font-size:11px;
 	color:#333333;
 	border-width: 1px;
@@ -21,7 +21,7 @@ table.imagetable th {
 }
 table.imagetable td {
 	font-size : 100%;
-	font-family : 'Roboto',"Myriad Web",Verdana,Helvetica,Arial,sans-serif;
+	font-family : 'Roboto Condensed',"Myriad Web",Verdana,Helvetica,Arial,sans-serif;
 	background:#dcddc0 url('images/cell-grey.jpg');
 	border-width: 1px;
 	padding: 6px;

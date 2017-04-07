@@ -1,6 +1,6 @@
 <?php
   session_start();
-  header('Content-type: text/html; charset=iso8859-7'); 
+  header('Content-type: text/html; charset=utf-8'); 
   Require "config.php";
   require_once 'functions.php';
   
@@ -15,127 +15,124 @@
       $loggedin = 1;
 ?>
 <html>
-  <head>
-	<LINK href="style.css" rel="stylesheet" type="text/css">
-        <meta http-equiv="content-type" content="text/html; charset=iso8859-7">
-        <title><?php echo "$av_title ($av_dnsh)"; ?></title>
-	<script type="text/javascript" src="js/jquery.js"></script>
-	<script type="text/javascript" src="js/jquery.validate.js"></script>
-        <script type="text/javascript" src="js/jquery.clearableTextField.js"></script>
-        <link rel="stylesheet" href="js/jquery.clearableTextField.css" type="text/css" media="screen" />
-	<script type='text/javascript' src='js/jquery.autocomplete.js'></script>
-	<link rel="stylesheet" type="text/css" href="js/jquery.autocomplete.css" />
-        <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic&subset=greek,latin' rel='stylesheet' type='text/css'>
-  </head>
+  <?php require_once('head.php'); ?>
   <body>
 <?php
 if (!isset($_POST['submit']))
 {
-	echo "<h2> Εισαγωγή δεδομένων στη βάση δεδομένων </h2>";
-	echo "ΠΡΟΣΟΧΗ: Η δυνατότητα αυτή διαγράφει όλα τα δεδομένα απο τον πίνακα που θα επιλεγεί, πριν εισάγει σε αυτόν τα νέα.<br><br>";
-	echo "<strong>ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Η ενέργεια αυτή δεν είναι αναστρέψιμη...</strong><br><br>";
+	echo "<h2> ΞΞΉΟΞ±Ξ³ΟΞ³Ξ® Ξ΄Ξ΅Ξ΄ΞΏΞΌΞ­Ξ½ΟΞ½ ΟΟΞ· Ξ²Ξ¬ΟΞ· Ξ΄Ξ΅Ξ΄ΞΏΞΌΞ­Ξ½ΟΞ½ </h2>";
+	echo "Ξ Ξ‘ΞΞ£ΞΞ§Ξ: Ξ Ξ΄ΟΞ½Ξ±ΟΟΟΞ·ΟΞ± Ξ±ΟΟΞ® Ξ΄ΞΉΞ±Ξ³ΟΞ¬ΟΞ΅ΞΉ ΟΞ»Ξ± ΟΞ± Ξ΄Ξ΅Ξ΄ΞΏΞΌΞ­Ξ½Ξ± Ξ±ΟΞΏ ΟΞΏΞ½ ΟΞ―Ξ½Ξ±ΞΊΞ± ΟΞΏΟ ΞΈΞ± Ξ΅ΟΞΉΞ»Ξ΅Ξ³Ξ΅Ξ―, ΟΟΞΉΞ½ Ξ΅ΞΉΟΞ¬Ξ³Ξ΅ΞΉ ΟΞ΅ Ξ±ΟΟΟΞ½ ΟΞ± Ξ½Ξ­Ξ±.<br><br>";
+	echo "<strong>Ξ Ξ‘ΞΞΞΞΞΞ ΞΞΞΞ£Ξ: Ξ Ξ΅Ξ½Ξ­ΟΞ³Ξ΅ΞΉΞ± Ξ±ΟΟΞ® Ξ΄Ξ΅Ξ½ Ξ΅Ξ―Ξ½Ξ±ΞΉ Ξ±Ξ½Ξ±ΟΟΟΞ­ΟΞΉΞΌΞ·...</strong><br><br>";
         echo "<form enctype='multipart/form-data' action='import.php' method='post'>";
-        echo "Όνομα αρχείου προς εισαγωγή:<br />\n";
+        echo "ΞΞ½ΞΏΞΌΞ± Ξ±ΟΟΞ΅Ξ―ΞΏΟ ΟΟΞΏΟ Ξ΅ΞΉΟΞ±Ξ³ΟΞ³Ξ®:<br />\n";
         echo "<input size='50' type='file' name='filename'><br />\n";
-        echo "<br>Τύπος (πίνακας) δεδομένων:<br>";
-        echo "<input type='radio' name='type' value='1'>Υπάλληλοι<br>";
-        echo "<input type='radio' name='type' value='2'>Σχολεία<br>";
-        echo "<input type='radio' name='type' value='3' >Δήμοι<br>";
-        print "<input type='submit' name='submit' value='Μεταφόρτωση'></form>";
-        echo "<small>ΣΗΜ.: Η εισαγωγή ενδέχεται να διαρκέσει μερικά λεπτά, ειδικά για μεγάλα αρχεία.<br>Μη φύγετε από τη σελίδα αν δεν πάρετε κάποιο μήνυμα.</small>";
+        echo "<br>Ξ€ΟΟΞΏΟ (ΟΞ―Ξ½Ξ±ΞΊΞ±Ο) Ξ΄Ξ΅Ξ΄ΞΏΞΌΞ­Ξ½ΟΞ½:<br>";
+        echo "<input type='radio' name='type' value='1'>Ξ₯ΟΞ¬Ξ»Ξ»Ξ·Ξ»ΞΏΞΉ<br>";
+        echo "<input type='radio' name='type' value='2'>Ξ£ΟΞΏΞ»Ξ΅Ξ―Ξ±<br>";
+        echo "<input type='radio' name='type' value='3' >ΞΞ®ΞΌΞΏΞΉ<br>";
+        print "<input type='submit' name='submit' value='ΞΞ΅ΟΞ±ΟΟΟΟΟΟΞ·'></form>";
+        echo "<small>Ξ£ΞΞ.: Ξ Ξ΅ΞΉΟΞ±Ξ³ΟΞ³Ξ® Ξ΅Ξ½Ξ΄Ξ­ΟΞ΅ΟΞ±ΞΉ Ξ½Ξ± Ξ΄ΞΉΞ±ΟΞΊΞ­ΟΞ΅ΞΉ ΞΌΞ΅ΟΞΉΞΊΞ¬ Ξ»Ξ΅ΟΟΞ¬, Ξ΅ΞΉΞ΄ΞΉΞΊΞ¬ Ξ³ΞΉΞ± ΞΌΞ΅Ξ³Ξ¬Ξ»Ξ± Ξ±ΟΟΞ΅Ξ―Ξ±.<br>ΞΞ· ΟΟΞ³Ξ΅ΟΞ΅ Ξ±ΟΟ ΟΞ· ΟΞ΅Ξ»Ξ―Ξ΄Ξ± Ξ±Ξ½ Ξ΄Ξ΅Ξ½ ΟΞ¬ΟΞ΅ΟΞ΅ ΞΊΞ¬ΟΞΏΞΉΞΏ ΞΌΞ®Ξ½ΟΞΌΞ±.</small>";
         echo "</form>";
         echo "<br><br>";
-        echo "<a href='admin.php'>Επιστροφή</a>";
+        echo "<a href='admin.php'>ΞΟΞΉΟΟΟΞΏΟΞ®</a>";
 	exit;
 }
 
-    $mysqlconnection = mysql_connect($db_host, $db_user, $db_password);
-    mysql_select_db($db_name, $mysqlconnection);
-    mysql_query("SET NAMES 'greek'", $mysqlconnection);
-    mysql_query("SET CHARACTER SET 'GREEK'", $mysqlconnection);
+    $mysqlconnection = mysqli_connect($db_host, $db_user, $db_password, $db_name);
+    mysqli_set_charset($mysqlconnection,"utf8");
     
     //Upload File
     if (is_uploaded_file($_FILES['filename']['tmp_name'])) {
-        echo "<h3>" . "To αρχείο ". $_FILES['filename']['name'] ." ανέβηκε με επιτυχία." . "</h3>";
+          echo "<h3>" . "To Ξ±ΟΟΞ΅Ξ―ΞΏ ". $_FILES['filename']['name'] ." Ξ±Ξ½Ξ­Ξ²Ξ·ΞΊΞ΅ ΞΌΞ΅ Ξ΅ΟΞΉΟΟΟΞ―Ξ±." . "</h3>";
 
-        switch ($_POST['type'])
-        {
-            case 1:
-                $del_qry = "DELETE FROM $av_emp WHERE am <> '$av_admin'";
-                $tbl = $av_emp;
-                break;
-            case 2:
-                $del_qry = "TRUNCATE $av_sch";
-                $tbl = $av_sch;
-                break;
-            case 3:
-                $del_qry = "TRUNCATE $av_dimos";
-                $tbl = $av_dimos;
-                break;
-        }
-        
-        //Import uploaded file to Database
-        $handle = fopen($_FILES['filename']['tmp_name'], "r");
-        // check columns & skip headers line
-        $data = fgetcsv($handle, 1000, ";");
-        $csvcols = count($data);
-        $qry = "SELECT count(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE table_schema = '$db_name' AND table_name = '$tbl'";
-        $res = mysql_query($qry);
-        $tblcols = mysql_result($res, 0);
-        // if error exit, else proceed to data deletion
-        if ($csvcols <> $tblcols)
-        {
-            echo "<h3>Σφάλμα: Λάθος αρχείο (Στήλες αρχείου: $csvcols <> στήλες πίνακα: $tblcols)</h3>";
-            $ret = 0;
-            echo "<a href='admin.php'>Επιστροφή</a>";
-            exit;
-        }
-        else
-        {
-            mysql_query($del_qry);
-        }
-        
-        $num = 0;
-        while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
-            switch ($_POST['type']){
-                // employees
-                case 1:
-                    $import="INSERT into $av_emp(id,name,surname,patrwnymo,klados,am,afm,org,eth,mhnes,hmeres,lastlogin) values('$data[0]','$data[1]','$data[2]','$data[3]','$data[4]','$data[5]','$data[6]','$data[7]','$data[8]','$data[9]','$data[10]','$data[11]')";
-                    break;
-                // schools
-                case 2:
-                    $import="INSERT into $av_sch(id,name,kwdikos,dim,omada,inactive) values('$data[0]','$data[1]','$data[2]','$data[3]','$data[4]','$data[5]')";
-                    break;
-                // dimoi
-                case 3:
-                    $import="INSERT into $av_dimos(id,name) values('$data[0]','$data[1]')";
-                    break;
-            }
-            // set max execution time (for large files)
-            set_time_limit (480);
-                $ret = mysql_query($import);
-            $num++;
-        }
 
-        fclose($handle);
-        if ($ret){
-            echo "<h3>Η εισαγωγή πραγματοποιήθηκε με επιτυχία</h3>";
-            echo "Έγινε εισαγωγή $num εγγραφών στον πίνακα $tbl.<br>";
-        }
-        else
-        {
-            echo "<h3>Παρουσιάστηκε σφάλμα κατά την εισαγωγή</h3>";
-            echo "Ελέγξτε το αρχείο ή επικοινωνήστε με το διαχειριστή.<br>";
-            echo mysql_error() ? "Μήνυμα λάθους:".mysql_error() : '';
-            echo $num ? "Έγινε εισαγωγή $num εγγραφών στον πίνακα $tbl.<br>" : '';
-        }
-    }
-    else {
-        echo "Δεν επιλέξατε αρχείο";
-    }
+          //Import uploaded file to Database
+          $handle = fopen($_FILES['filename']['tmp_name'], "r");
+          switch ($_POST['type'])
+          {
+              case 1:
+                  mysqli_query($mysqlconnection, "DELETE FROM $av_emp WHERE am <> '$av_admin'");
+                  $tbl = $av_emp;
+                  mysqli_query($mysqlconnection, "TRUNCATE $av_ait");
+                  break;
+              case 2:
+                  mysqli_query($mysqlconnection, "TRUNCATE $av_sch");
+                  $tbl = $av_sch;
+                  break;
+              case 3:
+                  mysqli_query($mysqlconnection, "TRUNCATE $av_dimos");
+                  $tbl = $av_dimos;
+                  break;
+          }
+          $num = 0;
+          $checked = 0;
+          $headers = 1;
+          
+          while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
+              // convert to utf8 using mb_helper
+              $data = array_map('mb_helper', $data);
+              // skip header line
+              if ($headers){
+                  $headers = 0;
+                  continue;
+              }
+              // check if csv & table columns are equal
+              if (!$checked)
+              {
+                  $csvcols = count($data);
+                  $qry = "SELECT * FROM $tbl LIMIT 1";
+                  $res = mysqli_query($mysqlconnection, $qry);
+                  $tblcols = mysqli_num_fields($res);
+                  if ($_POST['type'] == 1) $tblcols--;
+
+                  if ($csvcols <> $tblcols)
+                  {
+                      echo "<h3>Ξ£ΟΞ¬Ξ»ΞΌΞ±: ΞΞ¬ΞΈΞΏΟ Ξ±ΟΟΞ΅Ξ―ΞΏ (Ξ£ΟΞ®Ξ»Ξ΅Ο Ξ±ΟΟΞ΅Ξ―ΞΏΟ: $csvcols <> ΟΟΞ®Ξ»Ξ΅Ο ΟΞ―Ξ½Ξ±ΞΊΞ±: $tblcols)</h3>";
+                      $ret = 0;
+                      break;
+                  }
+                  else
+                      $checked = 1;
+              }
+
+              switch ($_POST['type']){
+                  // employees
+                  case 1:
+                      $import="INSERT into $av_emp(id,name,surname,patrwnymo,klados,am,afm,org,eth,mhnes,hmeres) values('$data[0]','$data[1]','$data[2]','$data[3]','$data[4]','$data[5]','$data[6]','$data[7]','$data[8]','$data[9]','$data[10]')";
+                      break;
+                  // schools
+                  case 2:
+                      $import="INSERT into $av_sch(id,name,kwdikos,dim,omada,inactive) values('$data[0]','$data[1]','$data[2]','$data[3]','$data[4]','$data[5]')";
+                      break;
+                  // dimoi
+                  case 3:
+                      $import="INSERT into $av_dimos(id,name) values('$data[0]','$data[1]')";
+                      break;
+              }
+              // set max execution time (for large files)
+              set_time_limit (480);
+                  $ret = mysqli_query($mysqlconnection, $import);
+              $num++;
+          }
+
+          fclose($handle);
+          if ($ret){
+              print "<h3>Ξ Ξ΅ΞΉΟΞ±Ξ³ΟΞ³Ξ® ΟΟΞ±Ξ³ΞΌΞ±ΟΞΏΟΞΏΞΉΞ®ΞΈΞ·ΞΊΞ΅ ΞΌΞ΅ Ξ΅ΟΞΉΟΟΟΞ―Ξ±!</h3>";
+              echo "ΞΞ³ΞΉΞ½Ξ΅ Ξ΅ΞΉΟΞ±Ξ³ΟΞ³Ξ® $num Ξ΅Ξ³Ξ³ΟΞ±ΟΟΞ½ ΟΟΞΏΞ½ ΟΞ―Ξ½Ξ±ΞΊΞ± $tbl.<br>";
+          }
+          else
+          {
+              echo "<h3>Ξ Ξ±ΟΞΏΟΟΞΉΞ¬ΟΟΞ·ΞΊΞ΅ ΟΟΞ¬Ξ»ΞΌΞ± ΞΊΞ±ΟΞ¬ ΟΞ·Ξ½ Ξ΅ΞΉΟΞ±Ξ³ΟΞ³Ξ®</h3>";
+              echo "ΞΞ»Ξ­Ξ³ΞΎΟΞ΅ ΟΞΏ Ξ±ΟΟΞ΅Ξ―ΞΏ Ξ® Ξ΅ΟΞΉΞΊΞΏΞΉΞ½ΟΞ½Ξ®ΟΟΞ΅ ΞΌΞ΅ ΟΞΏ Ξ΄ΞΉΞ±ΟΞ΅ΞΉΟΞΉΟΟΞ®.<br>";
+              echo mysqli_error($mysqlconnection) ? "ΞΞ®Ξ½ΟΞΌΞ± Ξ»Ξ¬ΞΈΞΏΟΟ:".mysqli_error($mysqlconnection) : '';
+              echo $num ? "ΞΞ³ΞΉΞ½Ξ΅ Ξ΅ΞΉΟΞ±Ξ³ΟΞ³Ξ® $num Ξ΅Ξ³Ξ³ΟΞ±ΟΟΞ½ ΟΟΞΏΞ½ ΟΞ―Ξ½Ξ±ΞΊΞ± $tbl.<br>" : '';
+          }
+      }
+      else {
+          echo "ΞΞ΅Ξ½ Ξ΅ΟΞΉΞ»Ξ­ΞΎΞ±ΟΞ΅ Ξ±ΟΟΞ΅Ξ―ΞΏ<br><br>";
+      }
                 
-    echo "<a href='login.php'>Επιστροφή</a>";
-    exit;
+    echo "<a href='import.php'>ΞΟΞΉΟΟΟΞΏΟΞ®</a>";
 ?>
 
 </body>

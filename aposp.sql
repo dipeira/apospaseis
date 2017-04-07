@@ -1,32 +1,4 @@
--- phpMyAdmin SQL Dump
--- version 4.1.12
--- http://www.phpmyadmin.net
---
--- Φιλοξενητής: localhost
--- Χρόνος δημιουργίας: 07 Αυγ 2014 στις 09:28:21
--- Έκδοση διακομιστή: 5.5.16
--- Έκδοση PHP: 5.4.27
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-
---
--- Βάση δεδομένων: `aposp`
-CREATE DATABASE IF NOT EXISTS `%aposp%` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `%aposp%`;
---
-
--- --------------------------------------------------------
-
---
--- Δομή πίνακα για τον πίνακα `apo_aitisi`
---
+USE %aposp%;
 DROP TABLE IF EXISTS `apo_aitisi`;
 CREATE TABLE IF NOT EXISTS `apo_aitisi` (
   `id` int(11) NOT NULL AUTO_INCREMENT,`ygeia` tinyint(1) NOT NULL COMMENT 'Λόγοι υγείας ιδίου, παιδιών, συζύγου',
@@ -65,11 +37,6 @@ CREATE TABLE IF NOT EXISTS `apo_aitisi` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
 
--- --------------------------------------------------------
-
---
--- Δομή πίνακα για τον πίνακα `apo_dimos`
---
 DROP TABLE IF EXISTS `apo_dimos`;
 CREATE TABLE IF NOT EXISTS `apo_dimos` (
   `id` int(11) NOT NULL COMMENT 'Α/Α (0 για κανένα δήμο)',
@@ -77,11 +44,6 @@ CREATE TABLE IF NOT EXISTS `apo_dimos` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- --------------------------------------------------------
-
---
--- Δομή πίνακα για τον πίνακα `apo_employee`
---
 DROP TABLE IF EXISTS `apo_employee`;
 CREATE TABLE IF NOT EXISTS `apo_employee` (
   `id` int(11) NOT NULL,
@@ -100,11 +62,6 @@ CREATE TABLE IF NOT EXISTS `apo_employee` (
   KEY `am` (`am`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2594 ;
 
--- --------------------------------------------------------
-
---
--- Δομή πίνακα για τον πίνακα `apo_school`
---
 DROP TABLE IF EXISTS `apo_school`;
 CREATE TABLE IF NOT EXISTS `apo_school` (
   `id` int(11) NOT NULL,
@@ -115,7 +72,3 @@ CREATE TABLE IF NOT EXISTS `apo_school` (
   `inactive` tinyint(1) NOT NULL COMMENT 'Να μην εμφανίζεται στις επιλογές',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
