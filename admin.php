@@ -72,7 +72,9 @@
         exit;
     }
     // Depending on $_GET['action'] value:
+    /////////////////////////////////
     // Cancel application submission
+    /////////////////////////////////
     if ($_GET['action']=="undo")
     {
         $id = $_GET['id'];
@@ -82,14 +84,15 @@
         echo "<br>Παρακαλώ περιμένετε...";
         echo "<meta http-equiv=\"refresh\" content=\"3; URL=admin.php\">";
     }
-    // view selected application
+    /////////////////////////////
+    // View selected application
+    /////////////////////////////
     elseif ($_GET['action']=="view")
     {
         $id = $_GET['id'];
-        $query = "SELECT * from $av_ait a JOIN $av_emp e ON a.emp_id=e.id WHERE a.id=$id";
+        $query = "SELECT *,e.mhnes as mhnesy,e.hmeres as hmeresy from $av_ait a JOIN $av_emp e ON a.emp_id=e.id WHERE a.id=$id";
         $result = mysqli_query($mysqlconnection, $query);
         $row = mysqli_fetch_assoc($result);
-        
         
         $name = $row['name'];
         $surname = $row['surname'];
@@ -99,8 +102,8 @@
         $organ = $row['org'];
         $organ = getSchooledc($organ, $mysqlconnection);
         $ethy = $row['eth'];
-        $mhnesy = $row['e.mhnes'];
-        $hmeresy = $row['e.hmeres'];
+        $mhnesy = $row['mhnesy'];
+        $hmeresy = $row['hmeresy'];
         $gamos = $row['gamos'];
         $paidia = $row['paidia'];
         $dhmos_anhk = $row['dhmos_anhk'];
@@ -125,8 +128,12 @@
         $org_eid = $row['org_eid'];
         $allo = $row['allo'];
         
-        for ($i = 1; $i < 21; $i++) {
-          ${'s'.$i} = getSchooledc($row['p'.$i],$mysqlconnection);
+        // if choices are made, prepare...
+        if (strlen($row['choices']) > 0) {
+            $sch_arr = unserialize($row['choices']);
+            for ($i = 0; $i < $av_choices; $i++) {
+                ${'s'.$i} = strlen($sch_arr[$i]) > 0 ? getSchooledc($sch_arr[$i],$mysqlconnection) : null;
+            }
         }
 
         $submitted = $row['submitted'];
@@ -153,7 +160,7 @@
         // organ & synolikh yphresia can be changed
         if ($submitted || !$av_canalter)
             echo "<tr><td colspan=2>Οργανική θέση: </td><td colspan=5>".$organ."</td></tr>";
-        else{
+        else {
             $schools = getSchools('organ',$dim,0,$mysqlconnection,$organ);
             echo "<tr><td colspan=2>Οργανική θέση: </td><td colspan=5>".$schools."</td></tr>";
         }
@@ -238,8 +245,9 @@
         echo "<table id=\"mytbl\" class=\"imagetable\" border=\"2\">\n";
         echo "<tr><td colspan=4><center><strong>Προτιμήσεις</strong></center></td></tr>";
         
-        for ($i = 1; $i < 21; $i++) {
-          echo "<tr><td>$iη προτίμηση</td><td>".${'s'.$i}."</td></tr>\n";
+        for ($i = 0; $i < $av_choices; $i++) {
+          if (strlen(${'s'.$i}) == 0) continue;
+          echo "<tr><td>".($i+1)."η προτίμηση</td><td>".${'s'.$i}."</td></tr>\n";
         }
         
         if ($submitted)
@@ -253,7 +261,9 @@
             echo "<tr><td colspan=4><center><input type='submit' onclick='return myaction()' value='Αποθήκευση'></form></center></td></tr>";
         echo "<tr><td colspan=4><center><form action='admin.php'><input type='submit' value='Έπιστροφή'></form></center></td></tr>";   
     }
+    ///////////////////
     // export to excel
+    ///////////////////
     elseif ($_GET['action']=="export")
     {
         if ($av_type == 1)
@@ -267,16 +277,31 @@
             JOIN $av_sch s ON s.kwdikos = e.org 
             WHERE submitted=1";
         else
-            $query = "SELECT a.p1,a.p2,a.p3,a.p4,a.p5,a.p6,a.p7,a.p8,a.p9,a.p10,a.p11,a.p12,a.p13,a.p14,a.p15,a.p16,a.p17,a.p18,a.p19,a.p20,
-            e.am,e.name,e.surname,e.patrwnymo,s.name,e.eth,e.mhnes,e.hmeres,e.klados
+            $query = "SELECT e.am,e.name,e.surname,e.patrwnymo,s.name,e.eth,e.mhnes,e.hmeres,e.klados,a.choices
             FROM $av_ait a 
             JOIN $av_emp e ON a.emp_id=e.id 
             JOIN $av_sch s ON s.kwdikos = e.org 
             WHERE submitted=1";
         $result = mysqli_query($mysqlconnection, $query);
         $num = mysqli_num_rows($result);
-        while ($row0 = mysqli_fetch_array($result,MYSQL_NUM))
-            $data[] = $row0;
+        if ($num == 0) {
+            echo "Δεν υπάρχουν δεδομένα για εξαγωγή!<br><br>";
+            echo "<form action='admin.php'><input type='submit' value='Επιστροφή'></form>";
+            die();
+        }
+        // fetch data
+        while ($row0 = mysqli_fetch_array($result,MYSQL_NUM)) {
+            $tmpdata = $row0;
+            // fetch choices as array
+            $choices = $apospaseis ? unserialize($row0[28]) : unserialize($row0[9]);
+            // remove choices column
+            if ($apospaseis)
+                unset($tmpdata[28]);
+            else
+                unset($tmpdata[9]);
+            // merge arrays
+            $data[] = array_merge($tmpdata, $choices);
+        }
         
         $columns = array();
         if ($apospaseis)
@@ -286,11 +311,14 @@
         
             while ($row = mysqli_fetch_array($res1,MYSQL_NUM))
                 $columns[] = $row[0];
+            // remove 'choices' from columns
+            unset($columns[28]);
         }
-        else
-            for ($j=1; $j<21; $j++)
-                $columns[] = "p$j";
+                        
         array_push($columns,'am','name','surname','patrwnymo','school','ethy','mhnesy','hmeresy','klados');
+        for ($j=0; $j<$av_choices; $j++) {
+            $columns[] = "p".($j+1);
+        }
         
         ob_start();
         echo "<table id=\"mytbl\" border=\"1\">\n";
@@ -322,7 +350,9 @@
         echo "<form action='admin.php'><input type='submit' value='Επιστροφή'></form>";
         //ob_end_clean();
     }
+    /////////////////
     // end of export
+    /////////////////
     // view employees that haven't submitted or done nothing.
     elseif ($_GET['action'] == 'nothing' || $_GET['action'] == 'saved')
     {
@@ -365,7 +395,9 @@
             echo "<form action='admin.php'><input type='submit' value='Επιστροφή'></form>";	
     }
     // of nothing or not submitted
+    ///////////////////
     // Main admin view
+    ///////////////////
     else
     {
       echo "<center><h2>$av_title ($av_foreas) <br> Διαχείριση</h2></center>";
@@ -374,7 +406,7 @@
 
       $i=0;
       $aa = 1;
-      $query = "SELECT * from $av_ait a JOIN $av_emp e ON a.emp_id=e.id";
+      $query = "SELECT *,a.id as aitisi_id from $av_ait a JOIN $av_emp e ON a.emp_id=e.id";
 
       $result = mysqli_query($mysqlconnection, $query);
       if ($result)
@@ -395,13 +427,13 @@
 
       while ($i < $num){
         $row = mysqli_fetch_assoc($result);
-        $id = $row['id'];
+        $id = $row['aitisi_id'];
         $surname = $row['surname'];
         $name = $row['name'];
         $klados = $row['klados'];
         $submitted = $row['submitted'];
         $am = $row['am'];
-        $p1 = $row['p1'];
+        $choices = $row['choices'];
         if ($submitted==0)
         {
             $sub = "Όχι";
@@ -418,12 +450,11 @@
         if ($submitted && $av_canundo)
         {
             echo "&nbsp;<span title=\"Αναίρεση Υποβολής\"><a href=\"admin.php?id=$id&action=undo\"><img style=\"border: 0pt none;\" src=\"images/undo.png\" onclick='return myaction_yp()'/></a></span>";
-            if (!$p1)
+            if (!$choices)
             {
               echo "&nbsp;(KENH)";
               $blanks++;
             }
-      
         }
         echo "</td><td>$my_date</td></tr>";
 

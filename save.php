@@ -17,7 +17,8 @@
   // checks for blanks
   function array_check($arr)
   {
-      for ($i=20; $i>=1; $i--)
+      global $av_choices;
+      for ($i = $av_choices; $i>=1; $i--)
       {
           if ((preg_match('/^\s+$/', $arr[$i-1])) == 1)
               $err[] = $i-1;
@@ -110,7 +111,10 @@
   else
   // if page 2
   {
-   $sch_arr = array ($_POST['p1'], $_POST['p2'], $_POST['p3'], $_POST['p4'], $_POST['p5'], $_POST['p6'], $_POST['p7'], $_POST['p8'], $_POST['p9'], $_POST['p10'], $_POST['p11'], $_POST['p12'], $_POST['p13'], $_POST['p14'], $_POST['p15'], $_POST['p16'], $_POST['p17'], $_POST['p18'], $_POST['p19'], $_POST['p20']);
+    $sch_arr = array();
+    for ($i = 1; $i < $av_choices+1; $i++) {
+        array_push($sch_arr, $_POST['p'.$i]);
+    }
 
     $error = array_check($sch_arr);
     $dbl = array_dbl($sch_arr);
@@ -142,7 +146,7 @@
         //print_r($arr2);
         foreach ($arr2 as $ar1)
             if (!empty($ar1))
-                echo "<br>".getSchool($ar1,$mysqlconnection);
+                echo "<br><strong>".getSchooledc($ar1,$mysqlconnection);
         //echo "</body></html>";
         //exit;
     }
@@ -170,34 +174,32 @@
 
     $query = "SELECT * from $av_ait WHERE emp_id = $emp_id";
     $result = mysqli_query($mysqlconnection, $query);
-    $result ? $num_rows = mysqli_num_rows($result) : $num_rows = 0;
-    if ($num_rows > 0)
-        $exists = 1;
+    $num_rows = $result ? mysqli_num_rows($result) : 0;
+    $exists = $num_rows > 0 ? 1 : 0;
+    // serialize user choices
+    $ser_p = serialize($sch_arr);
 
     if ($exists)
     {
         if ($submit){
             $phpdate = date('Y-m-d H:i:s'); 
             $mysqldate = date( 'Y-m-d H:i:s', $phpdate );
-            $query = "UPDATE $av_ait SET submitted=1,submit_date=NOW(),p1=$p1,p2=$p2,p3=$p3,p4=$p4,p5=$p5,p6=$p6,p7=$p7,p8=$p8,p9=$p9,p10=$p10,p11=$p11,p12=$p12,p13=$p13,p14=$p14,p15=$p15,p16=$p16,p17=$p17,p18=$p18,p19=$p19,p20=$p20 WHERE emp_id='$emp_id'";
+            $query = "UPDATE $av_ait SET submitted=1,submit_date=NOW(),choices='$ser_p' WHERE emp_id='$emp_id'";
         }
-        else
-            $query = "UPDATE $av_ait SET p1=$p1,p2=$p2,p3=$p3,p4=$p4,p5=$p5,p6=$p6,p7=$p7,p8=$p8,p9=$p9,p10=$p10,p11=$p11,p12=$p12,p13=$p13,p14=$p14,p15=$p15,p16=$p16,p17=$p17,p18=$p18,p19=$p19,p20=$p20 WHERE emp_id='$emp_id'";
+        else {
+            $query = "UPDATE $av_ait SET choices='$ser_p' WHERE emp_id='$emp_id'";
+        }
         mysqli_query($mysqlconnection, $query);
     }
     else
     {
         if ($submit)
         {
-            $qry0 = "INSERT INTO $av_ait (emp_id,p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,submit_date,submitted) ";
-            $qry1 = "values ($emp_id,$p1,$p2,$p3,$p4,$p5,$p6,$p7,$p8,$p9,$p10,$p11,$p12,$p13,$p14,$p15,$p16,$p17,$p18,$p19,$p20,".date("Y-m-d H:i:s").",1)";
-            $query = $qry0.$qry1;
+            $query = "INSERT INTO $av_ait (emp_id,choices,submit_date,submitted) values ($emp_id,$ser_p,".date("Y-m-d H:i:s").",1)";
         }
         else
         {
-            $qry0 = "INSERT INTO $av_ait (emp_id,p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20) ";
-            $qry1 = "values ($emp_id,$p1,$p2,$p3,$p4,$p5,$p6,$p7,$p8,$p9,$p10,$p11,$p12,$p13,$p14,$p15,$p16,$p17,$p18,$p19,$p20)";
-            $query = $qry0.$qry1;
+            $query = "INSERT INTO $av_ait (emp_id,choices) values ($emp_id,$ser_p)";
         }
         mysqli_query($mysqlconnection, $query);
     }
