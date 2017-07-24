@@ -195,11 +195,11 @@
     {
         if ($submit)
         {
-            $query = "INSERT INTO $av_ait (emp_id,choices,submit_date,submitted) values ($emp_id,$ser_p,".date("Y-m-d H:i:s").",1)";
+            $query = "INSERT INTO $av_ait (emp_id,choices,submit_date,submitted) values ($emp_id,'$ser_p',".date("Y-m-d H:i:s").",1)";
         }
         else
         {
-            $query = "INSERT INTO $av_ait (emp_id,choices) values ($emp_id,$ser_p)";
+            $query = "INSERT INTO $av_ait (emp_id,choices) values ($emp_id,'$ser_p')";
         }
         mysqli_query($mysqlconnection, $query);
     }

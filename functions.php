@@ -67,7 +67,7 @@ function getSchools ($epil, $dim, $omada, $conn, $sch)
     $result = mysqli_query($conn, $query);
     while ($ar = mysqli_fetch_array($result))
         $arr[] = $ar;
-    $ret = "<select name='p".$epil."' id='p".$epil."' style='width:100%;'>";
+    $ret = "<select name='p".$epil."' id='p".$epil."' style='width:280px;'>";
     $ret .= "<option value=\"\"></option>";
     foreach ($arr as $res)
     {
