@@ -23,7 +23,8 @@
 
   include("class.login.php");
   $log = new logmein();
-  if($log->logincheck($_SESSION['loggedin']) == false)
+  //if($log->logincheck($_SESSION['loggedin']) == false)
+  if($_SESSION['loggedin'] == false)
   //if($log->logincheck($_SESSION['loggedin']) == false && $_SESSION['timeout']<time())
   {   
       //header("Location: login.php");

@@ -135,7 +135,7 @@
         foreach ($error as $ar_er)
             $ret .= ($ar_er+1).", ";
         $ret = rtrim($ret,", ");
-        echo $ret;
+        echo "<strong>$ret</strong>";
     }
     // if doubles
     if ($dbl)

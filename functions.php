@@ -4,10 +4,11 @@ require_once 'config.php';
 function getSchooledc ($id,$conn)
 {
         global $av_sch;
-        $query = "SELECT name from $av_sch where kwdikos=".$id;
+        $query = "SELECT name from $av_sch where kwdikos='".$id."'";
         $result = mysqli_query($conn, $query);
-        if (mysqli_num_rows($result)==0) 
+        if (mysqli_num_rows($result)==0) {
             return "";
+        }
         else {
           $row = mysqli_fetch_array($result);
           return $row['name'];

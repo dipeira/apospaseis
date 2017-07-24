@@ -7,7 +7,8 @@
 
   include("class.login.php");
   $log = new logmein();
-  if($log->logincheck($_SESSION['loggedin']) == false)
+  //if($log->logincheck($_SESSION['loggedin']) == false)
+  if($_SESSION['loggedin'] == false)
   {   
       header("Location: login.php");
   }
@@ -266,8 +267,7 @@
     ///////////////////
     elseif ($_GET['action']=="export")
     {
-        if ($av_type == 1)
-            $apospaseis = 1;
+        $apospaseis = $av_type == 1 ? 1 : 0;
         $i=0;
         $data = array();
         if ($apospaseis)
@@ -300,7 +300,18 @@
             else
                 unset($tmpdata[9]);
             // merge arrays
-            $data[] = array_merge($tmpdata, $choices);
+            if ($av_dntes) {
+                $cnt = 1;
+                foreach($choices as $ch){
+                    if (!$ch) continue;
+                    $tmp .= $cnt.". ".getSchooledc($ch, $mysqlconnection)."<br>\n";
+                    $cnt++;
+                }
+                array_push($tmpdata, $tmp);
+                $data[] = $tmpdata;
+            } else {
+                $data[] = array_merge($tmpdata, $choices);
+            }
         }
         
         $columns = array();
@@ -316,8 +327,13 @@
         }
                         
         array_push($columns,'am','name','surname','patrwnymo','school','ethy','mhnesy','hmeresy','klados');
-        for ($j=0; $j<$av_choices; $j++) {
-            $columns[] = "p".($j+1);
+        if ($av_dntes) {
+            $columns[] = "choices";
+        }
+        else {
+            for ($j=0; $j<$av_choices; $j++) {
+                $columns[] = "p".($j+1);
+            }
         }
         
         ob_start();
@@ -330,8 +346,10 @@
         while ($i < $num)
         {
             echo "<tr>";
-            foreach ($data[$i] as $res)
+            foreach ($data[$i] as $res) {
                 echo "<td>$res</td>";
+            }
+                
             echo "</tr>";
             $i++;
         }

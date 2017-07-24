@@ -7,7 +7,8 @@
   include("class.login.php");
   $log = new logmein();
   // if not logged in or not admin
-  if($log->logincheck($_SESSION['loggedin']) == false || $_SESSION['user'] != $av_admin)
+  //if($log->logincheck($_SESSION['loggedin']) == false || $_SESSION['user'] != $av_admin)
+  if($_SESSION['loggedin'] == false)
   {   
       header("Location: login.php");
   }
