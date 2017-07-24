@@ -301,6 +301,7 @@
                 unset($tmpdata[9]);
             // merge arrays
             if ($av_dntes) {
+		$tmp = '';
                 $cnt = 1;
                 foreach($choices as $ch){
                     if (!$ch) continue;
