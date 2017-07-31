@@ -18,7 +18,7 @@ include_once ("class.login.php");
     
 if ($_REQUEST['logout']==1)
 {
-    //header("Location: login.php");
+    $_SESSION['loggedin'] = false;
     $page = 'login.php';
 	echo '<script type="text/javascript">';
 	echo 'window.location.href="'.$page.'";';
@@ -29,8 +29,8 @@ if (!isset($_REQUEST['action']))
 {
     ?>
 <center>
-<h2><?php echo $av_dnsh; ?>
-    <br><?php echo $av_title; ?> εντός <?php echo $av_foreas; ?></h2>
+<h2><?= $av_dnsh; ?>
+    <br><?= $av_title; ?> (<?= $av_foreas; ?>)</h2>
 <?php
     echo "<h3>Διάστημα υποβολής αιτήσεων: από $av_active_from έως $av_active_to και ώρα $av_active_to_time.</h3>";
 
@@ -56,35 +56,26 @@ if (!isset($_REQUEST['action']))
 //}
 //if($_REQUEST['action'] == "login" && !$timeout){
 if($_REQUEST['action'] == "login"){
-    if($log->login("logon", $_REQUEST['username'], $_REQUEST['password']) == true)
+    if($log->login("logon", $_REQUEST['username'], $_REQUEST['password'], $_REQUEST[$av_extra_name]) == true)
     {
         session_start();
         $_SESSION['timeout'] = time() + (60 * 60);
 		// if system inactive, allow only administrator
 		if (!$av_is_active && $_REQUEST['username'] != $av_admin)
 		{
-			echo "H είσοδος απέτυχε διότι το σύστημα δεν είναι ενεργό...";
+			echo "<h3>H είσοδος απέτυχε διότι το σύστημα δεν είναι ενεργό...</h3>";
 			echo "<FORM><INPUT Type='button' VALUE='Επιστροφή' onClick='history.go(-1);return true;'></FORM>";
 			die();
 		}
-        if ($av_type == 1){
-            //header("Location: index.php");
-            $page = 'index.php';
-			echo '<script type="text/javascript">';
-			echo 'window.location.href="'.$page.'";';
-			echo '</script>';
-        }
-        else{
-            //header("Location: index2.php");
-            $page = 'index2.php';
-			echo '<script type="text/javascript">';
-			echo 'window.location.href="'.$page.'";';
-			echo '</script>';
-        }
+        $page = ($av_type == 1) ? 'index.php' : 'index2.php';     
+        echo '<script type="text/javascript">';
+        echo 'window.location.href="'.$page.'";';
+        echo '</script>';
     }
-else{
-    echo "H είσοδος απέτυχε...";
-    echo "<br>Δοκιμάστε ξανά με έναν έγκυρο συνδυασμό Α.Μ. - Α.Φ.Μ.";
+else {
+    echo "<h3>H είσοδος απέτυχε...</h3>";
+    $extra_col = $av_extra ? " - ".$av_extra_label : '';
+    echo "<br><p>Δοκιμάστε ξανά με έναν έγκυρο συνδυασμό Α.Μ. - Α.Φ.Μ.$extra_col</p>";
     echo "<FORM><INPUT Type='button' VALUE='Επιστροφή' onClick='history.go(-1);return true;'></FORM>";
 }
 }

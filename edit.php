@@ -7,7 +7,8 @@
 
   include("class.login.php");
   $log = new logmein();
-  if($log->logincheck($_SESSION['loggedin']) == false)
+  //if($log->logincheck($_SESSION['loggedin']) == false)
+	if($_SESSION['loggedin'] == false)
   {   
       header("Location: login.php");
   }

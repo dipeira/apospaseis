@@ -23,7 +23,8 @@
 
   include("class.login.php");
   $log = new logmein();
-  if($log->logincheck($_SESSION['loggedin']) == false)
+  //if($log->logincheck($_SESSION['loggedin']) == false)
+  if($_SESSION['loggedin'] == false)
   //if($log->logincheck($_SESSION['loggedin']) == false && $_SESSION['timeout']<time())
   {   
       //header("Location: login.php");
@@ -92,35 +93,34 @@
     else
         $dim = 0;
     ?>
-    <script type="text/javascript">	
-      
-                function stopRKey(evt) {
-                    var evt = (evt) ? evt : ((event) ? event : null);
-                    var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null);
-                    if ((evt.keyCode == 13) && (node.type=="text"))  {return false;}
-                }
+    <script type="text/javascript">
+        function stopRKey(evt) {
+            var evt = (evt) ? evt : ((event) ? event : null);
+            var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null);
+            if ((evt.keyCode == 13) && (node.type=="text"))  {return false;}
+        }
 
-                document.onkeypress = stopRKey;
+        document.onkeypress = stopRKey;
 
-                function toggleFormElements() {
-                    var inputs = document.getElementsByTagName("input");
-                    ret=confirm("Είστε σίγουροι;");
-                    if (ret){
-                        for (var i = 0; i < 40; i++) {    
-                            inputs[i].value = '';
-                            if (inputs[i].disabled == true)
-                                inputs[i].disabled = false;
-                            else
-                                inputs[i].disabled = true;
-                        }
-                    }
-                    mytag = document.getElementById("null_btn").value;
-                    if (inputs[0].disabled == 1)
-                        document.getElementById("null_btn").value = "Απενεργοποίηση Αρνητικής Δήλωσης";
+        function toggleFormElements() {
+            var inputs = document.getElementsByTagName("input");
+            ret=confirm("Είστε σίγουροι;");
+            if (ret){
+                for (var i = 0; i < 40; i++) {    
+                    inputs[i].value = '';
+                    if (inputs[i].disabled == true)
+                        inputs[i].disabled = false;
                     else
-                        document.getElementById("null_btn").value = "Αρνητική Δήλωση";
-                    
+                        inputs[i].disabled = true;
                 }
+            }
+            mytag = document.getElementById("null_btn").value;
+            if (inputs[0].disabled == 1)
+                document.getElementById("null_btn").value = "Απενεργοποίηση Αρνητικής Δήλωσης";
+            else
+                document.getElementById("null_btn").value = "Αρνητική Δήλωση";
+            
+        }
     </script>
     <?php
     //check if employee has submitted aitisi
@@ -136,9 +136,12 @@
     // if user has already saved an application
     if ($has_aitisi)
     {
-          for ($i = 1; $i < 21; $i++) {
-            ${'s'.$i} = getSchooledc($row['p'.$i],$mysqlconnection);
-          }
+        if (strlen($row['choices']) > 0) {
+            $sch_arr = unserialize($row['choices']);
+            for ($i = 0; $i < $av_choices; $i++) {
+                ${'s'.$i} = strlen($sch_arr[$i]) > 0 ? getSchooledc($sch_arr[$i],$mysqlconnection) : null;
+            }
+        }
         
         // 26-07-2013: eksairesh gia genikh 2 eidikh agwgh
         $apospash = $row['apospash'];
@@ -166,11 +169,12 @@
         // if user has submitted
         if ($submitted)
         {
-            for ($i = 1; $i < 21; $i++) {
-              echo "<tr><td>".$i."η προτίμηση</td><td>".${'s'.$i}."</td></tr>\n";
+            $sch_arr = array();
+            for ($i = 0; $i < $av_choices; $i++) {
+              if (strlen(${'s'.$i}) == 0) continue;
+              echo "<tr><td>".($i+1)."η προτίμηση</td><td>".${'s'.$i}."</td></tr>\n";
+              array_push($sch_arr, ${'s'.$i});
             }
-          
-            $sch_arr = array($s1, $s2, $s3, $s4, $s5, $s6, $s7, $s8, $s9, $s10, $s11, $s12, $s13, $s14, $s15, $s16, $s17, $s18, $s19, $s20);
             echo "<tr><td colspan=4><small>Υποβλήθηκε στις: ".  date("d-m-Y, H:i:s", strtotime($row['updated']))."</small></td></tr>";
             $ser = serialize($sch_arr);
             echo "<tr><td colspan=4><center><form action='print.php' method='POST'><input type='hidden' name = 'cred_arr' value='$ser_cred'><input type='hidden' name = 'sch_arr' value='$ser'><input type='submit' value='Εκτύπωση'></form></center></td></tr>";
@@ -190,26 +194,18 @@
                             return false;
                         }
                     }
-
-                    $(function() {
-                      $(".cancelBtn").click( function(){
-                        var theNum = this.id.replace( /^\D+/g, '');
-                        var s2 = $('#p'+theNum).select2();
-                        s2.val(null).trigger('change');
-                      });
-                    });
                 </script>
                    
                   <?php
             if ($av_type == 1)
             {
-                for ($i=1; $i<21; $i++)
-                  echo "<tr><td>".$i."η Προτίμηση</td><td>".getSchools($i, $dim, $omada, $mysqlconnection, ${"s".$i})."&nbsp;<input type='button' class='cancelBtn' id='btn".$i."' style='background: #ccc url(js/clear_cross.png); no-repeat; width:16px; height:16px;' /></td></tr>";
+                for ($i=0; $i<$av_choices; $i++)
+                  echo "<tr><td>".($i+1)."η Προτίμηση</td><td>".getSchools($i+1, $dim, $omada, $mysqlconnection, ${"s".$i});
             }
             else
             {
-                for ($i=1; $i<21; $i++)
-                  echo "<tr><td>".$i."η Προτίμηση</td><td>".getSchools($i, $dim, 0, $mysqlconnection, ${"s".$i})."&nbsp;<input type='button' id='btn".$i."' style='background: #ccc url(js/clear_cross.png); no-repeat; width:16px; height:16px;' /></td></tr>";
+                for ($i=0; $i<$av_choices; $i++)
+                  echo "<tr><td>".($i+1)."η Προτίμηση</td><td>".getSchools($i+1, $dim, 0, $mysqlconnection, ${"s".$i});
             }
             if ($has_aitisi)
                   echo "<tr><td colspan=4><small>Τελευταία ενημέρωση: ". date("d-m-Y, H:i:s", strtotime($row['updated']))."</small></td></tr>";
@@ -239,5 +235,8 @@
 </html>
 
 <script type="text/javascript">
-  $('select').select2();
+  $('select').select2({
+      placeholder: ' ',
+      allowClear: true
+  });
 </script>

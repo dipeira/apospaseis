@@ -5,16 +5,6 @@ CREATE TABLE IF NOT EXISTS `apo_aitisi` (
   `ygeia_g` tinyint(1) NOT NULL COMMENT 'Λόγοι υγείας γονέων',`ygeia_a` tinyint(1) NOT NULL COMMENT 'Λόγοι υγείας αδελφών',
   `eksw` tinyint(1) NOT NULL COMMENT 'Θεραπεία για εξωσωματική γονιμοποίηση',
   `emp_id` int(11) NOT NULL COMMENT 'Α/Α υπαλλήλου (από πίνακα υπαλλήλων)',
-  `p1` int(11) NOT NULL,`p2` int(11) NOT NULL,
-  `p3` int(11) NOT NULL,`p4` int(11) NOT NULL,
-  `p5` int(11) NOT NULL,`p6` int(11) NOT NULL,
-  `p7` int(11) NOT NULL,`p8` int(11) NOT NULL,
-  `p9` int(11) NOT NULL,`p10` int(11) NOT NULL,
-  `p11` int(11) NOT NULL,`p12` int(11) NOT NULL,
-  `p13` int(11) NOT NULL,`p14` int(11) NOT NULL,
-  `p15` int(11) NOT NULL,`p16` int(11) NOT NULL,
-  `p17` int(11) NOT NULL,`p18` int(11) NOT NULL,
-  `p19` int(11) NOT NULL,`p20` int(11) NOT NULL,
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Ημ/νία ώρα τελευταίας μεταβολής',
   `submit_date` datetime NOT NULL COMMENT 'Ημ/νία ώρα υποβολής',
   `submitted` tinyint(1) NOT NULL COMMENT 'Υποβλήθηκε',`gamos` tinyint(4) NOT NULL COMMENT '0 agamos, 1 eggamos',
@@ -34,6 +24,7 @@ CREATE TABLE IF NOT EXISTS `apo_aitisi` (
   `ypdil` tinyint(1) NOT NULL,
   `org_eid` tinyint(1) NOT NULL COMMENT 'Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)',
   `allo` varchar(100) NOT NULL COMMENT 'άλλο προσόν ειδικής αγωγής',
+  `choices` text NOT NULL
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
 

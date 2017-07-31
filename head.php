@@ -1,4 +1,5 @@
 <head>
+	<?php require_once('config.php'); ?>
 	<LINK href="style.css" rel="stylesheet" type="text/css">
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title><?= $av_title." ($av_foreas)"; ?></title>

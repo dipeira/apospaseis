@@ -4,10 +4,11 @@ require_once 'config.php';
 function getSchooledc ($id,$conn)
 {
         global $av_sch;
-        $query = "SELECT name from $av_sch where kwdikos=".$id;
+        $query = "SELECT name from $av_sch where kwdikos='".$id."'";
         $result = mysqli_query($conn, $query);
-        if (mysqli_num_rows($result)==0) 
+        if (mysqli_num_rows($result)==0) {
             return "";
+        }
         else {
           $row = mysqli_fetch_array($result);
           return $row['name'];
@@ -57,24 +58,24 @@ function getSchools ($epil, $dim, $omada, $conn, $sch)
 {
     global $av_sch;
     if (!$omada && !$dim)
-        $query = "select DISTINCT name,id from $av_sch WHERE inactive<>1 order by name";
+        $query = "select DISTINCT name,id,kwdikos from $av_sch WHERE inactive<>1 order by name";
     if (!$omada && $dim)
-        $query = "select DISTINCT name,id from $av_sch where dim=$dim AND inactive<>1 order by name";
+        $query = "select DISTINCT name,id,kwdikos from $av_sch where dim=$dim AND inactive<>1 order by name";
     if ($omada && $dim)
-        $query = "select DISTINCT name,id from $av_sch where dim=$dim AND omada <> $omada AND inactive<>1 order by name";
+        $query = "select DISTINCT name,id,kwdikos from $av_sch where dim=$dim AND omada <> $omada AND inactive<>1 order by name";
     $arr = array();
     $result = mysqli_query($conn, $query);
     while ($ar = mysqli_fetch_array($result))
         $arr[] = $ar;
-    $ret = "<select name='p".$epil."' id='p".$epil."'>";
+    $ret = "<select name='p".$epil."' id='p".$epil."' style='width:280px;'>";
     $ret .= "<option value=\"\"></option>";
     foreach ($arr as $res)
     {
         //print_r($res);
         if ($sch == $res[0])
-            $ret .= "<option value=\"$res[1]\" selected>".$res[0]."</option>";
+            $ret .= "<option value=\"$res[2]\" selected>".$res[0]."</option>";
         else
-            $ret .= "<option value=\"$res[1]\">".$res[0]."</option>";
+            $ret .= "<option value=\"$res[2]\">".$res[0]."</option>";
     }
     $ret .= "</select>";
     return $ret;
