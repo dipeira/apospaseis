@@ -22,27 +22,22 @@
     <title><?php echo $av_title." ($av_foreas) - Διαχείριση"; ?></title>
 	
 	<script type="text/javascript" src="js/jquery.js"></script>
-	<script type="text/javascript" src="js/jquery.validate.js"></script>
-        <script type="text/javascript" src="js/jquery.clearableTextField.js"></script>
-        <link rel="stylesheet" href="js/jquery.clearableTextField.css" type="text/css" media="screen" />
-	<script type='text/javascript' src='js/jquery.autocomplete.js'></script>
-	<link rel="stylesheet" type="text/css" href="js/jquery.autocomplete.css" />
-        <script language="javascript" type="text/javascript">
-                    function myaction(){
-                        r=confirm("Είστε σίγουροι ότι θέλετε να αλλάξετε τα στοιχεία του υπαλλήλου;");
-                        if (r==false){
-                            return false;
-                        }
+    <script language="javascript" type="text/javascript">
+                function myaction(){
+                    r=confirm("Είστε σίγουροι ότι θέλετε να αλλάξετε τα στοιχεία του υπαλλήλου;");
+                    if (r==false){
+                        return false;
                     }
-					function myaction_yp(){
-                        r=confirm("Είστε σίγουροι ότι θέλετε να αναιρέσετε την υποβολή της αίτησης;");
-                        if (r==false){
-                            return false;
-                        }
+                }
+                function myaction_yp(){
+                    r=confirm("Είστε σίγουροι ότι θέλετε να αναιρέσετε την υποβολή της αίτησης;");
+                    if (r==false){
+                        return false;
                     }
-        </script>
-        
-        <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic&subset=greek,latin' rel='stylesheet' type='text/css'>
+                }
+    </script>
+    
+    <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic&subset=greek,latin' rel='stylesheet' type='text/css'>
 
 <?php
   if ($loggedin)

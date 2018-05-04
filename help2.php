@@ -1,7 +1,7 @@
 <?php require_once 'config.php'; ?>
 <html>
     <head>
-        <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic&subset=greek,latin' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic&subset=greek,latin' rel='stylesheet' type='text/css'>
     </head>
     <body>
 <br><br><br>

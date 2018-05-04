@@ -8,7 +8,7 @@ include_once 'config.php';
 <html>
     <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title><?php echo $av_title." ".$av_foreas; ?></title></head>
 <body>
-<link href='http://fonts.googleapis.com/css?family=Roboto+Condensed&subset=greek,latin' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Roboto+Condensed&subset=greek,latin' rel='stylesheet' type='text/css'>
 <LINK href="style.css" rel="stylesheet" type="text/css">
 <?php
 include_once ("class.login.php");   

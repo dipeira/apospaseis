@@ -1,7 +1,7 @@
 <?php require_once 'config.php'; ?>
 <html>
     <head>
-        <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic&subset=greek,latin' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic&subset=greek,latin' rel='stylesheet' type='text/css'>
          <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
          <LINK href="style.css" rel="stylesheet" type="text/css">
         <script src="//code.jquery.com/jquery-1.10.2.js"></script>
