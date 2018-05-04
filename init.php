@@ -42,8 +42,16 @@ if ($_SESSION['auth'])
       $sql = "CREATE DATABASE IF NOT EXISTS $db_name DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci";
       $db->exec($sql);
       
-      $tags = array ('apo_employee', 'apo_dimos','apo_aitisi','apo_school','%aposp%');
-      $elem = array ( $av_emp, $av_dimos, $av_ait, $av_sch, $db_name );
+      $tags = array (
+        'apo_employee', 'apo_dimos',
+        'apo_aitisi','apo_school','apo_params',
+        '%aposp%'
+      );
+      $elem = array ( 
+        $av_emp, $av_dimos, 
+        $av_ait, $av_sch, $av_params, 
+        $db_name
+      );
       $query = str_replace($tags, $elem, file_get_contents('aposp.sql'));
 
       try {
