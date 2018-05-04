@@ -19,14 +19,14 @@ function getSchool ($id,$conn)
     global $av_sch;
     if (!$id)
         return "";
-        $query = "SELECT name from $av_sch where id=".$id;
-        $result = mysqli_query($conn, $query);
-        if (mysqli_num_rows($result)==0) 
-            return "";
-        else {
-          $row = mysqli_fetch_array($result);
-          return $row['name'];
-        }
+    $query = "SELECT name from $av_sch where id=".$id;
+    $result = mysqli_query($conn, $query);
+    if (mysqli_num_rows($result)==0) 
+        return "";
+    else {
+        $row = mysqli_fetch_array($result);
+        return $row['name'];
+    }
 }
 function getSchoolID ($name,$conn)
 {
@@ -36,8 +36,8 @@ function getSchoolID ($name,$conn)
     if (mysqli_num_rows($result)==0) 
         return 0;
     else {
-          $row = mysqli_fetch_array($result);
-          return $row['id'];
+        $row = mysqli_fetch_array($result);
+        return $row['id'];
     }
 }
 function getSchoolcode ($id, $conn)
@@ -48,8 +48,8 @@ function getSchoolcode ($id, $conn)
     if (mysqli_num_rows($result)==0) 
         return 0;
     else {
-          $row = mysqli_fetch_array($result);
-          return $row['kwdikos'];
+        $row = mysqli_fetch_array($result);
+        return $row['kwdikos'];
     }
 }
 
@@ -116,7 +116,6 @@ function cmbGamos ()
     echo "<option value=\"3\">Σε χηρεία χωρίς παιδιά ανήλικα ή σπουδάζοντα</option>";
     echo "<option value=\"4\">Σε χηρεία με παιδιά ανήλικα ή σπουδάζοντα</option>";
     echo "<option value=\"5\">Μονογονεϊκή οικογένεια (χωρίς γάμο) με παιδιά ανήλικα ή σπουδάζοντα</option>";
-    
     echo "</select>";
 }
 function cmbPaidia ()

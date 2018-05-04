@@ -1,8 +1,6 @@
 <?php require_once 'config.php'; ?>
 <html>
-    <head>
-        <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic&subset=greek,latin' rel='stylesheet' type='text/css'>
-    </head>
+    <head></head>
     <body>
 <br><br><br>
 <p class="main"><?php echo $av_title." ($av_foreas)"; ?>
@@ -32,7 +30,7 @@
 <p>
 <br>
 <small>
-    Σχεδίαση - Ανάπτυξη: <a href="mailto:sugarv@sch.gr?subject=Αποσπάσεις/Βελτιώσεις">Ε.Ζαχαριουδάκης, ΠΕ20</a>
+    Σχεδίαση - Ανάπτυξη: <a href="mailto:it@dipe.ira.sch.gr?subject=Αποσπάσεις/Βελτιώσεις">Ε.Ζαχαριουδάκης, ΠΕ20</a>
 <br>
 Επιμέλεια: Γραμματεία <?php echo $av_foreas; ?>
 </small>

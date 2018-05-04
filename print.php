@@ -8,34 +8,22 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title>Εκτύπωση αίτησης</title>
-    <LINK href="style_2.css" rel="stylesheet" type="text/css">
+    <LINK href="style.css" rel="stylesheet" type="text/css">
     <style type="text/css">
-        @media print
-        {
+        @media print {
         .noprint {display:none;}
         }
-
-        @media screen
-        {
+        @media screen {
         }
     </style>
   </head>
   <body> 
 <?php
-  echo "<div class=\"print\">";
-  echo "<center><h3>$av_title ($av_foreas)</h3></center>";
-  $serial = $_POST['sch_arr'];
-  $ser_cred = $_POST['cred_arr'];
-  $scharr = unserialize(stripslashes($serial));
-  
-//  echo "<center>";
-//  echo "<table id=\"mytbl\" border=\"2\">\n";
-//  echo "<thead><th colspan=4>Οριστικοποιημένη Αίτηση για οριστική τοποθέτηση ή βελτίωση θέσης</th></thead>";
-//  echo "<tr><td>Ονοματεπώνυμο Εκπ/κού:</td><td colspan=3>".$credarr[0]." ".$credarr[1]."</td></tr>";
-//  echo "<tr><td>Πατρώνυμο: </td><td colspan=3>".$credarr[2]."</td></tr>";
-//  echo "<tr><td>Κλάδος: </td><td colspan=3>".$credarr[3]."</td></tr>";
-//  echo "<tr><td>A.M.: </td><td colspan=3>".$_SESSION['user']."</td></tr>";
-//  echo "<tr><td>Οργανική θέση: </td><td colspan=3>".$credarr[4]."</td></tr>";
+    echo "<div class=\"print\">";
+    echo "<center><h3>$av_title ($av_foreas)</h3></center>";
+    $serial = $_POST['sch_arr'];
+    $ser_cred = $_POST['cred_arr'];
+    $scharr = unserialize(stripslashes($serial));
     
     $mysqlconnection = mysqli_connect($db_host, $db_user, $db_password,$db_name);
     mysqli_set_charset($mysqlconnection,"utf8");
@@ -88,7 +76,7 @@
    
     
     echo "<center>";
-    echo "<table id=\"mytbl\" class=\"imagetable\" border=\"2\">\n";
+    echo "<table id=\"mytbl\" class=\"\" border=\"2\">\n";
     echo "<thead><th colspan=7>Φόρμα υποβολής στοιχείων</th></thead>";
     echo "<tr><td colspan=2>Ονοματεπώνυμο Εκπ/κού:</td><td colspan=5>".$name." ".$surname."</td></tr>";
     echo "<tr><td colspan=2>Πατρώνυμο: </td><td colspan=5>".$patrwnymo."</td></tr>";
@@ -165,10 +153,8 @@
         $blabla = "Δηλώνω υπεύθυνα ότι δεν έχω οριστεί στέλεχος εκπαίδευσης (λ.χ. προϊστάμενος/μένη ολιγοθέσιας σχολικής μονάδας, διευθυντής/ντρια σχολ. μονάδας)<br> και ότι δεν υπηρετώ σε θέση με θητεία που λήγει μετά τις 31-08-2013.";
         echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='ypdil' value='1' checked disabled>$blabla</td></tr>";
 
-        //echo "<tr><td colspan=7><small>Υποβλήθηκε στις: ".  date("d-m-Y, H:i:s", $row['submit_date'])."</small></td></tr>";
         echo "<input type='hidden' name = 'id' value='$id'>";
     }
-    //echo "</form>";
     
   echo "<tr><td colspan=7><center><strong>Προτιμήσεις</strong></center></td></tr>";
   $i=1;
