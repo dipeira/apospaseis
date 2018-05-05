@@ -2,6 +2,15 @@
   session_start();
   require_once "config.php";
   require_once 'functions.php';
+  
+  // check if logged in
+  include_once("class.login.php");
+  $log = new logmein();
+  if($_SESSION['loggedin'] == false)
+    header("Location: login.php");
+  // check if admin 
+  if ($_SESSION['user']!=$av_admin)
+    die("Authentication error");
 
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $pcount = 0;
