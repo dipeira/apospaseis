@@ -286,4 +286,21 @@ function startsWith($haystack, $needle){
     $length = strlen($needle);
     return (substr($haystack, 0, $length) === $needle);
 }
+function getParam($param, $conn) {
+    global $av_params;
+    $query = "SELECT pvalue from $av_params where pkey=$param";
+    $result = mysqli_query($conn, $query);
+    if (mysqli_num_rows($result)==0) 
+        return 0;
+    else {
+        $row = mysqli_fetch_array($result);
+        return $row['pvalue'];
+    }
+}
+function setParam($param, $value=null, $conn) {
+    global $av_params;
+    $query = "UPDATE $av_params SET pvalue=$value where pkey=$param";
+    $result = mysqli_query($conn, $query);
+    return mysqli_affected_rows($conn);
+}
 ?>
