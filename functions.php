@@ -303,4 +303,8 @@ function setParam($param, $value=null, $conn) {
     $result = mysqli_query($conn, $query);
     return mysqli_affected_rows($conn);
 }
+function has_choices($ch){
+    $values = array_count_values(unserialize($ch));
+    return $values[''] == 20 ? false : true;
+}
 ?>

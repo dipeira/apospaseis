@@ -467,7 +467,7 @@
         if ($submitted && $av_canundo)
         {
             echo "&nbsp;<span title=\"Αναίρεση Υποβολής\"><a href=\"admin.php?id=$id&action=undo\"><img style=\"border: 0pt none;\" src=\"images/undo.png\" onclick='return myaction_yp()'/></a></span>";
-            if (!$choices)
+            if (!has_choices($choices))
             {
               echo "&nbsp;(KENH)";
               $blanks++;
