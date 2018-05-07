@@ -14,7 +14,7 @@
   // local
   $db_host = "localhost";
   $db_user = "root";
-  $db_password = "d1pe_db";
+  $db_password = "XXXXXX";
   $db_name = "aposp";
   // sch.gr
   //$db_host = "userdb";
@@ -50,7 +50,8 @@
       return 0;
   else {
       while ($row = mysqli_fetch_array($result)) {
-        $$row['pkey'] = $row['pvalue'];
+        $key = $row['pkey'];
+        $$key = $row['pvalue'];
       }
       $_SESSION['initialized'] = true;
   }

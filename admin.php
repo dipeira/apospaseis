@@ -285,7 +285,7 @@
             die();
         }
         // fetch data
-        while ($row0 = mysqli_fetch_array($result,MYSQL_NUM)) {
+        while ($row0 = mysqli_fetch_array($result,MYSQLI_NUM)) {
             $tmpdata = $row0;
             // fetch choices as array
             $choices = $apospaseis ? unserialize($row0[28]) : unserialize($row0[9]);
@@ -316,7 +316,7 @@
             $qry1 = "SHOW COLUMNS FROM $av_ait";
             $res1 = mysqli_query($mysqlconnection, $qry1);
         
-            while ($row = mysqli_fetch_array($res1,MYSQL_NUM))
+            while ($row = mysqli_fetch_array($res1,MYSQLI_NUM))
                 $columns[] = $row[0];
             // remove 'choices' from columns
             unset($columns[28]);
@@ -416,6 +416,9 @@
     {
       echo "<center><h2>$av_title ($av_foreas) <br> Διαχείριση</h2></center>";
       echo "<center>";
+      if (file_exists('init.php')){
+          echo "<p><b>ΠΡΟΣΟΧΗ</b>: Παρακαλώ διαγράψτε το αρχείο <b>init.php</b> για λόγους ασφαλείας!</p>";
+      }
       echo "<h3>Λίστα αιτήσεων</h3>";
 
       $i=0;
