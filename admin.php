@@ -296,7 +296,7 @@
                 unset($tmpdata[9]);
             // merge arrays
             if ($av_dntes) {
-		$tmp = '';
+		        $tmp = '';
                 $cnt = 1;
                 foreach($choices as $ch){
                     if (!$ch) continue;
@@ -306,6 +306,18 @@
                 array_push($tmpdata, $tmp);
                 $data[] = $tmpdata;
             } else {
+                // if schools is enabled, show school names
+                if ($_GET['schools'] == 1){
+                    $tmpArr = Array();
+                    foreach($choices as $ch){
+                        if (!$ch) {
+                            $tmpArr[] = '';
+                            continue;
+                        }
+                        $tmpArr[] = getSchooledc($ch, $mysqlconnection);
+                    }
+                    $choices = $tmpArr;
+                }
                 $data[] = array_merge($tmpdata, $choices);
             }
         }
@@ -358,8 +370,12 @@
         echo "<form action='2excel.php' method='post'>";
         $page = str_replace("'", "", $page);
         echo "<input type='hidden' name = 'data' value='$page'>";
-	
-        echo "<BUTTON TYPE='submit'>Εξαγωγή στο excel</BUTTON>";
+        // link to show/hide school names
+        $getSchoolLink = $_GET['schools'] == 1 ? 
+            "<a href='admin.php?action=export'>Απόκρυψη σχολείων</a>" : 
+            "<a href='admin.php?action=export&schools=1'>Εμφάνιση σχολείων";
+        echo $getSchoolLink."<br><br>";
+        echo "<BUTTON TYPE='submit'>Εξαγωγή στο excel</BUTTON><br><br>";
         echo "</form>";
         echo "<form action='admin.php'><input type='submit' value='Επιστροφή'></form>";
         //ob_end_clean();
@@ -421,15 +437,25 @@
       }
       echo "<h3>Λίστα αιτήσεων</h3>";
 
-      $i=0;
+      $i=$hasFilter=0;
       $aa = 1;
-      $query = "SELECT *,a.id as aitisi_id from $av_ait a JOIN $av_emp e ON a.emp_id=e.id";
+      $where = '';
+      if (isset ($_GET['filter'])){
+          $hasFilter = 1;
+          $where = " WHERE klados = '" . $_GET['filter'] . "'";
+      }
+      $query = "SELECT *,a.id as aitisi_id from $av_ait a JOIN $av_emp e ON a.emp_id=e.id".$where;
 
       $result = mysqli_query($mysqlconnection, $query);
       if ($result)
         $num = mysqli_num_rows($result);
       else $num = 0;
 
+      if ($hasFilter){
+        echo "<p>Ενεργό φίλτρο: ".$_GET['filter'];
+        echo "&nbsp;&nbsp;<input type=\"button\" onclick=\"location.href='admin.php';\" value=\"Επαναφορά\" /> ";
+        echo "<br><br>";
+      }
       echo "<table id=\"mytbl\" class=\"imagetable tablesorter\" border=\"2\">\n";
       echo "<thead>";
       echo "<tr><th>Α/Α</th>\n";
@@ -463,7 +489,8 @@
             $sub_total++;
         }
 
-        echo "<tr><td>$aa</td><td><a href=\"admin.php?id=$id&action=view\">$surname</a></td><td>$name</td><td>$klados</td><td>$am</td><td>$sub";
+        echo "<tr><td>$aa</td><td><a href=\"admin.php?id=$id&action=view\">$surname</a></td><td>$name</td>";
+        echo "<td><a href='admin.php?filter=$klados'>$klados</a></td><td>$am</td><td>$sub";
         if ($submitted && $av_canundo)
         {
             echo "&nbsp;<span title=\"Αναίρεση Υποβολής\"><a href=\"admin.php?id=$id&action=undo\"><img style=\"border: 0pt none;\" src=\"images/undo.png\" onclick='return myaction_yp()'/></a></span>";
