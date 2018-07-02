@@ -1,7 +1,7 @@
 <?php
   header('Content-type: text/html; charset=utf-8'); 
   session_start();
-  require_once "config.php";
+  require_once "../config.php";
   require_once 'functions.php';
   //$_SESSION['inserted'] = $_SESSION['auth'] = NULL;
 ?>
@@ -15,10 +15,10 @@
     echo "<h2> Αρχικοποίηση βάσης δεδομένων </h2>";
     echo "<h3>Δημιουργία βάσης δεδομένων ή επαναφορά στην αρχική κατάσταση (κενή βάση)</h3>";
     echo "ΣΗΜ.: To script αυτό δημιουργεί τη βάση με όνομα <strong>$db_name</strong> και πίνακες <strong>$av_emp, $av_ait, $av_sch, $av_dimos</strong>.<br><br>";
-    echo "ΠΡΟΣΟΧΗ: Πριν προχωρήσετε, πρέπει να ρυθμίσετε τις παραμέτρους στο αρχείο <strong><i>config.php</i></strong><br><br>";
+    echo "ΠΡΟΣΟΧΗ: Πριν προχωρήσετε, πρέπει να ρυθμίσετε τις παραμέτρους στο αρχείο <strong><i>../config.php</i></strong><br><br>";
     echo "<strong>ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Η ενέργεια αυτή δεν είναι αναστρέψιμη...</strong><br><br>";
     echo "<form action='init.php' method='POST'>";
-    echo "Δώστε κωδικό ασφαλείας για αρχικοποίηση <small>(βλ. config.php)</small>:&nbsp;&nbsp;&nbsp;<input type='text' id='pass' name='pass'><br><input type='submit' value='Αρχικοποίηση'></form>";
+    echo "Δώστε κωδικό ασφαλείας για αρχικοποίηση <small>(βλ. ../config.php)</small>:&nbsp;&nbsp;&nbsp;<input type='text' id='pass' name='pass'><br><input type='submit' value='Αρχικοποίηση'></form>";
     exit;
   }
 if (($_POST['pass'] == $av_init_pass) && !isset($_SESSION['auth'])) {

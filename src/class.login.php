@@ -16,7 +16,7 @@ class logmein {
     
     public function get_vars()
     {
-      include 'config.php';
+      include '../config.php';
       $this->hostname_logon = $db_host;
       $this->database_logon = $db_name;
       $this->username_logon = $db_user;

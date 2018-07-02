@@ -2,7 +2,7 @@
 if (isset($_SESSION))
 	session_destroy();
 
-include_once 'config.php';
+include_once '../config.php';
 //session_start();
 ?>
 <html>

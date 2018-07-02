@@ -1,7 +1,7 @@
 <?php
   session_start();
   header('Content-type: text/html; charset=utf-8'); 
-  Require_once "config.php";
+  Require_once "../config.php";
   require_once "functions.php";
   // check if admin 
     if ($_SESSION['user']==$av_admin)

@@ -7,7 +7,7 @@
   <body> 
 <?php
   $error_found = 0;
-  require_once "config.php";
+  require_once "../config.php";
   require_once 'functions.php';
       
   $mysqlconnection = mysqli_connect($db_host, $db_user, $db_password, $db_name);

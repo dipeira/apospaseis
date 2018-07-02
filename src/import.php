@@ -1,7 +1,7 @@
 <?php
   session_start();
   header('Content-type: text/html; charset=utf-8'); 
-  Require "config.php";
+  Require "../config.php";
   require_once 'functions.php';
   
   include("class.login.php");
