@@ -307,4 +307,121 @@ function has_choices($ch){
     $values = array_count_values(unserialize($ch));
     return $values[''] == 20 ? false : true;
 }
+// function which computes moria apospasis
+// returns an array with keys 'synolo' & other criteria if they exist
+function compute_moria($emp_id, $conn) {
+    $moria = [];
+    global $av_ait, $av_emp;
+    $query = "SELECT a.*,e.eth,e.mhnes,e.hmeres from $av_ait a JOIN $av_emp e ON e.id=a.emp_id WHERE emp_id=$emp_id";
+    $result = mysqli_query($conn, $query);
+    $row = mysqli_fetch_assoc($result);
+    
+    ///////////////////
+    // moria yphresias
+    $moria_yphr = 0;
+    $mhnes = $row['mhnes'] + ($row['eth'] * 12);
+    $mhnes += $row['hmeres'] >= 15 ? 1 : 0;
+    $eth = $mhnes / 12;
+    // 1-10 eth: 1 morio/etos, >10 eth: 1.5 morio/etos, >20 eth: 2 moria/etos
+    if ($eth <= 10){
+        $moria_yphr = $eth;
+    } else if ($eth > 10 && $eth <= 20) {
+        $moria_yphr = ($eth - 10) * 1.5 + 10;
+    } else if ($eth > 20) {
+        $moria_yphr = (($eth - 20) * 2) + 15 + 10;
+    }
+    // round to 3 decimals
+    $moria['yphresias'] = round($moria_yphr, 3);
+
+    // moria gamoy
+    // case 0: "Άγαμος";
+    // case 1: "Έγγαμος";
+    // case 2: "Διαζευγμένος/σε διάσταση με επιμέλεια παιδιού ανήλικου ή σπουδάζοντος";
+    // case 3: "Σε χηρεία χωρίς παιδιά ανήλικα ή σπουδάζοντα";
+    // case 4: "Σε χηρεία με παιδιά ανήλικα ή σπουδάζοντα";
+    // case 5: "Μονογονεϊκή οικογένεια (χωρίς γάμο) με παιδιά ανήλικα ή σπουδάζοντα";
+    switch ($row['gamos']) {
+        case 1:
+        case 2:
+        case 3:
+            $moria['gamoy'] = 4;
+            break;
+        case 4:
+            $moria['gamoy'] = 12;
+            break;
+        case 5:
+            $moria['gamoy'] = 6;
+            break;
+    }
+    // moria paidiwn
+    // 1o 5, 2o 6, 3o 8, 4o+ 10
+    switch ($row['paidia']) {
+        case 1:
+            $moria['paidiwn'] = 5;
+            break;
+        case 2:
+            $moria['paidiwn'] = 11;
+            break;
+        case 3:
+            $moria['paidiwn'] = 19;
+            break;
+        case 4:
+            $moria['paidiwn'] = 29;
+            break;
+        case 5:
+            $moria['paidiwn'] = 39;
+            break;
+        case 6:
+            $moria['paidiwn'] = 49;
+            break;
+        case 7:
+            $moria['paidiwn'] = 59;
+            break;
+    }
+    // ygeias
+    // 1: 50-60, 2: 67-79, 3: >=80
+    switch ($row['ygeia']) {
+        case 1:
+            $moria['ygeias'] = 5;
+            break;
+        case 2:
+            $moria['ygeias'] = 20;
+            break;
+        case 3:
+            $moria['ygeias'] = 30;
+            break;
+    }
+    // ygeias gonewn
+    // 1: 50-66, 2: >=67-79
+    switch ($row['ygeia_g']) {
+        case 1:
+            $moria['ygeia_g'] = 1;
+            break;
+        case 2:
+            $moria['ygeia_g'] = 3;
+            break;
+    }
+    // ygeias adelfwn
+    if ($row['ygeia_a'] == 1){
+        $moria['ygeia_a'] = 5;
+    }
+    // ekswswmatikh
+    if ($row['eksw'] == 1){
+        $moria['eksw'] = 3;
+    }
+    // calculate sum
+    $synolika_moria = array_sum($moria);
+    $moria['synolo'] = $synolika_moria;
+
+    // entopiothta
+    if ($row['dhmos_ent'] > 0){
+        $moria['entopiothta'] = 4;
+    }
+    // synyphrethsh
+    if ($row['dhmos_syn'] > 0){
+        $moria['synyphrethsh'] = 10;
+    }
+
+    return $moria;
+}
 ?>

@@ -265,18 +265,19 @@
         $apospaseis = $av_type == 1 ? 1 : 0;
         $i=0;
         $data = array();
-        if ($apospaseis)
-            $query = "SELECT a.*,e.am,e.name,e.surname,e.patrwnymo,s.name,e.eth,e.mhnes,e.hmeres,e.klados
+        if ($apospaseis){
+            $query = "SELECT e.id,e.am,e.name,e.surname,e.patrwnymo,s.name as sch_name,e.eth,e.mhnes,e.hmeres,e.klados,a.choices,a.dhmos_ent,a.dhmos_syn
             FROM $av_ait a 
             JOIN $av_emp e ON a.emp_id=e.id 
             JOIN $av_sch s ON s.kwdikos = e.org 
             WHERE submitted=1";
-        else
-            $query = "SELECT e.am,e.name,e.surname,e.patrwnymo,s.name,e.eth,e.mhnes,e.hmeres,e.klados,a.choices
+        } else {
+            $query = "SELECT e.id,e.am,e.name,e.surname,e.patrwnymo,s.name as sch_name,e.eth,e.mhnes,e.hmeres,e.klados,a.choices
             FROM $av_ait a 
             JOIN $av_emp e ON a.emp_id=e.id 
             JOIN $av_sch s ON s.kwdikos = e.org 
             WHERE submitted=1";
+        }
         $result = mysqli_query($mysqlconnection, $query);
         $num = mysqli_num_rows($result);
         if ($num == 0) {
@@ -285,15 +286,15 @@
             die();
         }
         // fetch data
-        while ($row0 = mysqli_fetch_array($result,MYSQLI_NUM)) {
-            $tmpdata = $row0;
+        while ($row0 = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+            // skip first column (id)
+            $tmpdata = array_slice($row0,1);
             // fetch choices as array
-            $choices = $apospaseis ? unserialize($row0[28]) : unserialize($row0[9]);
-            // remove choices column
-            if ($apospaseis)
-                unset($tmpdata[28]);
-            else
-                unset($tmpdata[9]);
+            $choices = unserialize($row0['choices']);
+            
+            unset($tmpdata['choices']);
+            unset($tmpdata['dhmos_ent']);
+            unset($tmpdata['dhmos_syn']);
             // merge arrays
             if ($av_dntes) {
 		        $tmp = '';
@@ -304,7 +305,7 @@
                     $cnt++;
                 }
                 array_push($tmpdata, $tmp);
-                $data[] = $tmpdata;
+                $data = $tmpdata;
             } else {
                 // if schools is enabled, show school names
                 if ($_GET['schools'] == 1){
@@ -318,23 +319,32 @@
                     }
                     $choices = $tmpArr;
                 }
-                $data[] = array_merge($tmpdata, $choices);
+                
+                $tmpdata = array_merge($tmpdata, $choices);
+                if ($apospaseis){
+                    // compute moria
+                    $moria = compute_moria($row0['id'],$mysqlconnection);
+                    // get entopiothta, synhphrethsh
+                    $dim_ent = getDimos($row0['dhmos_ent'], $mysqlconnection);
+                    $dim_syn = getDimos($row0['dhmos_syn'], $mysqlconnection);
+                    // construct moria array for export
+                    $moria_array = Array(
+                        'synolo'=>$moria['synolo'],
+                        'entopiothta'=>$moria['entopiothta'],
+                        'dim_entop'=>$dim_ent,
+                        'synyphrethsh'=>$moria['synyphrethsh'],
+                        'dim_synyp'=>$dim_syn
+                    );
+                    $tmpdata = array_merge($tmpdata, $moria_array);
+                }
+                $data[] = $tmpdata;
             }
         }
         
         $columns = array();
-        if ($apospaseis)
-        {
-            $qry1 = "SHOW COLUMNS FROM $av_ait";
-            $res1 = mysqli_query($mysqlconnection, $qry1);
-        
-            while ($row = mysqli_fetch_array($res1,MYSQLI_NUM))
-                $columns[] = $row[0];
-            // remove 'choices' from columns
-            unset($columns[28]);
-        }
                         
         array_push($columns,'am','name','surname','patrwnymo','school','ethy','mhnesy','hmeresy','klados');
+        
         if ($av_dntes) {
             $columns[] = "choices";
         }
@@ -342,6 +352,9 @@
             for ($j=0; $j<$av_choices; $j++) {
                 $columns[] = "p".($j+1);
             }
+        }
+        if ($apospaseis){
+            $columns = array_merge($columns,Array('synolo','entopiothta','dimos_entopiothtas','synyphrethsh','dimos_synyphrethshs'));
         }
         
         ob_start();
