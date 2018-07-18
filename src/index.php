@@ -183,6 +183,12 @@
         // if user has submitted
         if ($submitted)
         {
+            echo "<tr><td colspan=2>Ανάλυση μορίων: </td><td colspan=5>";
+            $moria = compute_moria($id, $mysqlconnection);
+            foreach ($moria as $key => $value) {
+                echo moria_key2per($key).": $value<br>";
+            }
+            echo "</td></tr>";
             echo "<form id='src' name='src' action='index2.php' method='POST'>\n";
             if ($org_eid)
                 echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='org_eid' value='1' checked disabled>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";

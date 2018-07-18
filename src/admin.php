@@ -44,7 +44,7 @@
   {
     // check if admin 
     if ($_SESSION['user']!=$av_admin)
-        die("Authentication error");
+        die("Σφάλμα αυθεντικοποίησης...");
 
     $mysqlconnection = mysqli_connect($db_host, $db_user, $db_password, $db_name);
     mysqli_set_charset($mysqlconnection,"utf8");
@@ -52,10 +52,7 @@
     // if POST change apo_employee organ & synolikh yphresia
     if (isset($_POST['porgan']))
     {
-        $qry = "SELECT kwdikos FROM $av_sch WHERE name='".$_POST['porgan']."'";
-        $res = mysqli_query($mysqlconnection, $qry);
-        $row = mysqli_fetch_assoc($res);
-        $organ = $row['kwdikos'];
+        $organ = $_POST['porgan'];
         $eth = $_POST['ethy'];
         $mhnes = $_POST['mhnesy'];
         $hmeres = $_POST['hmeresy'];
@@ -90,6 +87,7 @@
         $result = mysqli_query($mysqlconnection, $query);
         $row = mysqli_fetch_assoc($result);
         
+        $emp_id = $row['emp_id'];
         $name = $row['name'];
         $surname = $row['surname'];
         $patrwnymo = $row['patrwnymo'];
@@ -169,6 +167,13 @@
               echo "<tr><td colspan=2>Συνολική υπηρεσία: </td><td colspan=5><input size=2 name='ethy' value=$ethy> Έτη,<input size=2 name='mhnesy' value=$mhnesy> Μήνες,<input size=2 name='hmeresy' value=$hmeresy> Ημέρες</td></tr>";
             }
             // end of changeable elements
+            // print moria analysis
+            echo "<tr><td colspan=2>Ανάλυση μορίων: </td><td colspan=5>";
+            $moria = compute_moria($emp_id, $mysqlconnection);
+            foreach ($moria as $key => $value) {
+                echo moria_key2per($key).": $value<br>";
+            }
+            echo "</td></tr>";
             if ($org_eid)
                 echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='org_eid' value='1' checked disabled>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
             else
@@ -405,35 +410,37 @@
             $i = 0;
             if ($nothing)
             {
-                    $query = "SELECT * FROM $av_emp e LEFT JOIN $av_ait a ON e.id = a.emp_id WHERE a.id IS NULL";
-                    echo "<h3>Εκπ/κοί που δεν έχουν κάνει καμία αποθήκευση ή υποβολή</h3>";
+                $query = "SELECT * FROM $av_emp e LEFT JOIN $av_ait a ON e.id = a.emp_id WHERE a.id IS NULL";
+                echo "<h3>Εκπ/κοί που δεν έχουν κάνει καμία αποθήκευση ή υποβολή</h3>";
             }
             else
             {
-                    $query = "SELECT * from $av_ait a JOIN $av_emp e ON a.emp_id=e.id WHERE submitted = 0";
-                    echo "<h3>Εκπ/κοί που έχουν αποθηκεύσει αλλά δεν έχουν υποβάλει αίτηση</h3>";
+                $query = "SELECT * from $av_ait a JOIN $av_emp e ON a.emp_id=e.id WHERE submitted IS NULL OR submitted=0";
+                echo "<h3>Εκπ/κοί που έχουν αποθηκεύσει αλλά δεν έχουν υποβάλει αίτηση</h3>";
             }
             $result = mysqli_query($mysqlconnection, $query);
             $num = mysqli_num_rows($result);
-            echo "<table id=\"mytbl\" class=\"imagetable tablesorter\" border=\"2\">\n";
-            echo "<thead>";
-            echo "<tr><th>Α/Α</th>\n";
-            echo "<th>Επώνυμο</th>\n";
-            echo "<th>Όνομα</th>\n";
-            echo "<th>Ειδικότητα</th>\n";
-            echo "<th>A.M.</th>\n";
-            while ($i < $num){
-                $row = mysqli_fetch_assoc($result);
-                $id = $row['id'];
-                $surname = $row['surname'];
-                $name = $row['name'];
-                $klados = $row['klados'];
-                $am = $row['am'];
-                echo "<tr><td>$id</td><td>$surname</td><td>$name</td><td>$klados</td><td>$am</td></tr>";
+            if ($num > 0){
+                echo "<table id=\"mytbl\" class=\"imagetable tablesorter\" border=\"2\">\n";
+                echo "<thead>";
+                echo "<tr><th>Α/Α</th>\n";
+                echo "<th>Επώνυμο</th>\n";
+                echo "<th>Όνομα</th>\n";
+                echo "<th>Ειδικότητα</th>\n";
+                echo "<th>A.M.</th>\n";
+                while ($i < $num){
+                    $row = mysqli_fetch_assoc($result);
+                    $id = $row['id'];
+                    $surname = $row['surname'];
+                    $name = $row['name'];
+                    $klados = $row['klados'];
+                    $am = $row['am'];
+                    echo "<tr><td>$id</td><td>$surname</td><td>$name</td><td>$klados</td><td>$am</td></tr>";
 
-                $i++;
+                    $i++;
+                }
+                echo "</table>";
             }
-            echo "</table>";
             echo "Σύνολο: $num";
             echo "<form action='admin.php'><input type='submit' value='Επιστροφή'></form>";	
     }

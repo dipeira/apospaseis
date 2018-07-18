@@ -424,4 +424,29 @@ function compute_moria($emp_id, $conn) {
 
     return $moria;
 }
+// returns a better description for each moria category
+function moria_key2per($key){
+    switch ($key) {
+        case 'yphresias':
+            return 'Υπηρεσίας';
+        case 'gamoy':
+            return 'Γάμου';
+        case 'paidiwn':
+            return 'Παιδιών';
+        case 'ygeias':
+            return 'Υγείας';
+        case 'ygeia_g':
+            return 'Υγείας γονέων';
+        case 'ygeia_a':
+            return 'Υγείας αδελφών';
+        case 'eksw':
+            return 'Εξωσωματικής';
+        case 'entopiothta':
+            return 'Εντοπιότητας';
+        case 'synyphrethsh':
+            return 'Συνυπηρέτησης';
+        case 'synolo':
+            return 'Σύνολο';
+    }
+}
 ?>

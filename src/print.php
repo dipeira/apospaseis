@@ -49,6 +49,7 @@
     $result = mysqli_query($mysqlconnection, $query);
     $row = mysqli_fetch_assoc($result);
     
+    $emp_id = $row['emp_id'];
     $gamos = $row['gamos'];
     $paidia = $row['paidia'];
     $dhmos_anhk = $row['dhmos_anhk'];
@@ -152,6 +153,12 @@
         echo "<tr height=20></tr><tr><td colspan=2>Σχόλια - Παρατηρήσεις</td><td colspan=5>$comments</td></tr>";    
         $blabla = "Δηλώνω υπεύθυνα ότι δεν έχω οριστεί στέλεχος εκπαίδευσης (λ.χ. προϊστάμενος/μένη ολιγοθέσιας σχολικής μονάδας, διευθυντής/ντρια σχολ. μονάδας)<br> και ότι δεν υπηρετώ σε θέση με θητεία που λήγει μετά τις 31-08-2013.";
         echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='ypdil' value='1' checked disabled>$blabla</td></tr>";
+        echo "<tr><td colspan=2>Ανάλυση μορίων: </td><td colspan=5>";
+            $moria = compute_moria($emp_id, $mysqlconnection);
+            foreach ($moria as $key => $value) {
+                echo moria_key2per($key).": $value<br>";
+            }
+            echo "</td></tr>";
 
         echo "<input type='hidden' name = 'id' value='$id'>";
     }
