@@ -74,7 +74,7 @@ class logmein {
                     //$_SESSION['userid'] = $row['userid'];
                     //userlevel session is optional. Use it if you have different user levels
                     //$_SESSION['userlevel'] = $row[$this->user_level];
-                    $result = $this->qry("UPDATE ".$this->user_table." SET lastlogin=now() WHERE ".$this->user_column."='?';" , $username);
+                    $result = $this->qry("UPDATE ".$this->user_table." SET lastlogin=now() WHERE ".$this->user_column."='".$username."'");
                     return true;
                 } else {
                     session_destroy();
@@ -91,8 +91,8 @@ class logmein {
     //prevent injection
     function qry($query) {
       $this->dbconnect();
-      $args  = func_get_args();
       /*
+      $args  = func_get_args();
       $query = array_shift($args);
       $query = str_replace("?", "%s", $query);
 
