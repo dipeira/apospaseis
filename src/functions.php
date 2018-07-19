@@ -100,7 +100,7 @@ function getDimos ($dimos_code, $conn)
     $query = "SELECT name from $av_dimos where id=$dimos_code";
         $result = mysqli_query($conn, $query);
         if (mysqli_num_rows($result)==0) 
-            echo "";
+            return "";
         else {
           $row = mysqli_fetch_array($result);
           return $row['name'];
