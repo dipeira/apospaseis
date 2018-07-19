@@ -83,7 +83,7 @@
     elseif ($_GET['action']=="view")
     {
         $id = $_GET['id'];
-        $query = "SELECT *,e.mhnes as mhnesy,e.hmeres as hmeresy from $av_ait a JOIN $av_emp e ON a.emp_id=e.id WHERE a.id=$id";
+        $query = "SELECT *,a.eth as ethea, a.mhnes as mhnesea, a.hmeres as hmeresea, e.eth as ethy, e.mhnes as mhnesy,e.hmeres as hmeresy from $av_ait a JOIN $av_emp e ON a.emp_id=e.id WHERE a.id=$id";
         $result = mysqli_query($mysqlconnection, $query);
         $row = mysqli_fetch_assoc($result);
         
@@ -95,7 +95,7 @@
         $am = $row['am'];
         $organ = $row['org'];
         $organ = getSchooledc($organ, $mysqlconnection);
-        $ethy = $row['eth'];
+        $ethy = $row['ethy'];
         $mhnesy = $row['mhnesy'];
         $hmeresy = $row['hmeresy'];
         $gamos = $row['gamos'];
@@ -110,9 +110,9 @@
         $metapt = $row['metapt'];
         $didask = $row['didask'];
         $paidag = $row['paidag'];
-        $eth = $row['eth'];
-        $mhnes = $row['mhnes'];
-        $hmeres = $row['hmeres'];
+        $eth = $row['ethea'];
+        $mhnes = $row['mhnesea'];
+        $hmeres = $row['hmeresea'];
         $ygeia = $row['ygeia'];
         $ygeia_g = $row['ygeia_g'];
         $ygeia_a = $row['ygeia_a'];

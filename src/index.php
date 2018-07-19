@@ -87,46 +87,32 @@
         $dim = 0;
     ?>
     <script type="text/javascript">		               
-                function stopRKey(evt) {
-                    var evt = (evt) ? evt : ((event) ? event : null);
-                    var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null);
-                    if ((evt.keyCode == 13) && (node.type=="text"))  {return false;}
-                }
+        function stopRKey(evt) {
+            var evt = (evt) ? evt : ((event) ? event : null);
+            var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null);
+            if ((evt.keyCode == 13) && (node.type=="text"))  {return false;}
+        }
 
-                document.onkeypress = stopRKey;
+        document.onkeypress = stopRKey;
 
-                function toggleFormElements() {
-                    var inputs = document.getElementsByTagName("input");
-                    ret=confirm("Είστε σίγουροι;");
-                    if (ret){
-                        for (var i = 0; i < 40; i++) {    
-                            inputs[i].value = '';
-                            if (inputs[i].disabled == true)
-                                inputs[i].disabled = false;
-                            else
-                                inputs[i].disabled = true;
-                        }
-                    }
-                    mytag = document.getElementById("null_btn").value;
-                    if (inputs[0].disabled == 1)
-                        document.getElementById("null_btn").value = "Απενεργοποίηση Αρνητικής Δήλωσης";
+        function toggleFormElements() {
+            var inputs = document.getElementsByTagName("input");
+            ret=confirm("Είστε σίγουροι;");
+            if (ret){
+                for (var i = 0; i < 40; i++) {    
+                    inputs[i].value = '';
+                    if (inputs[i].disabled == true)
+                        inputs[i].disabled = false;
                     else
-                        document.getElementById("null_btn").value = "Αρνητική Δήλωση";  
+                        inputs[i].disabled = true;
                 }
-                
-                $(document).ready(function(){
-                    $('#apospash').change(function(){
-                        var checked = $(this).attr('checked');
-                        if (checked) {
-                        //$('#other').show();             
-                        $('#other').fadeIn();             
-                        } else {
-                            //$('#other').hide();
-                            $('#other').fadeOut();
-                        }
-                    });        
-                });
-                
+            }
+            mytag = document.getElementById("null_btn").value;
+            if (inputs[0].disabled == 1)
+                document.getElementById("null_btn").value = "Απενεργοποίηση Αρνητικής Δήλωσης";
+            else
+                document.getElementById("null_btn").value = "Αρνητική Δήλωση";  
+        }       
         </script>
         <?php
     //check if employee has aitisi
@@ -304,10 +290,7 @@
                 echo "<tr height=20></tr><tr><td colspan=2><center>Επιθυμώ απόσπαση</center></td><td colspan=5><div name='main'><input type='checkbox' id='apospash' name='apospash' value='1' checked='1'>Απο τη Γενική στην Ειδική Αγωγή</div></td></tr>";
             else
                 echo "<tr height=20></tr><tr><td colspan=2><center>Επιθυμώ απόσπαση</center></td><td colspan=5><div name='main'><input type='checkbox' id='apospash' name='apospash' value='1'>Απο τη Γενική στην Ειδική Αγωγή</div></td></tr>";
-            if (!$apospash)
-                $style = "display:none;";
-            else $style = '';
-            echo "<tr><td colspan=2></td><td colspan=5><div class='other' name='other' id='other' style='$style'>";
+            echo "<tr><td colspan=2></td><td colspan=5><div class='other' name='other' id='other'>";
             if ($didakt)
                 echo "α) Διδακτορικό Ειδ.Αγωγής<input type='checkbox' name='didakt' value='1' checked><br>";
             else
@@ -400,8 +383,7 @@
         echo "<tr height=20></tr><tr><td colspan=2><center>Ειδική Κατηγορία (κατά προτεραιότητα)</center></td><td colspan=5><input type='checkbox' name='eidikh' value='1'>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
 
             echo "<tr height=20></tr><tr><td colspan=2><center>Επιθυμώ απόσπαση</center></td><td colspan=5><div name='main'><input type='checkbox' id='apospash' name='apospash' value='1'>Απο τη Γενική στην Ειδική Αγωγή</div></td></tr>";
-            $style = "display:none;";
-            echo "<tr><td colspan=2></td><td colspan=5><div class='other' name='other' id='other' style='$style'>";
+            echo "<tr><td colspan=2></td><td colspan=5><div class='other' name='other' id='other'>";
             echo "α) Διδακτορικό Ειδ.Αγωγής<input type='checkbox' name='didakt' value='1'><br>";
             echo "β) Μεταπτυχιακό Ειδ.Αγωγής<input type='checkbox' name='metapt' value='1'><br>";
             echo "γ) Διδασκαλείο Ειδ.Αγωγής<input type='checkbox' name='didask' value='1'><br>";
