@@ -101,11 +101,11 @@
         echo "</td><td>Παιδιά</td><td>$paidia</td><td>Δήμος</td><td>$dhmos_anhk</td></tr>";
         echo "<tr height=20></tr><tr><td colspan=7><center>Εντοπιότητα</center></td></tr>";
         echo "<tr><td colspan=2>Δήμος της Περιφερειακής Ενότητας Ηρακλείου που έχω εντοπιότητα</td><td colspan=5>";
-        getDimos($dhmos_ent,$mysqlconnection);
+        echo getDimos($dhmos_ent,$mysqlconnection);
         echo "</td></tr>";
         echo "<tr height=20></tr><tr><td colspan=7><center>Συνυπηρέτηση</center></td></tr>";
         echo "<tr><td colspan=2>Δήμος της Περιφερειακής Ενότητας Ηρακλείου που έχω συνυπηρέτηση</td><td colspan=5>";
-        getDimos($dhmos_syn,$mysqlconnection);
+        echo getDimos($dhmos_syn,$mysqlconnection);
         echo "</td></tr>";
         if ($eidikh)
             echo "<tr height=20></tr><tr><td colspan=2><center>Ειδική Κατηγορία</center></td><td colspan=5><input type='checkbox' name='eidikh' value='1' disabled checked>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
