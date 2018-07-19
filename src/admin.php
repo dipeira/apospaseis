@@ -444,6 +444,41 @@
             echo "Σύνολο: $num";
             echo "<form action='admin.php'><input type='submit' value='Επιστροφή'></form>";	
     }
+    elseif ($_GET['action'] == 'gen2eid')
+    {
+        $i = 0;
+        $query = "SELECT *,a.id as ait_id from $av_ait a JOIN $av_emp e ON a.emp_id=e.id WHERE apospash = 1";
+        echo "<h3>Εκπ/κοί που έχουν αιτηθεί απόσπαση από Γενική σε Ειδική Αγωγή</h3>";
+        $result = mysqli_query($mysqlconnection, $query);
+        $num = mysqli_num_rows($result);
+        if ($num > 0){
+            echo "<table id=\"mytbl\" class=\"imagetable tablesorter\" border=\"2\">\n";
+            echo "<thead>";
+            echo "<tr><th>Α/Α</th>\n";
+            echo "<th>Επώνυμο</th>\n";
+            echo "<th>Όνομα</th>\n";
+            echo "<th>Ειδικότητα</th>\n";
+            echo "<th>A.M.</th>\n";
+            while ($i < $num){
+                $row = mysqli_fetch_assoc($result);
+                $id = $row['id'];
+                $surname = $row['surname'];
+                $name = $row['name'];
+                $klados = $row['klados'];
+                $am = $row['am'];
+                echo "<tr><td>$id</td>";
+                echo "<td><a href='admin.php?id=".$row['ait_id']."&action=view'>$surname</a></td>";
+                echo "<td>$name</td><td>$klados</td><td>$am</td></tr>";
+
+                $i++;
+            }
+            echo "</table>";
+            echo "Σύνολο: $num";
+        } else {
+            echo "<h3>Δεν υπάρχουν αιτήσεις...</h3>";
+        }
+        echo "<form action='admin.php'><input type='submit' value='Επιστροφή'></form>";	
+    }
     // of nothing or not submitted
     ///////////////////
     // Main admin view
@@ -455,7 +490,7 @@
       if (file_exists('init.php')){
           echo "<p><b>ΠΡΟΣΟΧΗ</b>: Παρακαλώ διαγράψτε το αρχείο <b>init.php</b> για λόγους ασφαλείας!</p>";
       }
-      echo "<h3>Λίστα αιτήσεων</h3>";
+      
 
       $i=$hasFilter=0;
       $aa = 1;
@@ -470,81 +505,85 @@
       if ($result)
         $num = mysqli_num_rows($result);
       else $num = 0;
-
-      if ($hasFilter){
-        echo "<p>Ενεργό φίλτρο: ".$_GET['filter'];
-        echo "&nbsp;&nbsp;<input type=\"button\" onclick=\"location.href='admin.php';\" value=\"Επαναφορά\" /> ";
-        echo "<br><br>";
-      }
-      echo "<table id=\"mytbl\" class=\"imagetable tablesorter\" border=\"2\">\n";
-      echo "<thead>";
-      echo "<tr><th>Α/Α</th>\n";
-      echo "<th>Επώνυμο</th>\n";
-      echo "<th>Όνομα</th>\n";
-      echo "<th>Ειδικότητα</th>\n";
-      echo "<th>A.M.</th>\n";
-      echo "<th>Υποβλήθηκε</th>\n";
-      echo "<th>Ημ/νία - Ώρα</th>\n";
-        echo "</tr>\n</thead>\n";
-      $sub_total = $blanks = 0;
-
-      while ($i < $num){
-        $row = mysqli_fetch_assoc($result);
-        $id = $row['aitisi_id'];
-        $surname = $row['surname'];
-        $name = $row['name'];
-        $klados = $row['klados'];
-        $submitted = $row['submitted'];
-        $am = $row['am'];
-        $choices = $row['choices'];
-        if ($submitted==0)
-        {
-            $sub = "Όχι";
-            $my_date = date("d-m-Y, H:i:s", strtotime($row['updated']));
-        }
-        else
-        {
-            $sub = "Ναι";
-            $my_date = date("d-m-Y, H:i:s", strtotime($row['submit_date']));
-            $sub_total++;
-        }
-
-        echo "<tr><td>$aa</td><td><a href=\"admin.php?id=$id&action=view\">$surname</a></td><td>$name</td>";
-        echo "<td><a href='admin.php?filter=$klados'>$klados</a></td><td>$am</td><td>$sub";
-        if ($submitted && $av_canundo)
-        {
-            echo "&nbsp;<span title=\"Αναίρεση Υποβολής\"><a href=\"admin.php?id=$id&action=undo\"><img style=\"border: 0pt none;\" src=\"images/undo.png\" onclick='return myaction_yp()'/></a></span>";
-            if (!has_choices($choices))
-            {
-              echo "&nbsp;(KENH)";
-              $blanks++;
+      if ($num == 0){
+        echo "<h3>Δεν έχουν υποβληθεί αιτήσεις...</h3>";
+        } else {
+            echo "<h3>Λίστα αιτήσεων</h3>";
+            if ($hasFilter){
+                echo "<p>Ενεργό φίλτρο: ".$_GET['filter'];
+                echo "&nbsp;&nbsp;<input type=\"button\" onclick=\"location.href='admin.php';\" value=\"Επαναφορά\" /> ";
+                echo "<br><br>";
             }
-        }
-        echo "</td><td>$my_date</td></tr>";
+            echo "<table id=\"mytbl\" class=\"imagetable tablesorter\" border=\"2\">\n";
+            echo "<thead>";
+            echo "<tr><th>Α/Α</th>\n";
+            echo "<th>Επώνυμο</th>\n";
+            echo "<th>Όνομα</th>\n";
+            echo "<th>Ειδικότητα</th>\n";
+            echo "<th>A.M.</th>\n";
+            echo "<th>Υποβλήθηκε</th>\n";
+            echo "<th>Ημ/νία - Ώρα</th>\n";
+                echo "</tr>\n</thead>\n";
+            $sub_total = $blanks = 0;
 
-        $i++;
-        $aa++;
-      }
-      echo "</table>";
-			
-			$query = "select count(*) as plithos from $av_emp";
-			$result = mysqli_query($mysqlconnection, $query);
-      $row = mysqli_fetch_assoc($result);
-			// -1 because of admin account
-			$total_ypal = $row['plithos'] - 1;
-			$saved = $num - $sub_total;
-			$nothing = $total_ypal - $sub_total - $saved;
-			//echo "Έχουν υποβληθεί <strong>$sub_total</strong> από $total_ypal αιτήσεις.<br>";
-      echo "Έχουν υποβληθεί <strong>$sub_total</strong> αιτήσεις.<br>";
-			if ($blanks)
-				echo "<strong>$blanks</strong> κενές (αρνητικές) αιτήσεις.<br>";
-			//echo "<br><a href='admin.php?action=nothing'>Εκπ/κοί που δεν έχουν κάνει καμία αποθήκευση ή υποβολή ($nothing)</a>";
-			echo "<br><a href='admin.php?action=saved'>Εκπ/κοί που έχουν αποθηκεύσει αλλά δεν έχουν υποβάλει αίτηση ($saved)</a>";
+            while ($i < $num){
+                $row = mysqli_fetch_assoc($result);
+                $id = $row['aitisi_id'];
+                $surname = $row['surname'];
+                $name = $row['name'];
+                $klados = $row['klados'];
+                $submitted = $row['submitted'];
+                $am = $row['am'];
+                $choices = $row['choices'];
+                if ($submitted==0)
+                {
+                    $sub = "Όχι";
+                    $my_date = date("d-m-Y, H:i:s", strtotime($row['updated']));
+                }
+                else
+                {
+                    $sub = "Ναι";
+                    $my_date = date("d-m-Y, H:i:s", strtotime($row['submit_date']));
+                    $sub_total++;
+                }
+
+                echo "<tr><td>$aa</td><td><a href=\"admin.php?id=$id&action=view\">$surname</a></td><td>$name</td>";
+                echo "<td><a href='admin.php?filter=$klados'>$klados</a></td><td>$am</td><td>$sub";
+                if ($submitted && $av_canundo)
+                {
+                    echo "&nbsp;<span title=\"Αναίρεση Υποβολής\"><a href=\"admin.php?id=$id&action=undo\"><img style=\"border: 0pt none;\" src=\"images/undo.png\" onclick='return myaction_yp()'/></a></span>";
+                    if (!has_choices($choices))
+                    {
+                    echo "&nbsp;(KENH)";
+                    $blanks++;
+                    }
+                }
+                echo "</td><td>$my_date</td></tr>";
+
+                $i++;
+                $aa++;
+            }
+            echo "</table>";
+            $query = "select count(*) as plithos from $av_emp";
+            $result = mysqli_query($mysqlconnection, $query);
+            $row = mysqli_fetch_assoc($result);
+            // -1 because of admin account
+            $total_ypal = $row['plithos'] - 1;
+            $saved = $num - $sub_total;
+            $nothing = $total_ypal - $sub_total - $saved;
+            //echo "Έχουν υποβληθεί <strong>$sub_total</strong> από $total_ypal αιτήσεις.<br>";
+            echo "Έχουν υποβληθεί <strong>$sub_total</strong> αιτήσεις.<br>";
+            if ($blanks)
+                echo "<strong>$blanks</strong> κενές (αρνητικές) αιτήσεις.<br>";
+            //echo "<br><a href='admin.php?action=nothing'>Εκπ/κοί που δεν έχουν κάνει καμία αποθήκευση ή υποβολή ($nothing)</a>";
+            echo "<br><a href='admin.php?action=saved'>Εκπ/κοί που έχουν αποθηκεύσει αλλά δεν έχουν υποβάλει αίτηση ($saved)</a>";
+            echo "<br><a href='admin.php?action=gen2eid'>Αιτήσεις από τη Γενική αγωγή στην Ειδική</a>";
             echo "<br><br><a href='admin.php?action=export'>Εξαγωγή</a><br>";
-            echo "<br><a href=\"import.php\">Εισαγωγή Δεδομένων</a><br>";
-            echo "<br><a href=\"params.php\">Μεταβολή παραμέτρων</a><br>";
-            echo "<br><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' value='Έξοδος'></form>";
-            echo "</center>";
+        }       
+        echo "<br><a href=\"import.php\">Εισαγωγή Δεδομένων</a><br>";
+        echo "<br><a href=\"params.php\">Μεταβολή παραμέτρων</a><br>";
+        echo "<br><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' value='Έξοδος'></form>";
+        echo "</center>";
     }   
 
      mysqli_close($mysqlconnection);   
