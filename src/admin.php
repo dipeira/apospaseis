@@ -18,10 +18,12 @@
 <html>
   <head>
 	<LINK href="style.css" rel="stylesheet" type="text/css">
+    <LINK href="style_sorter.css" rel="stylesheet" type="text/css">
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title><?php echo $av_title." ($av_foreas) - Διαχείριση"; ?></title>
 	
-	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../js/jquery.tablesorter.min.js"></script>
     <script language="javascript" type="text/javascript">
         function myaction(){
             r=confirm("Είστε σίγουροι ότι θέλετε να αλλάξετε τα στοιχεία του υπαλλήλου;");
@@ -35,6 +37,10 @@
                 return false;
             }
         }
+        $(document).ready(function() { 
+            $(".tablesorter").tablesorter(); 
+        }
+); 
     </script>
     
     <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic&subset=greek,latin' rel='stylesheet' type='text/css'>
@@ -48,7 +54,7 @@
 
     $mysqlconnection = mysqli_connect($db_host, $db_user, $db_password, $db_name);
     mysqli_set_charset($mysqlconnection,"utf8");
-  
+
     // if POST change apo_employee organ & synolikh yphresia
     if (isset($_POST['porgan']))
     {
@@ -59,6 +65,26 @@
         $emp_id = $_POST['emp_id'];
         $id = $_POST['id'];
         $query = "UPDATE $av_emp SET org=$organ, eth=$eth, mhnes=$mhnes, hmeres=$hmeres WHERE id=$emp_id";
+        $result = mysqli_query($mysqlconnection, $query);
+        $url = "admin.php?id=$id&action=view";
+        echo "<meta http-equiv=\"refresh\" content=\"0; URL=$url\">";
+        exit;
+    }
+    // if POST change checked status & check_comments
+    if (isset($_POST['checked']) || isset($_POST['check_comments']))
+    {
+        $checked = (!isset($_POST['checked'])) ? 0 : $_POST['checked'];
+        $comments = $_POST['check_comments'];
+        $id = $_POST['id'];
+        // check if checked
+        $query = "SELECT checked from $av_ait WHERE id = $id";
+        $result = mysqli_query($mysqlconnection, $query);
+        $row = mysqli_fetch_array($result);
+        if ($row['checked']){
+            $query = "UPDATE $av_ait SET checked=$checked, check_comments='$comments' WHERE id=$id";
+        } else {
+            $query = "UPDATE $av_ait SET checked=$checked, check_comments='$comments',check_date=NOW() WHERE id=$id";
+        }
         $result = mysqli_query($mysqlconnection, $query);
         $url = "admin.php?id=$id&action=view";
         echo "<meta http-equiv=\"refresh\" content=\"0; URL=$url\">";
@@ -260,7 +286,20 @@
         // change employee elements
         if (!$submitted && $av_canalter)
             echo "<tr><td colspan=4><center><input type='submit' onclick='return myaction()' value='Αποθήκευση'></form></center></td></tr>";
-        echo "<tr><td colspan=4><center><form action='admin.php'><input type='submit' value='Έπιστροφή'></form></center></td></tr>";   
+        echo "<tr><td colspan=4><center><form action='admin.php'><input type='submit' value='Έπιστροφή'></form></center></td></tr></table>";   
+        if ($submitted){
+            echo "<form action='admin.php' method='post'>";
+            echo "<br><table class='imagetable' border=2><th colspan=2>Έλεγχος αίτησης</th>";
+            echo "<tr><td>Έλεγχθηκε:</td><td>";
+            echo $row['checked'] ? 
+                "<input type='checkbox' name='checked' value='1' checked> <small>(Στις ".date("d-m-Y, H:i:s", strtotime($row['check_date'])).")</small>" :
+                "<input type='checkbox' name='checked' value='1'>";
+            echo "</td></tr>";
+            echo "<td>Σχόλια ελέγχου:</td><td><textarea rows=4 cols=60 name='check_comments' >".$row['check_comments']."</textarea></td></tr>";
+            echo "<tr><td colspan=2><input type='submit' value='Αποθήκευση' /></td></tr>";
+            echo "<input type='hidden' name='id' value=$id>";
+            echo "</form>";
+        }
     }
     ///////////////////
     // export to excel
@@ -516,14 +555,15 @@
             }
             echo "<table id=\"mytbl\" class=\"imagetable tablesorter\" border=\"2\">\n";
             echo "<thead>";
-            echo "<tr><th>Α/Α</th>\n";
+            echo "<tr><th width='5%'>Α/Α</th>\n";
             echo "<th>Επώνυμο</th>\n";
             echo "<th>Όνομα</th>\n";
             echo "<th>Ειδικότητα</th>\n";
             echo "<th>A.M.</th>\n";
             echo "<th>Υποβλήθηκε</th>\n";
             echo "<th>Ημ/νία - Ώρα</th>\n";
-                echo "</tr>\n</thead>\n";
+            echo "<th>Έλεγχος</th>\n";
+            echo "</tr>\n</thead><tbody>\n";
             $sub_total = $blanks = 0;
 
             while ($i < $num){
@@ -558,12 +598,14 @@
                     $blanks++;
                     }
                 }
-                echo "</td><td>$my_date</td></tr>";
+                echo "</td><td>$my_date</td><td>";
+                echo $row['checked'] ? 'Ναι' : 'Οχι'."</td>";
+                echo "</tr>";
 
                 $i++;
                 $aa++;
             }
-            echo "</table>";
+            echo "</tbody></table>";
             $query = "select count(*) as plithos from $av_emp";
             $result = mysqli_query($mysqlconnection, $query);
             $row = mysqli_fetch_assoc($result);

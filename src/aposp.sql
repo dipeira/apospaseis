@@ -24,7 +24,10 @@ CREATE TABLE IF NOT EXISTS `apo_aitisi` (
   `ypdil` tinyint(1) NOT NULL,
   `org_eid` tinyint(1) NOT NULL COMMENT 'Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)',
   `allo` varchar(100) NOT NULL COMMENT 'άλλο προσόν ειδικής αγωγής',
-  `choices` text NOT NULL
+  `choices` text NOT NULL,
+  `checked` tinyint(1) NOT NULL,
+  `check_date` datetime NOT NULL,
+  `check_comments` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
 
