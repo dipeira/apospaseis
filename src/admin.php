@@ -178,20 +178,22 @@
         echo "<tr><td colspan=2>A.M.: </td><td colspan=5>".$am."</td></tr>";
         echo "<form id='src' name='src' action='admin.php' method='POST'>\n";
         // organ & synolikh yphresia can be changed
-        if ($submitted || !$av_canalter)
+        if (!$av_canalter)
             echo "<tr><td colspan=2>Οργανική θέση: </td><td colspan=5>".$organ."</td></tr>";
         else {
-            $schools = getSchools('organ',$dim,0,$mysqlconnection,$organ);
+            $schools = getSchools('organ',$dim,0,$mysqlconnection,$organ, TRUE);
             echo "<tr><td colspan=2>Οργανική θέση: </td><td colspan=5>".$schools."</td></tr>";
         }
         // if apospaseis, show related data
         if ($av_type == 1)
         {
-            if ($submitted || !$av_canalter) {
+            if (!$av_canalter) {
               echo "<tr><td colspan=2>Συνολική υπηρεσία: </td><td colspan=5>$ethy Έτη, $mhnesy Μήνες, $hmeresy Ημέρες</td></tr>";
             } else {
               echo "<tr><td colspan=2>Συνολική υπηρεσία: </td><td colspan=5><input size=2 name='ethy' value=$ethy> Έτη,<input size=2 name='mhnesy' value=$mhnesy> Μήνες,<input size=2 name='hmeresy' value=$hmeresy> Ημέρες</td></tr>";
             }
+            if ($av_canalter)
+                echo "<tr><td colspan=2></td><td colspan=4><input type='submit' onclick='return myaction()' value='Αποθήκευση'></td></tr>";
             // end of changeable elements
             // print moria analysis
             echo "<tr><td colspan=2>Ανάλυση μορίων: </td><td colspan=5>";
@@ -284,10 +286,13 @@
         echo "<tr><td colspan=4><center><input type='hidden' name='id' value=$id></td></tr>";
         echo "<tr><td colspan=4><center><input type='hidden' name='emp_id' value=$emp_id></td></tr>";
         // change employee elements
-        if (!$submitted && $av_canalter)
-            echo "<tr><td colspan=4><center><input type='submit' onclick='return myaction()' value='Αποθήκευση'></form></center></td></tr>";
-        echo "<tr><td colspan=4><center><form action='admin.php'><input type='submit' value='Έπιστροφή'></form></center></td></tr></table>";   
-        if ($submitted){
+        if ($av_type == 1){
+            echo "<tr><td colspan=4><center><a href='criteria.php?userid=$am'><button type='button'>Επεξεργασία</button></a></center></td></tr>";
+        }
+        echo "</form>";
+        echo "<tr><td colspan=4><center><form action='admin.php'><input type='submit' value='Έπιστροφή'></form></center></td></tr>";
+        echo "</table>";   
+        if ($submitted && $av_type == 1){
             echo "<form action='admin.php' method='post'>";
             echo "<br><table class='imagetable' border=2><th colspan=2>Έλεγχος αίτησης</th>";
             echo "<tr><td>Έλεγχθηκε:</td><td>";
@@ -587,7 +592,13 @@
                     $sub_total++;
                 }
 
-                echo "<tr><td>$aa</td><td><a href=\"admin.php?id=$id&action=view\">$surname</a></td><td>$name</td>";
+                echo "<tr><td>$aa&nbsp;";
+                echo "<span title='Προβολή'><a href='admin.php?id=$id&action=view'><img style='border: 0pt none' src='images/view.png'/></a></span>";
+                if ($av_type == 1){
+                    echo "&nbsp;<span title='Επεξεργασία'><a href='criteria.php?userid=$am'><img style='border: 0pt none' src='images/edit.png'/></a></span>";
+                }
+                echo "</td>";
+                echo "<td><span title='Προβολή'><a href='admin.php?id=$id&action=view'>$surname</a></span></td><td>$name</td>";
                 echo "<td><a href='admin.php?filter=$klados'>$klados</a></td><td>$am</td><td>$sub";
                 if ($submitted && $av_canundo)
                 {

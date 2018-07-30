@@ -192,7 +192,7 @@
   
   echo "<table><center>";
   echo "<tr><td><input type='button' value='Εκτύπωση' onclick='javascript:window.print()' /></td></tr>";
-  echo "<tr><td><form action='index2.php'><input type='submit' value='Επιστροφή'></form></center></td></tr></table>";
+  echo "<tr><td><form action='choices.php'><input type='submit' value='Επιστροφή'></form></center></td></tr></table>";
   echo "</div>";
 
 

@@ -23,10 +23,10 @@
   else {
       $loggedin = 1;
   }
-  // if veltiwseis, goto index2.php
+  // if veltiwseis, goto choices.php
   if ($av_type == 2){
-    //header("Location: index2.php");
-    $page = 'index2.php';
+    //header("Location: choices.php");
+    $page = 'choices.php';
     echo '<script type="text/javascript">';
     echo 'window.location.href="'.$page.'";';
     echo '</script>';
@@ -46,10 +46,9 @@
     echo '</script>';
   }
 
-  if ($loggedin)
-  {
+    $is_admin = $_SESSION['user']=="$av_admin" ? true : false;
     // if admin redirect to admin page
-    if ($_SESSION['user']=="$av_admin")
+    if ($_SESSION['user']=="$av_admin" && !isset($_GET['userid']))
         echo "  <meta http-equiv=\"refresh\" content=\"0; URL=admin.php\">";
 ?>
   <div id="left1">
@@ -61,8 +60,9 @@
     mysqli_set_charset($mysqlconnection,"utf8");
       
     echo "<center><h2>$av_title ($av_foreas)</h2></center>";
-    
-    $query = "SELECT * from $av_emp WHERE am = ".$_SESSION['user'];
+    $userid = isset($_GET['userid']) ? $_GET['userid'] : $_SESSION['user'];
+    $query = "SELECT * from $av_emp WHERE am = ".$userid;
+
     $result = mysqli_query($mysqlconnection, $query);
     $row = mysqli_fetch_assoc($result);
     $name = $row['name'];
@@ -154,7 +154,7 @@
         $allo = $row['allo'];
         $allo = str_replace(" ", "&nbsp;", $allo);
         
-        if ($submitted)
+        if ($submitted && !$is_admin)
             echo "<h3><center>Η αίτηση έχει υποβληθεί και δεν μπορείτε να την επεξεργαστείτε.</center></h3>";
         echo "<center>";
         echo "<table id=\"mytbl\" class=\"imagetable\" border=\"2\">\n";
@@ -167,7 +167,7 @@
         echo "<tr><td colspan=2>Συνολική υπηρεσία: <small>(Έως $av_endofyear)</small></td><td colspan=5>$eth Έτη, $mhnes Μήνες, $hmeres Ημέρες</td></tr>";
         
         // if user has submitted
-        if ($submitted)
+        if ($submitted && !$is_admin)
         {
             echo "<tr><td colspan=2>Ανάλυση μορίων: </td><td colspan=5>";
             $moria = compute_moria($id, $mysqlconnection);
@@ -175,7 +175,7 @@
                 echo moria_key2per($key).": $value<br>";
             }
             echo "</td></tr>";
-            echo "<form id='src' name='src' action='index2.php' method='POST'>\n";
+            echo "<form id='src' name='src' action='choices.php' method='POST'>\n";
             if ($org_eid)
                 echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='org_eid' value='1' checked disabled>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
             else
@@ -248,7 +248,7 @@
             echo "<tr><td colspan=7><small>Υποβλήθηκε στις: ".  date("d-m-Y, H:i:s", strtotime($row['submit_date']))."</small></td></tr>";
             echo "<input type='hidden' name = 'id' value='$id'>";
             echo "</form>";
-            echo "<tr><td colspan=7><center><form action='index2.php' method='POST'><input type='submit' value='Συνέχεια στο Βήμα 2'></form></center></td></tr>";
+            echo "<tr><td colspan=7><center><form action='choices.php' method='POST'><input type='submit' value='Συνέχεια στο Βήμα 2'></form></center></td></tr>";
             echo "<tr><td colspan=7><center><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' value='Έξοδος'></form></center></td></tr>";
         }
         // if not submitted
@@ -339,7 +339,7 @@
             echo "<tr><td colspan=7><center><INPUT TYPE='submit' name='save' VALUE='Αποθήκευση'></center></td></tr>";
             echo "<tr><td colspan=7><center><INPUT TYPE='submit' name='next' VALUE='Συνέχεια στο Βήμα 2'></center></td></tr>";
             echo "</form>";
-            //echo "<tr><td colspan=7><center><form action='index2.php' method='POST'><input type='submit' value='Επόμενη σελίδα'></form></center></td></tr>";            
+            //echo "<tr><td colspan=7><center><form action='choices.php' method='POST'><input type='submit' value='Επόμενη σελίδα'></form></center></td></tr>";            
             //echo "<tr><td colspan=4><center><INPUT TYPE='submit' onclick='return myaction()' name='submit' VALUE='Οριστική Υποβολή'></center></td>\n";
             echo "</tr>\n";
             echo "</form>";
@@ -416,8 +416,7 @@
         echo "</table>";
         echo "</center>";
     }
-     mysqli_close($mysqlconnection);   
-    }
+    mysqli_close($mysqlconnection);   
 ?>
   </div>
 </center>

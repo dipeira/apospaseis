@@ -179,7 +179,7 @@
             $ser = serialize($sch_arr);
             echo "<tr><td colspan=4><center><form action='print.php' method='POST'><input type='hidden' name = 'cred_arr' value='$ser_cred'><input type='hidden' name = 'sch_arr' value='$ser'><input type='submit' value='Εκτύπωση'></form></center></td></tr>";
             if ($av_type == 1)
-                echo "<tr><td colspan=4><center><form action='index.php'><input type='submit' value='Επιστροφή στο Βήμα 1'></form></center></td></tr>";
+                echo "<tr><td colspan=4><center><form action='criteria.php'><input type='submit' value='Επιστροφή στο Βήμα 1'></form></center></td></tr>";
             echo "<tr><td colspan=4><center><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' value='Έξοδος'></form></center></td></tr>";
         }
         // if not submitted

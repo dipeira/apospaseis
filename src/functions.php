@@ -53,16 +53,17 @@ function getSchoolcode ($id, $conn)
     }
 }
 
-// epil: epilogh 1-20 / dim: 2 dhmotiko,1 nip,0 ola / omada / sch: sxoleio (lektiko)
-function getSchools ($epil, $dim, $omada, $conn, $sch)
+// epil: epilogh 1-20 / dim: 2 dhmotiko,1 nip,0 ola / omada / sch: sxoleio (lektiko) / show_inactive
+function getSchools ($epil, $dim, $omada, $conn, $sch, $show_inactive = false)
 {
     global $av_sch;
+    $inactive = $show_inactive ? '' : 'AND inactive=0';
     if (!$omada && !$dim)
-        $query = "select DISTINCT name,id,kwdikos from $av_sch WHERE inactive<>1 order by name";
+        $query = "select DISTINCT name,id,kwdikos from $av_sch WHERE 1 $inactive order by name";
     if (!$omada && $dim)
-        $query = "select DISTINCT name,id,kwdikos from $av_sch where dim=$dim AND inactive<>1 order by name";
+        $query = "select DISTINCT name,id,kwdikos from $av_sch where dim=$dim $inactive order by name";
     if ($omada && $dim)
-        $query = "select DISTINCT name,id,kwdikos from $av_sch where dim=$dim AND omada <> $omada AND inactive<>1 order by name";
+        $query = "select DISTINCT name,id,kwdikos from $av_sch where dim=$dim AND omada <> $omada $inactive order by name";
     $arr = array();
     $result = mysqli_query($conn, $query);
     while ($ar = mysqli_fetch_array($result))

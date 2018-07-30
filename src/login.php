@@ -67,7 +67,7 @@ if($_REQUEST['action'] == "login"){
 			echo "<FORM><INPUT Type='button' VALUE='Επιστροφή' onClick='history.go(-1);return true;'></FORM>";
 			die();
 		}
-        $page = ($av_type == 1) ? 'index.php' : 'index2.php';     
+        $page = ($av_type == 1) ? 'criteria.php' : 'choices.php';     
         echo '<script type="text/javascript">';
         echo 'window.location.href="'.$page.'";';
         echo '</script>';

@@ -79,7 +79,7 @@
       {
         echo "<h2>Λάθος!</h2>";
         echo "Για να συνεχίσετε, πρέπει <strong>υποχρεωτικά</strong> να διαβάσετε και να τσεκάρετε την υπεύθυνη δήλωση στο τέλος της προηγούμενης σελίδας.<br><br>";
-        echo "<form action='index.php'><input type='submit' value='Επιστροφή'></form>";
+        echo "<form action='criteria.php'><input type='submit' value='Επιστροφή'></form>";
         exit;
       }
       
@@ -104,9 +104,9 @@
                 
         // if save button was pressed return, else proceed to 2nd page
         if (isset($_POST['save']))
-           echo "  <meta http-equiv=\"refresh\" content=\"0; URL=index.php\">";
+           echo "  <meta http-equiv=\"refresh\" content=\"0; URL=criteria.php\">";
         else
-           echo "  <meta http-equiv=\"refresh\" content=\"0; URL=index2.php\">";
+           echo "  <meta http-equiv=\"refresh\" content=\"0; URL=choices.php\">";
   }
   else
   // if page 2
@@ -154,13 +154,13 @@
     if ($error_found && $_POST['submit'])
     {
         echo "<br><br><strong>Βρέθηκαν λάθη και η υποβολή δεν μπορεί να πραγματοποιηθεί.</strong>";
-        echo "<form action='index2.php'><input type='submit' value='Επιστροφή'></form>";
+        echo "<form action='choices.php'><input type='submit' value='Επιστροφή'></form>";
         exit;
     }
     if ($error_found)
     {
         echo "<br><br>Παρακαλώ διορθώστε.";
-        echo "<form action='index2.php'><input type='submit' value='Επιστροφή'></form>";
+        echo "<form action='choices.php'><input type='submit' value='Επιστροφή'></form>";
     }
 
     for ($i = 1; $i < 21; $i++) {
@@ -206,14 +206,14 @@
     mysqli_close($mysqlconnection);
 
     if (!$error_found)
-        echo "  <meta http-equiv=\"refresh\" content=\"0; URL=index2.php\">";
+        echo "  <meta http-equiv=\"refresh\" content=\"0; URL=choices.php\">";
     else
         exit;
 
     if (isset($_POST['save']))
-        echo "  <meta http-equiv=\"refresh\" content=\"0; URL=index2.php\">";
+        echo "  <meta http-equiv=\"refresh\" content=\"0; URL=choices.php\">";
     else
-        echo "  <meta http-equiv=\"refresh\" content=\"0; URL=index.php\">";
+        echo "  <meta http-equiv=\"refresh\" content=\"0; URL=criteria.php\">";
 }
 echo "</body>";
 echo "</html>";
