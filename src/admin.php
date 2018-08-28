@@ -315,7 +315,7 @@
         $i=0;
         $data = array();
         if ($apospaseis){
-            $query = "SELECT e.id,e.am,e.name,e.surname,e.patrwnymo,s.name as sch_name,e.eth,e.mhnes,e.hmeres,e.klados,a.choices,a.dhmos_ent,a.dhmos_syn
+            $query = "SELECT e.id,e.am,e.name,e.surname,e.patrwnymo,s.name as sch_name,e.eth,e.mhnes,e.hmeres,e.klados,a.choices,a.dhmos_ent,a.dhmos_syn,a.apospash,a.checked,a.check_comments
             FROM $av_ait a 
             JOIN $av_emp e ON a.emp_id=e.id 
             JOIN $av_sch s ON s.kwdikos = e.org 
@@ -344,6 +344,9 @@
             unset($tmpdata['choices']);
             unset($tmpdata['dhmos_ent']);
             unset($tmpdata['dhmos_syn']);
+            unset($tmpdata['apospash']);
+            unset($tmpdata['checked']);
+            unset($tmpdata['check_comments']);
             // merge arrays
             if ($av_dntes) {
 		        $tmp = '';
@@ -356,6 +359,10 @@
                 array_push($tmpdata, $tmp);
                 $data = $tmpdata;
             } else {
+                // if geniki to eidiki skip
+                if ($row0['apospash']){
+                    continue;
+                }
                 // if schools is enabled, show school names
                 if ($_GET['schools'] == 1){
                     $tmpArr = Array();
@@ -385,6 +392,8 @@
                         'dim_synyp'=>$dim_syn
                     );
                     $tmpdata = array_merge($tmpdata, $moria_array);
+                    $tmpdata[] = $row0['checked'];
+                    $tmpdata[] = $row0['check_comments'];
                 }
                 $data[] = $tmpdata;
             }
@@ -403,7 +412,7 @@
             }
         }
         if ($apospaseis){
-            $columns = array_merge($columns,Array('synolo','entopiothta','dimos_entopiothtas','synyphrethsh','dimos_synyphrethshs'));
+            $columns = array_merge($columns,Array('synolo','entopiothta','dimos_entopiothtas','synyphrethsh','dimos_synyphrethshs','checked','check_comments'));
         }
         
         ob_start();
@@ -609,8 +618,16 @@
                     $blanks++;
                     }
                 }
-                echo "</td><td>$my_date</td><td>";
-                echo $row['checked'] ? 'Ναι' : 'Οχι'."</td>";
+                // if geniki 2 eidiki, mark
+                if ($row['apospash']){
+                    echo '&nbsp;<small>(Γεν.σε.Ειδ.)</small>';
+                }
+                echo "</td><td>$my_date</td>";
+                echo "<td>";
+                echo $row['checked'] ? 
+                    '<span title="'.$row['check_comments'].'">Ναι</span>' : 
+                    'Οχι';
+                echo "</td>";
                 echo "</tr>";
 
                 $i++;
@@ -630,10 +647,11 @@
                 echo "<strong>$blanks</strong> κενές (αρνητικές) αιτήσεις.<br>";
             //echo "<br><a href='admin.php?action=nothing'>Εκπ/κοί που δεν έχουν κάνει καμία αποθήκευση ή υποβολή ($nothing)</a>";
             echo "<br><a href='admin.php?action=saved'>Εκπ/κοί που έχουν αποθηκεύσει αλλά δεν έχουν υποβάλει αίτηση ($saved)</a>";
-            echo "<br><a href='admin.php?action=gen2eid'>Αιτήσεις από τη Γενική αγωγή στην Ειδική</a>";
-            echo "<br><br><a href='admin.php?action=export'>Εξαγωγή</a><br>";
+            echo "<h4>Εξαγωγή</h4>";
+            echo "<a href='admin.php?action=gen2eid'>Αιτήσεις από τη Γενική αγωγή στην Ειδική</a>";
+            echo "<br><a href='admin.php?action=export'>Από τη Γενική στη Γενική (για πρόγραμμα PPYSDE)</a><br>";
         }       
-        echo "<br><a href=\"import.php\">Εισαγωγή Δεδομένων</a><br>";
+        echo "<br><br><a href=\"import.php\">Εισαγωγή Δεδομένων</a><br>";
         echo "<br><a href=\"params.php\">Μεταβολή παραμέτρων</a><br>";
         echo "<br><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' value='Έξοδος'></form>";
         echo "</center>";
