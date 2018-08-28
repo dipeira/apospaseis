@@ -315,13 +315,13 @@
         $i=0;
         $data = array();
         if ($apospaseis){
-            $query = "SELECT e.id,e.am,e.name,e.surname,e.patrwnymo,s.name as sch_name,e.eth,e.mhnes,e.hmeres,e.klados,a.choices,a.dhmos_ent,a.dhmos_syn,a.apospash,a.checked,a.check_comments
+            $query = "SELECT e.id,e.am,e.name,e.surname,e.patrwnymo,s.name as sch_name,e.org,e.klados,a.choices,a.dhmos_ent,a.dhmos_syn,a.apospash,a.checked,a.check_comments
             FROM $av_ait a 
             JOIN $av_emp e ON a.emp_id=e.id 
             JOIN $av_sch s ON s.kwdikos = e.org 
             WHERE submitted=1";
         } else {
-            $query = "SELECT e.id,e.am,e.name,e.surname,e.patrwnymo,s.name as sch_name,e.eth,e.mhnes,e.hmeres,e.klados,a.choices
+            $query = "SELECT e.id,e.am,e.name,e.surname,e.patrwnymo,s.name as sch_name,e.org,e.eth,e.mhnes,e.hmeres,e.klados,a.choices
             FROM $av_ait a 
             JOIN $av_emp e ON a.emp_id=e.id 
             JOIN $av_sch s ON s.kwdikos = e.org 
@@ -341,12 +341,17 @@
             // fetch choices as array
             $choices = unserialize($row0['choices']);
             
+            // get rid of unnecessary (for export) data
             unset($tmpdata['choices']);
             unset($tmpdata['dhmos_ent']);
             unset($tmpdata['dhmos_syn']);
             unset($tmpdata['apospash']);
             unset($tmpdata['checked']);
             unset($tmpdata['check_comments']);
+            
+            // Mark diathesi pyspe/pysde or veltiwsh
+            $tmpdata['mdv'] = $row0['org'] == 2222222 ?
+                'Δ' : 'Β';
             // merge arrays
             if ($av_dntes) {
 		        $tmp = '';
@@ -392,7 +397,7 @@
                         'dim_synyp'=>$dim_syn
                     );
                     $tmpdata = array_merge($tmpdata, $moria_array);
-                    $tmpdata[] = $row0['checked'];
+                    $tmpdata[] = $row0['checked'] ? 'Ναι' : 'Όχι';
                     $tmpdata[] = $row0['check_comments'];
                 }
                 $data[] = $tmpdata;
@@ -401,7 +406,7 @@
         
         $columns = array();
                         
-        array_push($columns,'am','name','surname','patrwnymo','school','ethy','mhnesy','hmeresy','klados');
+        array_push($columns,'am','name','surname','patrwnymo','org','org_code','klados','mdv');
         
         if ($av_dntes) {
             $columns[] = "choices";
