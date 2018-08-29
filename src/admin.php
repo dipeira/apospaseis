@@ -543,13 +543,28 @@
     ///////////////////
     else
     {
+      session_start();
       echo "<center><h2>$av_title ($av_foreas) <br> Διαχείριση</h2></center>";
       echo "<center>";
       if (file_exists('init.php')){
           echo "<p><b>ΠΡΟΣΟΧΗ</b>: Παρακαλώ διαγράψτε το αρχείο <b>init.php</b> για λόγους ασφαλείας!</p>";
       }
-      
 
+      ?>
+      <script language="javascript" type="text/javascript">
+        function onCheck() {
+            var checkBox = document.getElementById("submitted_box");
+            jQuery.ajax({
+                url: 'sessionhelper.php',
+                type: 'POST',
+                data: { value: checkBox.checked ? 1 : 0 },
+                dataType : 'json',
+            });
+            location.reload();
+        }
+      </script>
+
+      <?php      
       $i=$hasFilter=0;
       $aa = 1;
       $where = '';
@@ -567,6 +582,13 @@
         echo "<h3>Δεν έχουν υποβληθεί αιτήσεις...</h3>";
         } else {
             echo "<h3>Λίστα αιτήσεων</h3>";
+            
+            // submitted only checkbox
+            echo "<input id='submitted_box' type='checkbox' ";
+            echo $_SESSION['only_submitted'] == 1  ? 'checked' : '';
+            echo " name='only_submitted' onclick='onCheck()'>Εμφάνιση μόνο όσων έχουν υποβληθεί</td>";
+
+            // check if filter
             if ($hasFilter){
                 echo "<p>Ενεργό φίλτρο: ".$_GET['filter'];
                 echo "&nbsp;&nbsp;<input type=\"button\" onclick=\"location.href='admin.php';\" value=\"Επαναφορά\" /> ";
@@ -587,6 +609,11 @@
 
             while ($i < $num){
                 $row = mysqli_fetch_assoc($result);
+                // if user has selected only submitted apps, skip non-submitted
+                if ($_SESSION['only_submitted'] && !$row['submitted']){
+                    $i++;
+                    continue;
+                }
                 $id = $row['aitisi_id'];
                 $surname = $row['surname'];
                 $name = $row['name'];
