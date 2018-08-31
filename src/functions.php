@@ -310,7 +310,7 @@ function has_choices($ch){
 }
 // function which computes moria apospasis
 // returns an array with keys 'synolo' & other criteria if they exist
-function compute_moria($emp_id, $conn) {
+function compute_moria($emp_id, $conn, $eidiki = 0) {
     $moria = [];
     global $av_ait, $av_emp;
     $query = "SELECT a.*,e.eth,e.mhnes,e.hmeres from $av_ait a JOIN $av_emp e ON e.id=a.emp_id WHERE emp_id=$emp_id";
@@ -413,6 +413,10 @@ function compute_moria($emp_id, $conn) {
     // calculate sum
     $synolika_moria = array_sum($moria);
     $moria['yphresias'] = str_replace('.',',',$moria['yphresias']);
+    // if eidiki, add 1000 moria to climb on top...
+    if ($eidiki > 0){
+        $synolika_moria += 1000;
+    }
     $moria['synolo'] = str_replace('.',',',$synolika_moria);
 
     // entopiothta

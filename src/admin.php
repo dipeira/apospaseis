@@ -56,7 +56,7 @@
     mysqli_set_charset($mysqlconnection,"utf8");
 
     // if POST change apo_employee organ & synolikh yphresia
-    if (isset($_POST['porgan']))
+    if (isset($_POST['porgan']) || isset($_POST['ethy']) || isset($_POST['mhnesy']) || isset($_POST['hmeresy']))
     {
         $organ = $_POST['porgan'];
         $eth = $_POST['ethy'];
@@ -70,10 +70,11 @@
         echo "<meta http-equiv=\"refresh\" content=\"0; URL=$url\">";
         exit;
     }
-    // if POST change checked status & check_comments
-    if (isset($_POST['checked']) || isset($_POST['check_comments']))
+    // if POST change checked status, special category or check_comments
+    if (isset($_POST['checked']) || isset($_POST['check_comments']) || isset($_POST['eid_kat']))
     {
         $checked = (!isset($_POST['checked'])) ? 0 : $_POST['checked'];
+        $eid_kat = (!isset($_POST['eid_kat'])) ? 0 : $_POST['eid_kat'];
         $comments = $_POST['check_comments'];
         $id = $_POST['id'];
         // check if checked
@@ -81,9 +82,9 @@
         $result = mysqli_query($mysqlconnection, $query);
         $row = mysqli_fetch_array($result);
         if ($row['checked']){
-            $query = "UPDATE $av_ait SET checked=$checked, check_comments='$comments' WHERE id=$id";
+            $query = "UPDATE $av_ait SET checked=$checked, check_comments='$comments',eid_kat=$eid_kat WHERE id=$id";
         } else {
-            $query = "UPDATE $av_ait SET checked=$checked, check_comments='$comments',check_date=NOW() WHERE id=$id";
+            $query = "UPDATE $av_ait SET checked=$checked, check_comments='$comments',check_date=NOW(),eid_kat=$eid_kat WHERE id=$id";
         }
         $result = mysqli_query($mysqlconnection, $query);
         $url = "admin.php?id=$id&action=view";
@@ -295,13 +296,17 @@
         if ($submitted && $av_type == 1){
             echo "<form action='admin.php' method='post'>";
             echo "<br><table class='imagetable' border=2><th colspan=2>Έλεγχος αίτησης</th>";
+            echo "<tr><td>Ειδική κατηγορία:</td><td>";
+            $chkd = $row['eid_kat'] ? 'checked' : '';
+            echo "<input type='checkbox' name='eid_kat' value='1' $chkd>";
+            echo "</td></tr>";
             echo "<tr><td>Έλεγχθηκε:</td><td>";
             echo $row['checked'] ? 
                 "<input type='checkbox' name='checked' value='1' checked> <small>(Στις ".date("d-m-Y, H:i:s", strtotime($row['check_date'])).")</small>" :
                 "<input type='checkbox' name='checked' value='1'>";
             echo "</td></tr>";
             echo "<td>Σχόλια ελέγχου:</td><td><textarea rows=4 cols=60 name='check_comments' >".$row['check_comments']."</textarea></td></tr>";
-            echo "<tr><td colspan=2><input type='submit' value='Αποθήκευση' /></td></tr>";
+            echo "<tr><td colspan=2><input type='submit' value='Αποθήκευση' onclick='return myaction()'/></td></tr>";
             echo "<input type='hidden' name='id' value=$id>";
             echo "</form>";
         }
@@ -315,7 +320,7 @@
         $i=0;
         $data = array();
         if ($apospaseis){
-            $query = "SELECT e.id,e.am,e.name,e.surname,e.patrwnymo,s.name as sch_name,e.org,e.klados,a.choices,a.dhmos_ent,a.dhmos_syn,a.apospash,a.checked,a.check_comments,a.org_eid
+            $query = "SELECT e.id,e.am,e.name,e.surname,e.patrwnymo,s.name as sch_name,e.org,e.klados,a.choices,a.dhmos_ent,a.dhmos_syn,a.apospash,a.checked,a.check_comments,a.org_eid,a.eid_kat
             FROM $av_ait a 
             JOIN $av_emp e ON a.emp_id=e.id 
             JOIN $av_sch s ON s.kwdikos = e.org 
@@ -349,6 +354,7 @@
             unset($tmpdata['checked']);
             unset($tmpdata['check_comments']);
             unset($tmpdata['org_eid']);
+            unset($tmpdata['eid_kat']);
             
             // Mark diathesi pyspe/pysde or veltiwsh
             $tmpdata['mdv'] = $row0['org'] == 2222222 ?
@@ -385,7 +391,7 @@
                 $tmpdata = array_merge($tmpdata, $choices);
                 if ($apospaseis){
                     // compute moria
-                    $moria = compute_moria($row0['id'],$mysqlconnection);
+                    $moria = compute_moria($row0['id'],$mysqlconnection,$row0['eid_kat']);
                     // get entopiothta, synhphrethsh
                     $dim_ent = getDimos($row0['dhmos_ent'], $mysqlconnection);
                     $dim_syn = getDimos($row0['dhmos_syn'], $mysqlconnection);
@@ -606,6 +612,7 @@
             echo "<th>Υποβλήθηκε</th>\n";
             echo "<th>Ημ/νία - Ώρα</th>\n";
             echo "<th>Έλεγχος</th>\n";
+            echo "<th>Κατηγορία</th>\n";
             echo "</tr>\n</thead><tbody>\n";
             $sub_total = $blanks = 0;
 
@@ -652,18 +659,23 @@
                     $blanks++;
                     }
                 }
-                // if geniki 2 eidiki, mark
-                if ($row['apospash']){
-                    echo '&nbsp;<small>(Γεν.σε.Ειδ.)</small>';
-                } elseif ($row['org_eid']) {
-                    echo '&nbsp;<small>(Ειδ.σε.Ειδ.)</small>';
-                }
                 echo "</td><td>$my_date</td>";
                 echo "<td>";
                 echo $row['checked'] ? 
                     '<span title="'.$row['check_comments'].'">Ναι</span>' : 
                     'Οχι';
                 echo "</td>";
+                // if geniki 2 eidiki, mark
+                $categ = 'Γεν.σε.Γεν.';
+                if ($row['apospash']){
+                    $categ = 'Γεν.σε.Ειδ.';
+                } elseif ($row['org_eid']) {
+                    $categ = 'Ειδ.σε.Ειδ.';
+                }
+                if ($row['eid_kat']){
+                    $categ .=  '&nbsp;<i>(Ειδ.Κατηγορία)</i>';
+                }
+                echo "<td>$categ</td>";
                 echo "</tr>";
 
                 $i++;
@@ -689,7 +701,9 @@
         }       
         echo "<br><br><a href=\"import.php\">Εισαγωγή Δεδομένων</a><br>";
         echo "<br><a href=\"params.php\">Μεταβολή παραμέτρων</a><br>";
-        echo "<br><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' value='Έξοδος'></form>";
+        echo "<br><form action='login.php'>";
+        echo "<input type='hidden' name = 'logout' value=1>";
+        echo "<input type='submit' value='Έξοδος'></form>";
         echo "</center>";
     }   
 

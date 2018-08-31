@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS `apo_aitisi` (
   `checked` tinyint(1) NOT NULL,
   `check_date` datetime NOT NULL,
   `check_comments` text NOT NULL,
+  `eid_kat` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
 
