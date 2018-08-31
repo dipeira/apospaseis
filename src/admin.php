@@ -314,17 +314,18 @@
     ///////////////////
     // export to excel
     ///////////////////
-    elseif ($_GET['action']=="export")
+    elseif ($_GET['action']=="export" || $_GET['action']=="export_eid")
     {
         $apospaseis = $av_type == 1 ? 1 : 0;
         $i=0;
         $data = array();
         if ($apospaseis){
+            $andClause = $_GET['action']=="export_eid" ? ' AND (a.apospash = 1 or a.org_eid = 1)' : '';
             $query = "SELECT e.id,e.am,e.name,e.surname,e.patrwnymo,s.name as sch_name,e.org,e.klados,a.choices,a.dhmos_ent,a.dhmos_syn,a.apospash,a.checked,a.check_comments,a.org_eid,a.eid_kat
             FROM $av_ait a 
             JOIN $av_emp e ON a.emp_id=e.id 
             JOIN $av_sch s ON s.kwdikos = e.org 
-            WHERE submitted=1";
+            WHERE submitted=1 $andClause";
         } else {
             $query = "SELECT e.id,e.am,e.name,e.surname,e.patrwnymo,s.name as sch_name,e.org,e.eth,e.mhnes,e.hmeres,e.klados,a.choices
             FROM $av_ait a 
@@ -372,7 +373,7 @@
                 $data = $tmpdata;
             } else {
                 // if geniki to eidiki OR eidiki to eidiki, skip
-                if ($row0['apospash'] || $row0['org_eid']){
+                if ($_GET['action']=="export" && ($row0['apospash'] || $row0['org_eid'])){
                     continue;
                 }
                 // if schools is enabled, show school names
@@ -454,9 +455,10 @@
         $page = str_replace("'", "", $page);
         echo "<input type='hidden' name = 'data' value='$page'>";
         // link to show/hide school names
+        $expLink = $_GET['action']=="export" ? 'export' : 'export_eid';
         $getSchoolLink = $_GET['schools'] == 1 ? 
-            "<a href='admin.php?action=export'>Απόκρυψη σχολείων</a>" : 
-            "<a href='admin.php?action=export&schools=1'>Εμφάνιση σχολείων";
+            "<a href='admin.php?action=$expLink'>Απόκρυψη σχολείων</a>" : 
+            "<a href='admin.php?action=$expLink&schools=1'>Εμφάνιση σχολείων";
         echo $getSchoolLink."<br><br>";
         echo "<BUTTON TYPE='submit'>Εξαγωγή στο excel</BUTTON><br><br>";
         echo "</form>";
@@ -508,6 +510,9 @@
             echo "Σύνολο: $num";
             echo "<form action='admin.php'><input type='submit' value='Επιστροφή'></form>";	
     }
+    /////////////////////////////////////
+    // applications ONLY in eidiki agogi
+    /////////////////////////////////////
     elseif ($_GET['action'] == 'eidiki')
     {
         $i = 0;
@@ -540,6 +545,7 @@
             }
             echo "</table>";
             echo "Σύνολο: $num";
+            echo "<br><a href='admin.php?action=export_eid'>Εξαγωγή</a><br><br>";
         } else {
             echo "<h3>Δεν υπάρχουν αιτήσεις...</h3>";
         }
