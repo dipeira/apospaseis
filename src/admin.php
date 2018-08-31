@@ -469,12 +469,12 @@
             $i = 0;
             if ($nothing)
             {
-                $query = "SELECT * FROM $av_emp e LEFT JOIN $av_ait a ON e.id = a.emp_id WHERE a.id IS NULL";
+                $query = "SELECT *,a.id as ait_id FROM $av_emp e LEFT JOIN $av_ait a ON e.id = a.emp_id WHERE a.id IS NULL";
                 echo "<h3>Εκπ/κοί που δεν έχουν κάνει καμία αποθήκευση ή υποβολή</h3>";
             }
             else
             {
-                $query = "SELECT * from $av_ait a JOIN $av_emp e ON a.emp_id=e.id WHERE submitted IS NULL OR submitted=0";
+                $query = "SELECT *,a.id as ait_id from $av_ait a JOIN $av_emp e ON a.emp_id=e.id WHERE submitted IS NULL OR submitted=0";
                 echo "<h3>Εκπ/κοί που έχουν αποθηκεύσει αλλά δεν έχουν υποβάλει αίτηση</h3>";
             }
             $result = mysqli_query($mysqlconnection, $query);
@@ -482,19 +482,18 @@
             if ($num > 0){
                 echo "<table id=\"mytbl\" class=\"imagetable tablesorter\" border=\"2\">\n";
                 echo "<thead>";
-                echo "<tr><th>Α/Α</th>\n";
                 echo "<th>Επώνυμο</th>\n";
                 echo "<th>Όνομα</th>\n";
                 echo "<th>Ειδικότητα</th>\n";
                 echo "<th>A.M.</th>\n";
                 while ($i < $num){
                     $row = mysqli_fetch_assoc($result);
-                    $id = $row['id'];
                     $surname = $row['surname'];
                     $name = $row['name'];
                     $klados = $row['klados'];
                     $am = $row['am'];
-                    echo "<tr><td>$id</td><td>$surname</td><td>$name</td><td>$klados</td><td>$am</td></tr>";
+                    echo "<tr><td><a href='admin.php?id=".$row['ait_id']."&action=view'>$surname</a></td>";
+                    echo "<td>$name</td><td>$klados</td><td>$am</td></tr>";
 
                     $i++;
                 }
@@ -656,6 +655,8 @@
                 // if geniki 2 eidiki, mark
                 if ($row['apospash']){
                     echo '&nbsp;<small>(Γεν.σε.Ειδ.)</small>';
+                } elseif ($row['org_eid']) {
+                    echo '&nbsp;<small>(Ειδ.σε.Ειδ.)</small>';
                 }
                 echo "</td><td>$my_date</td>";
                 echo "<td>";
