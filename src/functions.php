@@ -412,7 +412,8 @@ function compute_moria($emp_id, $conn) {
     }
     // calculate sum
     $synolika_moria = array_sum($moria);
-    $moria['synolo'] = $synolika_moria;
+    $moria['yphresias'] = str_replace('.',',',$moria['yphresias']);
+    $moria['synolo'] = str_replace('.',',',$synolika_moria);
 
     // entopiothta
     if ($row['dhmos_ent'] > 0){

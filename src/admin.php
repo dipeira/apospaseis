@@ -315,7 +315,7 @@
         $i=0;
         $data = array();
         if ($apospaseis){
-            $query = "SELECT e.id,e.am,e.name,e.surname,e.patrwnymo,s.name as sch_name,e.org,e.klados,a.choices,a.dhmos_ent,a.dhmos_syn,a.apospash,a.checked,a.check_comments
+            $query = "SELECT e.id,e.am,e.name,e.surname,e.patrwnymo,s.name as sch_name,e.org,e.klados,a.choices,a.dhmos_ent,a.dhmos_syn,a.apospash,a.checked,a.check_comments,a.org_eid
             FROM $av_ait a 
             JOIN $av_emp e ON a.emp_id=e.id 
             JOIN $av_sch s ON s.kwdikos = e.org 
@@ -348,6 +348,7 @@
             unset($tmpdata['apospash']);
             unset($tmpdata['checked']);
             unset($tmpdata['check_comments']);
+            unset($tmpdata['org_eid']);
             
             // Mark diathesi pyspe/pysde or veltiwsh
             $tmpdata['mdv'] = $row0['org'] == 2222222 ?
@@ -364,8 +365,8 @@
                 array_push($tmpdata, $tmp);
                 $data = $tmpdata;
             } else {
-                // if geniki to eidiki skip
-                if ($row0['apospash']){
+                // if geniki to eidiki OR eidiki to eidiki, skip
+                if ($row0['apospash'] || $row0['org_eid']){
                     continue;
                 }
                 // if schools is enabled, show school names
@@ -502,11 +503,11 @@
             echo "Σύνολο: $num";
             echo "<form action='admin.php'><input type='submit' value='Επιστροφή'></form>";	
     }
-    elseif ($_GET['action'] == 'gen2eid')
+    elseif ($_GET['action'] == 'eidiki')
     {
         $i = 0;
-        $query = "SELECT *,a.id as ait_id from $av_ait a JOIN $av_emp e ON a.emp_id=e.id WHERE apospash = 1";
-        echo "<h3>Εκπ/κοί που έχουν αιτηθεί απόσπαση από Γενική σε Ειδική Αγωγή</h3>";
+        $query = "SELECT *,a.id as ait_id from $av_ait a JOIN $av_emp e ON a.emp_id=e.id WHERE a.apospash = 1 or a.org_eid = 1";
+        echo "<h3>Εκπ/κοί που έχουν αιτηθεί απόσπαση α) από Γενική σε Ειδική Αγωγή, β) από Ειδική σε Ειδική αγωγή</h3>";
         $result = mysqli_query($mysqlconnection, $query);
         $num = mysqli_num_rows($result);
         if ($num > 0){
@@ -517,6 +518,7 @@
             echo "<th>Όνομα</th>\n";
             echo "<th>Ειδικότητα</th>\n";
             echo "<th>A.M.</th>\n";
+            echo "<th>Κατηγορία</th>";
             while ($i < $num){
                 $row = mysqli_fetch_assoc($result);
                 $id = $row['id'];
@@ -526,8 +528,9 @@
                 $am = $row['am'];
                 echo "<tr><td>$id</td>";
                 echo "<td><a href='admin.php?id=".$row['ait_id']."&action=view'>$surname</a></td>";
-                echo "<td>$name</td><td>$klados</td><td>$am</td></tr>";
-
+                echo "<td>$name</td><td>$klados</td><td>$am</td>";
+                echo $row['apospash'] ? '<td>Γενική σε Ειδική</td>' : '<td>Ειδική σε Ειδική</td>';
+                echo "</tr>";
                 $i++;
             }
             echo "</table>";
@@ -680,7 +683,7 @@
             //echo "<br><a href='admin.php?action=nothing'>Εκπ/κοί που δεν έχουν κάνει καμία αποθήκευση ή υποβολή ($nothing)</a>";
             echo "<br><a href='admin.php?action=saved'>Εκπ/κοί που έχουν αποθηκεύσει αλλά δεν έχουν υποβάλει αίτηση ($saved)</a>";
             echo "<h4>Εξαγωγή</h4>";
-            echo "<a href='admin.php?action=gen2eid'>Αιτήσεις από τη Γενική αγωγή στην Ειδική</a>";
+            echo "<a href='admin.php?action=eidiki'>Αιτήσεις στην Ειδική αγωγή (από τη Γενική αγωγή ή από την Ειδική αγωγή)</a>";
             echo "<br><a href='admin.php?action=export'>Από τη Γενική στη Γενική (για πρόγραμμα PPYSDE)</a><br>";
         }       
         echo "<br><br><a href=\"import.php\">Εισαγωγή Δεδομένων</a><br>";
