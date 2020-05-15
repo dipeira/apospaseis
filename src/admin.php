@@ -327,7 +327,7 @@
             JOIN $av_sch s ON s.kwdikos = e.org 
             WHERE submitted=1 $andClause";
         } else {
-            $query = "SELECT e.id,e.am,e.name,e.surname,e.patrwnymo,s.name as sch_name,e.org,e.eth,e.mhnes,e.hmeres,e.klados,a.choices
+            $query = "SELECT e.id,e.am,e.name,e.surname,e.patrwnymo,s.name as sch_name,e.moria,e.entopiothta,e.synyphrethsh,e.org,e.klados,a.choices
             FROM $av_ait a 
             JOIN $av_emp e ON a.emp_id=e.id 
             JOIN $av_sch s ON s.kwdikos = e.org 
@@ -346,7 +346,7 @@
             $tmpdata = array_slice($row0,1);
             // fetch choices as array
             $choices = unserialize($row0['choices']);
-            
+
             // get rid of unnecessary (for export) data
             unset($tmpdata['choices']);
             unset($tmpdata['dhmos_ent']);
@@ -356,6 +356,9 @@
             unset($tmpdata['check_comments']);
             unset($tmpdata['org_eid']);
             unset($tmpdata['eid_kat']);
+            unset($tmpdata['moria']);
+            unset($tmpdata['entopiothta']);
+            unset($tmpdata['synyphrethsh']);
             
             // Mark diathesi pyspe/pysde or veltiwsh
             $tmpdata['mdv'] = $row0['org'] == 2222222 ?
@@ -617,8 +620,10 @@
             echo "<th>A.M.</th>\n";
             echo "<th>Υποβλήθηκε</th>\n";
             echo "<th>Ημ/νία - Ώρα</th>\n";
-            echo "<th>Έλεγχος</th>\n";
-            echo "<th>Κατηγορία</th>\n";
+            if ($av_type == 1){
+              echo "<th>Έλεγχος</th>\n";
+              echo "<th>Κατηγορία</th>\n";
+            }
             echo "</tr>\n</thead><tbody>\n";
             $sub_total = $blanks = 0;
 
@@ -666,22 +671,24 @@
                     }
                 }
                 echo "</td><td>$my_date</td>";
-                echo "<td>";
-                echo $row['checked'] ? 
-                    '<span title="'.$row['check_comments'].'">Ναι</span>' : 
-                    'Οχι';
-                echo "</td>";
-                // if geniki 2 eidiki, mark
-                $categ = 'Γεν.σε.Γεν.';
-                if ($row['apospash']){
-                    $categ = 'Γεν.σε.Ειδ.';
-                } elseif ($row['org_eid']) {
-                    $categ = 'Ειδ.σε.Ειδ.';
+                if ($av_type == 1){
+                  echo "<td>";
+                  echo $row['checked'] ? 
+                      '<span title="'.$row['check_comments'].'">Ναι</span>' : 
+                      'Οχι';
+                  echo "</td>";
+                  // if geniki 2 eidiki, mark
+                  $categ = 'Γεν.σε.Γεν.';
+                  if ($row['apospash']){
+                      $categ = 'Γεν.σε.Ειδ.';
+                  } elseif ($row['org_eid']) {
+                      $categ = 'Ειδ.σε.Ειδ.';
+                  }
+                  if ($row['eid_kat']){
+                      $categ .=  '&nbsp;<i>(Ειδ.Κατηγορία)</i>';
+                  }
+                  echo "<td>$categ</td>";
                 }
-                if ($row['eid_kat']){
-                    $categ .=  '&nbsp;<i>(Ειδ.Κατηγορία)</i>';
-                }
-                echo "<td>$categ</td>";
                 echo "</tr>";
 
                 $i++;
@@ -702,8 +709,12 @@
             //echo "<br><a href='admin.php?action=nothing'>Εκπ/κοί που δεν έχουν κάνει καμία αποθήκευση ή υποβολή ($nothing)</a>";
             echo "<br><a href='admin.php?action=saved'>Εκπ/κοί που έχουν αποθηκεύσει αλλά δεν έχουν υποβάλει αίτηση ($saved)</a>";
             echo "<h4>Εξαγωγή</h4>";
-            echo "<a href='admin.php?action=eidiki'>Αιτήσεις στην Ειδική αγωγή (από τη Γενική αγωγή ή από την Ειδική αγωγή)</a>";
-            echo "<br><a href='admin.php?action=export'>Από τη Γενική στη Γενική (για πρόγραμμα PPYSDE)</a><br>";
+            if ($av_type == 1){
+              echo "<a href='admin.php?action=eidiki'>Αιτήσεις στην Ειδική αγωγή (από τη Γενική αγωγή ή από την Ειδική αγωγή)</a>";
+              echo "<br><a href='admin.php?action=export'>Από τη Γενική στη Γενική (για πρόγραμμα PPYSDE)</a><br>";
+            } else {
+              echo "<a href='admin.php?action=export'>Για πρόγραμμα PPYSDE</a><br>";
+            }
         }       
         echo "<br><br><a href=\"import.php\">Εισαγωγή Δεδομένων</a><br>";
         echo "<br><a href=\"params.php\">Μεταβολή παραμέτρων</a><br>";

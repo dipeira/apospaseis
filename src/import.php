@@ -28,9 +28,10 @@ if (!isset($_POST['submit']))
     echo "Όνομα αρχείου προς εισαγωγή:<br />\n";
     echo "<input size='50' type='file' name='filename'><br />\n";
     echo "<br>Τύπος (πίνακας) δεδομένων:<br>";
-    echo "<input type='radio' name='type' value='1'>Υπάλληλοι<br>";
-    echo "<input type='radio' name='type' value='2'>Σχολεία<br>";
-    echo "<input type='radio' name='type' value='3' >Δήμοι<br>";
+    echo "<input type='radio' name='type' value='1'>Υπάλληλοι για απόσπαση&nbsp;<a href='../files/apo_employee.csv'>(δείγμα)</a><br>";
+    echo "<input type='radio' name='type' value='4'>Υπάλληλοι για βελτίωση&nbsp;<a href='../files/apo_employee_velt.csv'>(δείγμα)</a><br>";
+    echo "<input type='radio' name='type' value='2'>Σχολεία&nbsp;<a href='../files/apo_school.csv'>(δείγμα)</a><br>";
+    echo "<input type='radio' name='type' value='3' >Δήμοι&nbsp;<a href='../files/apo_dimos.csv'>(δείγμα)</a><br>";
     print "<input type='submit' name='submit' value='Μεταφόρτωση'></form>";
     echo "<small>ΣΗΜ.: Η εισαγωγή ενδέχεται να διαρκέσει μερικά λεπτά, ειδικά για μεγάλα αρχεία.<br>Μη φύγετε από τη σελίδα αν δεν πάρετε κάποιο μήνυμα.</small>";
     echo "</form>";
@@ -51,6 +52,7 @@ if (!isset($_POST['submit']))
         switch ($_POST['type'])
         {
             case 1:
+            case 4:
                 mysqli_query($mysqlconnection, "DELETE FROM $av_emp WHERE am <> '$av_admin'");
                 $tbl = $av_emp;
                 mysqli_query($mysqlconnection, "TRUNCATE $av_ait");
@@ -80,10 +82,19 @@ if (!isset($_POST['submit']))
             if (!$checked)
             {
                 $csvcols = count($data);
-                $qry = "SELECT * FROM $tbl LIMIT 1";
-                $res = mysqli_query($mysqlconnection, $qry);
-                $tblcols = mysqli_num_fields($res);
-                if ($_POST['type'] == 1) $tblcols--;
+                
+                switch ($_POST['type']) {
+                  case 1:
+                  case 4:
+                    $tblcols = 10;
+                    break;
+                  case 2:
+                    $tblcols = 5;
+                    break;
+                  case 3:
+                    $tblcols = 1;
+                    break;
+                }
 
                 if ($csvcols <> $tblcols)
                 {
@@ -98,16 +109,19 @@ if (!isset($_POST['submit']))
             switch ($_POST['type']){
                 // employees
                 case 1:
-                    $import="INSERT into $av_emp(id,name,surname,patrwnymo,klados,am,afm,org,eth,mhnes,hmeres) values('$data[0]','$data[1]','$data[2]','$data[3]','$data[4]','$data[5]','$data[6]','$data[7]','$data[8]','$data[9]','$data[10]')";
-                    break;
+                  $import="INSERT into $av_emp(name,surname,patrwnymo,klados,am,afm,org,eth,mhnes,hmeres) values('$data[0]','$data[1]','$data[2]','$data[3]','$data[4]','$data[5]','$data[6]','$data[7]','$data[8]','$data[9]')";
+                  break;
+                case 4:
+                  $import="INSERT into $av_emp(name,surname,patrwnymo,klados,am,afm,org,moria,entopiothta,synyphrethsh) values('$data[0]','$data[1]','$data[2]','$data[3]','$data[4]','$data[5]','$data[6]','$data[7]','$data[8]','$data[9]')";
+                  break;
                 // schools
                 case 2:
-                    $import="INSERT into $av_sch(id,name,kwdikos,dim,omada,inactive) values('$data[0]','$data[1]','$data[2]','$data[3]','$data[4]','$data[5]')";
-                    break;
+                  $import="INSERT into $av_sch(name,kwdikos,dim,omada,inactive) values('$data[0]','$data[1]','$data[2]','$data[3]','$data[4]')";
+                  break;
                 // dimoi
                 case 3:
-                    $import="INSERT into $av_dimos(id,name) values('$data[0]','$data[1]')";
-                    break;
+                  $import="INSERT into $av_dimos(name) values('$data[0]')";
+                  break;
             }
             // set max execution time (for large files)
             set_time_limit (480);

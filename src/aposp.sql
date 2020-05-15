@@ -30,14 +30,14 @@ CREATE TABLE IF NOT EXISTS `apo_aitisi` (
   `check_comments` text NOT NULL,
   `eid_kat` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 DROP TABLE IF EXISTS `apo_dimos`;
 CREATE TABLE IF NOT EXISTS `apo_dimos` (
   `id` int(11) NOT NULL COMMENT 'Α/Α (0 για κανένα δήμο)',
   `name` varchar(50) NOT NULL COMMENT 'Όνομα καλλικρατικού δήμου',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 DROP TABLE IF EXISTS `apo_employee`;
 CREATE TABLE IF NOT EXISTS `apo_employee` (
@@ -49,13 +49,16 @@ CREATE TABLE IF NOT EXISTS `apo_employee` (
   `am` int(11) NOT NULL,
   `afm` bigint(10) NOT NULL,
   `org` bigint(10) NOT NULL COMMENT 'Οργανική (7ψήφιος κωδικός ΥΠΑΙΘ)',
-  `eth` int(3) NOT NULL,
-  `mhnes` int(3) NOT NULL,
-  `hmeres` int(3) NOT NULL,
+  `eth` int(3) NULL DEFAULT NULL,
+  `mhnes` int(3) NULL DEFAULT NULL,
+  `hmeres` int(3) NULL DEFAULT NULL,
+  `moria` DECIMAL NULL DEFAULT NULL,
+  `entopiothta` TEXT NULL DEFAULT NULL,
+  `synyphrethsh` TEXT NULL DEFAULT NULL
   `lastlogin` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Τελευταία είσοδος',
   PRIMARY KEY (`id`),
   KEY `am` (`am`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2594 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 DROP TABLE IF EXISTS `apo_school`;
 CREATE TABLE IF NOT EXISTS `apo_school` (
@@ -66,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `apo_school` (
   `omada` tinyint(4) NOT NULL COMMENT 'Ομάδα σχολείου (για περιορισμό αποσπάσεων)',
   `inactive` tinyint(1) NOT NULL COMMENT 'Να μην εμφανίζεται στις επιλογές',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 DROP TABLE IF EXISTS `apo_params`;
 CREATE TABLE IF NOT EXISTS `apo_params` (
