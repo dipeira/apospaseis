@@ -75,6 +75,9 @@
     $am = $_SESSION['user'];
     $organ_code = $row['org'];
     $organ = getSchooledc($organ_code, $mysqlconnection);
+    $moria = $row['moria'];
+    $entopiothta = $row['entopiothta'];
+    $synyphrethsh = $row['synyphrethsh'];
     // find school team if apospaseis
     if ($av_type == 1)
     {
@@ -162,6 +165,11 @@
         echo "<tr><td>Κλάδος: </td><td colspan=3>".$klados."</td></tr>";
         echo "<tr><td>A.M.: </td><td colspan=3>".$am."</td></tr>";
         echo "<tr><td>Οργανική θέση: </td><td colspan=3>".$organ."</td></tr>";
+        if ($av_type == 2) {
+          echo "<tr><td>Μόρια βελτίωσης: </td><td colspan=3>".$moria."</td></tr>";
+          echo "<tr><td>Δήμος εντοπιότητας: </td><td colspan=3>".$entopiothta."</td></tr>";
+          echo "<tr><td>Δήμος συνυπηρέτησης: </td><td colspan=3>".$synyphrethsh."</td></tr>";
+        }
         echo "<tr><td colspan=4><center><strong>Προτιμήσεις</strong></center></td></tr>";
         
         //echo "<tr><td colspan=4><center><INPUT TYPE='button' onclick='toggleFormElements(true)' name='submit' VALUE='Αρνητική Δήλωση'></center></td></tr>\n";

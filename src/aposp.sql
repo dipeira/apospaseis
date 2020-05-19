@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `apo_employee` (
   `eth` int(3) NULL DEFAULT NULL,
   `mhnes` int(3) NULL DEFAULT NULL,
   `hmeres` int(3) NULL DEFAULT NULL,
-  `moria` DECIMAL NULL DEFAULT NULL,
+  `moria` FLOAT(5,2) NULL DEFAULT NULL,
   `entopiothta` TEXT NULL DEFAULT NULL,
   `synyphrethsh` TEXT NULL DEFAULT NULL
   `lastlogin` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Τελευταία είσοδος',

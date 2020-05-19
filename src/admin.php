@@ -185,6 +185,11 @@
             $schools = getSchools('organ',$dim,0,$mysqlconnection,$organ, TRUE);
             echo "<tr><td colspan=2>Οργανική θέση: </td><td colspan=5>".$schools."</td></tr>";
         }
+        if ($av_type == 2) {
+          echo "<tr><td colspan=2>Μόρια βελτίωσης: </td><td colspan=2>".$row['moria']."</td></tr>";
+          echo "<tr><td colspan=2>Δήμος εντοπιότητας: </td><td colspan=2>".$row['entopiothta']."</td></tr>";
+          echo "<tr><td colspan=2>Δήμος συνυπηρέτησης: </td><td colspan=2>".$row['synyphrethsh']."</td></tr>";
+        }
         // if apospaseis, show related data
         if ($av_type == 1)
         {
@@ -391,8 +396,20 @@
                     }
                     $choices = $tmpArr;
                 }
+                // if veltiwseis
+                if ($av_type == 2) {
+                  $moria_array = Array(
+                    'moria'=>$row0['moria'],
+                    'entopiothta'=>$row0['entopiothta'],
+                    'synyphrethsh'=>$row0['synyphrethsh'],
+                  );
+                  $tmpdata = array_merge($tmpdata, $moria_array);
+                }
                 
+                // add choices
                 $tmpdata = array_merge($tmpdata, $choices);
+                
+                // add specific columns
                 if ($apospaseis){
                     // compute moria
                     $moria = compute_moria($row0['id'],$mysqlconnection,$row0['eid_kat']);
@@ -419,6 +436,10 @@
                         
         array_push($columns,'am','name','surname','patrwnymo','org','org_code','klados','mdv');
         
+        if ($av_type == 2) {
+          array_push($columns,'moria','entopiothta','synyphrethsh');
+        }
+
         if ($av_dntes) {
             $columns[] = "choices";
         }

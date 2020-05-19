@@ -112,7 +112,7 @@ if (!isset($_POST['submit']))
                   $import="INSERT into $av_emp(name,surname,patrwnymo,klados,am,afm,org,eth,mhnes,hmeres) values('$data[0]','$data[1]','$data[2]','$data[3]','$data[4]','$data[5]','$data[6]','$data[7]','$data[8]','$data[9]')";
                   break;
                 case 4:
-                  $import="INSERT into $av_emp(name,surname,patrwnymo,klados,am,afm,org,moria,entopiothta,synyphrethsh) values('$data[0]','$data[1]','$data[2]','$data[3]','$data[4]','$data[5]','$data[6]','$data[7]','$data[8]','$data[9]')";
+                  $import="INSERT into $av_emp(name,surname,patrwnymo,klados,am,afm,org,moria,entopiothta,synyphrethsh) values('$data[0]','$data[1]','$data[2]','$data[3]','$data[4]','$data[5]','$data[6]',$data[7],'$data[8]','$data[9]')";
                   break;
                 // schools
                 case 2:
