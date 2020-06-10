@@ -1,4 +1,6 @@
+CREATE DATABASE IF NOT EXISTS %aposp% DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE %aposp%;
+
 DROP TABLE IF EXISTS `apo_aitisi`;
 CREATE TABLE IF NOT EXISTS `apo_aitisi` (
   `id` int(11) NOT NULL AUTO_INCREMENT,`ygeia` tinyint(1) NOT NULL COMMENT 'Λόγοι υγείας ιδίου, παιδιών, συζύγου',
@@ -34,14 +36,14 @@ CREATE TABLE IF NOT EXISTS `apo_aitisi` (
 
 DROP TABLE IF EXISTS `apo_dimos`;
 CREATE TABLE IF NOT EXISTS `apo_dimos` (
-  `id` int(11) NOT NULL COMMENT 'Α/Α (0 για κανένα δήμο)',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Α/Α (0 για κανένα δήμο)',
   `name` varchar(50) NOT NULL COMMENT 'Όνομα καλλικρατικού δήμου',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 DROP TABLE IF EXISTS `apo_employee`;
 CREATE TABLE IF NOT EXISTS `apo_employee` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
   `surname` varchar(30) NOT NULL,
   `patrwnymo` varchar(20) NOT NULL,
@@ -54,15 +56,15 @@ CREATE TABLE IF NOT EXISTS `apo_employee` (
   `hmeres` int(3) NULL DEFAULT NULL,
   `moria` FLOAT(5,2) NULL DEFAULT NULL,
   `entopiothta` TEXT NULL DEFAULT NULL,
-  `synyphrethsh` TEXT NULL DEFAULT NULL
-  `lastlogin` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Τελευταία είσοδος',
+  `synyphrethsh` TEXT NULL DEFAULT NULL,
+  `lastlogin` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `am` (`am`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 DROP TABLE IF EXISTS `apo_school`;
 CREATE TABLE IF NOT EXISTS `apo_school` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `kwdikos` varchar(10) NOT NULL COMMENT '7ψήφιος κωδικός ΥΠΑΙΘ',
   `dim` tinyint(4) NOT NULL COMMENT 'dimotiko=2, nip=1',

@@ -729,6 +729,7 @@
                 echo "<strong>$blanks</strong> κενές (αρνητικές) αιτήσεις.<br>";
             //echo "<br><a href='admin.php?action=nothing'>Εκπ/κοί που δεν έχουν κάνει καμία αποθήκευση ή υποβολή ($nothing)</a>";
             echo "<br><a href='admin.php?action=saved'>Εκπ/κοί που έχουν αποθηκεύσει αλλά δεν έχουν υποβάλει αίτηση ($saved)</a>";
+            echo "<br><br><h3>Λοιπές λειτουργίες</h3>";
             echo "<h4>Εξαγωγή</h4>";
             if ($av_type == 1){
               echo "<a href='admin.php?action=eidiki'>Αιτήσεις στην Ειδική αγωγή (από τη Γενική αγωγή ή από την Ειδική αγωγή)</a>";

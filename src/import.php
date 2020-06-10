@@ -14,6 +14,9 @@
   }
   else
       $loggedin = 1;
+
+  $mysqlconnection = mysqli_connect($db_host, $db_user, $db_password, $db_name);
+  mysqli_set_charset($mysqlconnection,"utf8");
 ?>
 <html>
   <?php require_once('head.php'); ?>
@@ -22,8 +25,10 @@
 if (!isset($_POST['submit']))
 {
 	echo "<h2> Εισαγωγή δεδομένων στη βάση δεδομένων </h2>";
-	echo "ΠΡΟΣΟΧΗ: Η δυνατότητα αυτή διαγράφει όλα τα δεδομένα απο τον πίνακα που θα επιλεγεί, πριν εισάγει σε αυτόν τα νέα.<br><br>";
-	echo "<strong>ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Η ενέργεια αυτή δεν είναι αναστρέψιμη...</strong><br><br>";
+  echo "ΠΡΟΣΟΧΗ: Η δυνατότητα αυτή διαγράφει όλα τα δεδομένα απο τον πίνακα που θα επιλεγεί, πριν εισάγει σε αυτόν τα νέα.<br><br>";
+  $rows = count_rows($mysqlconnection);
+  echo "(Αριθμός εγγραφών που υπάρχουν στη Β.Δ.: Υπάλληλοι: ".$rows['emp'].', Σχολεία: '.$rows['sch'].', Δήμοι: '.$rows['dimos'].')<br>';
+	echo "<br><strong>ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Η ενέργεια αυτή δεν είναι αναστρέψιμη...</strong><br><br>";
     echo "<form enctype='multipart/form-data' action='import.php' method='post'>";
     echo "Όνομα αρχείου προς εισαγωγή:<br />\n";
     echo "<input size='50' type='file' name='filename'><br />\n";
@@ -40,8 +45,7 @@ if (!isset($_POST['submit']))
 	exit;
 }
 
-    $mysqlconnection = mysqli_connect($db_host, $db_user, $db_password, $db_name);
-    mysqli_set_charset($mysqlconnection,"utf8");
+    
     
     //Upload File
     if (is_uploaded_file($_FILES['filename']['tmp_name'])) {

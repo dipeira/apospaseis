@@ -1,6 +1,38 @@
 <?php
 require_once '../config.php';
 
+// init params
+$conn = mysqli_connect($db_host, $db_user, $db_password, $db_name);
+
+// find calling script (php file)
+$script = end(explode('/', $_SERVER['PHP_SELF']));
+
+if (!$conn && $script != 'init.php') {
+  echo $script;
+  echo "<h3>Σφάλμα: Δεν υπάρχει η βάση.<br>Αρχικοποιήστε με το <a href='init.php'>αρχείο init.php</a> ή επικοινωνήστε με το διαχειριστή.</h3>";
+  die();
+}
+
+mysqli_set_charset($conn,"utf8");
+$query = "SELECT pkey, pvalue from $av_params";
+$result = mysqli_query($conn, $query);
+if (mysqli_num_rows($result)==0) 
+    return 0;
+else {
+    while ($row = mysqli_fetch_array($result)) {
+      $key = $row['pkey'];
+      $$key = $row['pvalue'];
+    }
+    //$_SESSION['initialized'] = true;
+}
+
+  
+// Report all errors except E_NOTICE
+// This is the default value set in php.ini  
+// to avoid notices on some configurations
+error_reporting(E_ALL ^ E_NOTICE);
+
+
 function getSchooledc ($id,$conn)
 {
         global $av_sch;
@@ -454,5 +486,23 @@ function moria_key2per($key){
         case 'synolo':
             return 'Σύνολο';
     }
+}
+
+function count_rows($conn){
+  global $av_sch, $av_dimos, $av_emp;
+  
+  $query = "SELECT id from $av_sch";
+  $result = mysqli_query($conn, $query);
+  $sch = mysqli_num_rows($result);
+
+  $query = "SELECT id from $av_dimos";
+  $result = mysqli_query($conn, $query);
+  $dimos = mysqli_num_rows($result);
+
+  $query = "SELECT id from $av_emp";
+  $result = mysqli_query($conn, $query);
+  $emp = mysqli_num_rows($result) - 1;
+
+  return array('emp' => $emp, 'sch' => $sch, 'dimos' => $dimos);
 }
 ?>
