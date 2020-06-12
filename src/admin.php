@@ -582,7 +582,10 @@
     else
     {
       session_start();
-      echo "<center><h2>$av_title ($av_foreas) <br> Διαχείριση</h2></center>";
+      echo "<center><h1>$av_title ($av_foreas)</h1>";
+      echo "<h2>Διαχείριση ";
+      echo $av_type == 1 ? "<i>(λειτουργία αποσπάσεων)</i>" : "<i>(λειτουργία βελτιώσεων)</i>";
+      echo "</h2></center>";
       echo "<center>";
       if (file_exists('init.php')){
           echo "<p><b>ΠΡΟΣΟΧΗ</b>: Παρακαλώ διαγράψτε το αρχείο <b>init.php</b> για λόγους ασφαλείας!</p>";

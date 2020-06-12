@@ -2,13 +2,12 @@
 require_once '../config.php';
 
 // init params
-$conn = mysqli_connect($db_host, $db_user, $db_password, $db_name);
+$conn = @mysqli_connect($db_host, $db_user, $db_password, $db_name);
 
 // find calling script (php file)
 $script = end(explode('/', $_SERVER['PHP_SELF']));
 
 if (!$conn && $script != 'init.php') {
-  echo $script;
   echo "<h3>Σφάλμα: Δεν υπάρχει η βάση.<br>Αρχικοποιήστε με το <a href='init.php'>αρχείο init.php</a> ή επικοινωνήστε με το διαχειριστή.</h3>";
   die();
 }

@@ -30,6 +30,7 @@
   mysqli_set_charset($conn,"utf8");
   $query = "SELECT * from $av_params";
   $result = mysqli_query($conn, $query);
+  global $av_type;
 ?>
 <html>
   <?php require_once('head.php'); ?>
@@ -43,7 +44,7 @@
       </thead>
       <tbody>
       <?php
-        while ($row = mysqli_fetch_array($result)){
+        while ($row = mysqli_fetch_array($result)) {
           echo "<tr><td>".$row['pdescr']."</td>";
           if ($row['pcheck'] == 1){
             echo "<td>";
@@ -51,6 +52,12 @@
             echo "<input type='checkbox' ";
             echo (int)$row['pvalue'] == 1  ? 'checked' : '';
             echo " name='".$row['pkey']."'/></td>";
+          } else if ($row['pkey'] == 'av_type') {
+            echo '<td><select name="av_type" id="av_type">';
+            echo $av_type == '1' ? 
+              '<option value="1" selected="selected">Αποσπάσεις</option><option value="2">Βελτιώσεις</option>' :
+              '<option value="1">Αποσπάσεις</option><option value="2" selected="selected">Βελτιώσεις</option>';
+            echo '</select></td>';
           } else
             echo "<td><input value='".$row['pvalue']."' name='".$row['pkey']."'/></td>";
           echo "</tr>";
