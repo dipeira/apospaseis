@@ -164,17 +164,22 @@ class logmein {
         $this->dbconnect();
         echo '
 <form name="'.$formname.'" method="post" id="'.$formname.'" class="'.$formclass.'" enctype="application/x-www-form-urlencoded" action="'.$formaction.'" autocomplete="off">
-<table>
-<tr><td><div><label for="username">Αριθμός Μητρώου Εκπ/κού</label></td>
-<td><input name="username" id="username" type="text" ></div></td></tr>
-<tr><td><div><label for="password">Α.Φ.Μ. Εκπ/κού</label></td>
-<td><input name="password" id="password" type="password" ></div></td></tr>';
+<div class="form-group">
+    <label for="username">Αριθμός Μητρώου Εκπ/κού</label>
+    <input type="text" class="form-control" id="username" name="username">
+  </div>
+  <div class="form-group">
+    <label for="password">Α.Φ.Μ. Εκπ/κού</label>
+    <input type="password" class="form-control" name="password" id="password">
+  </div>';
 if ($av_extra) {
-    echo '<tr><td>'.$av_extra_label.'</td><td><input name="'.$av_extra_name.'" id="'.$av_extra_name.'" type="password" ></td></tr>';
+    echo '<div class="form-group">
+    <label for="">'.$av_extra_label.'</label>
+    <input type="password" class="form-control" name="'.$av_extra_name.'" id="'.$av_extra_name.'">
+  </div>';
 }
-echo '<tr><td colspan=2><input name="action" id="action" value="login" type="hidden">
-<div>
-<center><input name="submit" id="submit" value="Είσοδος στο σύστημα" type="submit"></center></div></td></tr></table>
+echo '<input name="action" id="action" value="login" type="hidden">
+<button type="submit" class="btn btn-primary">Είσοδος στο σύστημα</button>
 </form>
 ';
     }

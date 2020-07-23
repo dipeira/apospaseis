@@ -5,6 +5,7 @@
 ?>
 <html>
   <?php require_once('head.php'); ?>
+  <body>
 <?php
   $timeout = 0;
 
@@ -51,15 +52,17 @@
     if ($_SESSION['user']=="$av_admin" && !isset($_GET['userid']))
         echo "  <meta http-equiv=\"refresh\" content=\"0; URL=admin.php\">";
 ?>
-  <div id="left1">
-      <?php include('help.php'); ?>
-  </div>
-  <div id="right1">
+<div class="container">
+    
+  <!-- <div id="left1">
+      <!-- <?php include('help.php'); ?> -->
+  <!-- /div> -->
+  <!-- <div id="right1"> -->
 <?php
     $mysqlconnection = mysqli_connect($db_host, $db_user, $db_password, $db_name);
     mysqli_set_charset($mysqlconnection,"utf8");
       
-    echo "<center><h2>$av_title ($av_foreas)</h2></center>";
+    echo "<h2>$av_title ($av_foreas)</h2>";
     $userid = isset($_GET['userid']) ? $_GET['userid'] : $_SESSION['user'];
     $query = "SELECT * from $av_emp WHERE am = ".$userid;
 
@@ -155,10 +158,10 @@
         $allo = str_replace(" ", "&nbsp;", $allo);
         
         if ($submitted && !$is_admin)
-            echo "<h3><center>Η αίτηση έχει υποβληθεί και δεν μπορείτε να την επεξεργαστείτε.</center></h3>";
-        echo "<center>";
-        echo "<table id=\"mytbl\" class=\"imagetable\" border=\"2\">\n";
-        echo "<thead><th colspan=7>Βήμα 1: Υποβολή στοιχείων</th></thead>";
+            echo "<h3>Η αίτηση έχει υποβληθεί και δεν μπορείτε να την επεξεργαστείτε.</h3>";
+        echo "";
+        echo "<table id=\"mytbl\" class=\"table table-striped table-bordered table-responsive\" border=\"2\">\n";
+        echo "<thead class='thead-light'><th colspan=7>Βήμα 1: Υποβολή στοιχείων</th></thead>";
         echo "<tr><td colspan=2>Ονοματεπώνυμο Εκπ/κού:</td><td colspan=5>".$name." ".$surname."</td></tr>";
         echo "<tr><td colspan=2>Πατρώνυμο: </td><td colspan=5>".$patrwnymo."</td></tr>";
         echo "<tr><td colspan=2>Κλάδος: </td><td colspan=5>".$klados."</td></tr>";
@@ -177,33 +180,33 @@
             echo "</td></tr>";
             echo "<form id='src' name='src' action='choices.php' method='POST'>\n";
             if ($org_eid)
-                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='org_eid' value='1' checked disabled>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
+                echo "<tr><td colspan=7><input type='checkbox' name='org_eid' value='1' checked disabled>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
             else
-                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='org_eid' value='1' disabled>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
+                echo "<tr><td colspan=7><input type='checkbox' name='org_eid' value='1' disabled>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
             if ($aitisi)
-                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='aitisi' value='1' disabled checked>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
+                echo "<tr><td colspan=7><input type='checkbox' name='aitisi' value='1' disabled checked>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
             else
-                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='aitisi' value='1' disabled>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
-            echo "<tr height=20></tr><tr><td colspan=7><center>Οικογενειακή Κατάσταση</center></td></tr>";
+                echo "<tr><td colspan=7><input type='checkbox' name='aitisi' value='1' disabled>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
+            echo "<tr><td colspan=7><center><b>Οικογενειακή Κατάσταση</b></center></td></tr>";
             echo "<tr><td>Γάμος</td><td>";
             echo getGamos($gamos);
             echo "</td><td>Παιδιά</td><td>$paidia</td><td>Δήμος</td><td>$dhmos_anhk</td></tr>";
-            echo "<tr height=20></tr><tr><td colspan=7><center>Εντοπιότητα</center></td></tr>";
+            echo "<tr><td colspan=7>Εντοπιότητα</td></tr>";
             echo "<tr><td colspan=2>Δήμος της Περιφερειακής Ενότητας $av_nomos που έχω εντοπιότητα</td><td colspan=5>";
             echo getDimos($dhmos_ent,$mysqlconnection);
             echo "</td></tr>";
-            echo "<tr height=20></tr><tr><td colspan=7><center>Συνυπηρέτηση</center></td></tr>";
+            echo "<tr><td colspan=7>Συνυπηρέτηση</td></tr>";
             echo "<tr><td colspan=2>Δήμος της Περιφερειακής Ενότητας $av_nomos που έχω συνυπηρέτηση</td><td colspan=5>";
             echo getDimos($dhmos_syn, $mysqlconnection);
             echo "</td></tr>";
             if ($eidikh)
-                echo "<tr height=20></tr><tr><td colspan=2><center>Ειδική Κατηγορία (κατά προτεραιότητα)</center></td><td colspan=5><input type='checkbox' name='eidikh' value='1' disabled checked>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
+                echo "<tr><td colspan=2>Ειδική Κατηγορία (κατά προτεραιότητα)</td><td colspan=5><input type='checkbox' name='eidikh' value='1' disabled checked>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
             else
-                echo "<tr height=20></tr><tr><td colspan=2><center>Ειδική Κατηγορία (κατά προτεραιότητα)</center></td><td colspan=5><input type='checkbox' name='eidikh' value='1' disabled>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
+                echo "<tr><td colspan=2>Ειδική Κατηγορία (κατά προτεραιότητα)</td><td colspan=5><input type='checkbox' name='eidikh' value='1' disabled>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
             if ($apospash)
-                echo "<tr height=20></tr><tr><td colspan=2><center>Επιθυμώ απόσπαση</center></td><td colspan=5><input type='checkbox' name='apospash' value='1' disabled checked>Απο τη Γενική στην Ειδική Αγωγή</td></tr>";
+                echo "<tr><td colspan=2>Επιθυμώ απόσπαση</td><td colspan=5><input type='checkbox' name='apospash' value='1' disabled checked>Απο τη Γενική στην Ειδική Αγωγή</td></tr>";
             else
-                echo "<tr height=20></tr><tr><td colspan=2><center>Επιθυμώ απόσπαση</center></td><td colspan=5><input type='checkbox' name='apospash' value='1' disabled>Απο τη Γενική στην Ειδική Αγωγή</td></tr>";
+                echo "<tr><td colspan=2>Επιθυμώ απόσπαση</td><td colspan=5><input type='checkbox' name='apospash' value='1' disabled>Απο τη Γενική στην Ειδική Αγωγή</td></tr>";
             echo "<div id='ea'><tr><td colspan=2></td><td colspan=5>";
             if ($didakt)
                 echo "α) Διδακτορικό Ειδ.Αγωγής<input type='checkbox' name='didakt' value='1' disabled checked><br>";
@@ -228,28 +231,28 @@
             
             echo "</div>";
             
-            echo "<tr height=20></tr><tr><td colspan=7><center>Σοβαροί λόγοι υγείας</center></td></tr>";
-            echo "<tr><td colspan=2><center>Του ιδίου, παιδιών ή συζύγου</center></td><td colspan=5>";
+            echo "<tr><td colspan=7><b><center> Σοβαροί λόγοι υγείας</center></b></td></tr>";
+            echo "<tr><td colspan=2>Του ιδίου, παιδιών ή συζύγου</td><td colspan=5>";
             echo getYgeia($ygeia);
             echo "</td></tr>";
-            echo "<tr><td colspan=2><center>Γονέων</center></td><td colspan=5>";
+            echo "<tr><td colspan=2>Γονέων</td><td colspan=5>";
             echo getYgeia_g($ygeia_g);
             echo "</td></tr>";
-            echo "<tr><td colspan=2><center>Αδελφών</center></td><td colspan=5>";
+            echo "<tr><td colspan=2>Αδελφών</td><td colspan=5>";
             echo getYgeia_a($ygeia_a);
             echo "</td></tr>";
             if ($eksw)
-                echo "<tr><td colspan=2><center>Θεραπεία για εξωσωματική γονιμοποίηση</center></td><td colspan=5><input type='checkbox' name='eksw' value='1' checked disabled></td></tr>";
+                echo "<tr><td colspan=2>Θεραπεία για εξωσωματική γονιμοποίηση</td><td colspan=5><input type='checkbox' name='eksw' value='1' checked disabled></td></tr>";
             else
-                echo "<tr><td colspan=2><center>Θεραπεία για εξωσωματική γονιμοποίηση</center></td><td colspan=5><input type='checkbox' name='eksw' value='1' disabled></td></tr>";
-            echo "<tr height=20></tr><tr><td colspan=2>Σχόλια - Παρατηρήσεις</td><td colspan=5>$comments</td></tr>";
+                echo "<tr><td colspan=2>Θεραπεία για εξωσωματική γονιμοποίηση</td><td colspan=5><input type='checkbox' name='eksw' value='1' disabled></td></tr>";
+            echo "<tr><td colspan=2>Σχόλια - Παρατηρήσεις</td><td colspan=5>$comments</td></tr>";
             $blabla = "Δηλώνω υπεύθυνα ότι δεν έχω οριστεί στέλεχος εκπαίδευσης (λ.χ. προϊστάμενος/μένη ολιγοθέσιας σχολικής μονάδας, διευθυντής/ντρια σχολ. μονάδας) και ότι δεν υπηρετώ σε θέση με θητεία που λήγει μετά τις $av_endofyear.";
-            echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='ypdil' value='1' checked disabled>$blabla</td></tr>";
+            echo "<tr><td colspan=7><input type='checkbox' name='ypdil' value='1' checked disabled>$blabla</td></tr>";
             echo "<tr><td colspan=7><small>Υποβλήθηκε στις: ".  date("d-m-Y, H:i:s", strtotime($row['submit_date']))."</small></td></tr>";
             echo "<input type='hidden' name = 'id' value='$id'>";
             echo "</form>";
-            echo "<tr><td colspan=7><center><form action='choices.php' method='POST'><input type='submit' value='Συνέχεια στο Βήμα 2'></form></center></td></tr>";
-            echo "<tr><td colspan=7><center><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' value='Έξοδος'></form></center></td></tr>";
+            echo "<tr><td colspan=7><form action='choices.php' method='POST'><input type='submit' class='btn btn-info' value='Συνέχεια στο Βήμα 2'></form></td></tr>";
+            echo "<tr><td colspan=7><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' class='btn btn-danger' value='Έξοδος'></form></td></tr>";
         }
         // if not submitted
         else
@@ -257,39 +260,39 @@
             //form
             echo "<form id='src' name='src' action='save.php' method='POST'>\n";
             if ($org_eid)
-                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='org_eid' value='1' checked>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
+                echo "<tr><td colspan=7><input type='checkbox' name='org_eid' value='1' checked>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
             else
-                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='org_eid' value='1'>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
+                echo "<tr><td colspan=7><input type='checkbox' name='org_eid' value='1'>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
             if ($aitisi)
-                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='aitisi' value='1' checked>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
+                echo "<tr><td colspan=7><input type='checkbox' name='aitisi' value='1' checked>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
             else
-                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='aitisi' value='1'>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
-            echo "<tr height=20></tr><tr><td colspan=7><center>Οικογενειακή Κατάσταση</center></td></tr>";
+                echo "<tr><td colspan=7><input type='checkbox' name='aitisi' value='1'>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
+            echo "<tr><td colspan=7><b><center>Οικογενειακή Κατάσταση</center></b></td></tr>";
             echo "<tr><td>Γάμος</td><td>";
             cmbGamos_edit($gamos);
             echo "</td><td>Παιδιά</td><td>";
             cmbPaidia_edit($paidia);
             echo "</td><td>Δήμος</td><td>";
             //cmbDimos_edit('anhk',$dhmos_anhk);
-            echo "<input size=30 name='dhmos_anhk' value=$dhmos_anhk>";
+            echo "<input class='form-control' size=30 name='dhmos_anhk' value=$dhmos_anhk>";
             echo "</td></tr>";
-            echo "<tr height=20></tr><tr><td colspan=7><center>Εντοπιότητα</center></td></tr>";
+            echo "<tr><td colspan=7>Εντοπιότητα</td></tr>";
             echo "<tr><td colspan=2>Δήμος της Περιφερειακής Ενότητας $av_nomos που έχω εντοπιότητα</td><td colspan=5>";
             cmbDimos_edit('ent',$dhmos_ent,$mysqlconnection);
             echo "</td></tr>";
-            echo "<tr height=20></tr><tr><td colspan=7><center>Συνυπηρέτηση</center></td></tr>";
+            echo "<tr><td colspan=7>Συνυπηρέτηση</td></tr>";
             echo "<tr><td colspan=2>Δήμος της Περιφερειακής Ενότητας $av_nomos που έχω συνυπηρέτηση</td><td colspan=5>";
             cmbDimos_edit('syn',$dhmos_syn,$mysqlconnection);
             echo "</td></tr>";
             if ($eidikh)
-                echo "<tr height=20></tr><tr><td colspan=2><center>Ειδική Κατηγορία (κατά προτεραιότητα)</center></td><td colspan=5><input type='checkbox' name='eidikh' value='1' checked>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
+                echo "<tr><td colspan=2>Ειδική Κατηγορία (κατά προτεραιότητα)</td><td colspan=5><input type='checkbox' name='eidikh' value='1' checked>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
             else
-                echo "<tr height=20></tr><tr><td colspan=2><center>Ειδική Κατηγορία (κατά προτεραιότητα)</center></td><td colspan=5><input type='checkbox' name='eidikh' value='1'>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
+                echo "<tr><td colspan=2>Ειδική Κατηγορία (κατά προτεραιότητα)</td><td colspan=5><input type='checkbox' name='eidikh' value='1'>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
 
             if ($apospash)
-                echo "<tr height=20></tr><tr><td colspan=2><center>Επιθυμώ απόσπαση</center></td><td colspan=5><div name='main'><input type='checkbox' id='apospash' name='apospash' value='1' checked='1'>Απο τη Γενική στην Ειδική Αγωγή</div></td></tr>";
+                echo "<tr><td colspan=2>Επιθυμώ απόσπαση</td><td colspan=5><div name='main'><input type='checkbox' id='apospash' name='apospash' value='1' checked='1'>Απο τη Γενική στην Ειδική Αγωγή</div></td></tr>";
             else
-                echo "<tr height=20></tr><tr><td colspan=2><center>Επιθυμώ απόσπαση</center></td><td colspan=5><div name='main'><input type='checkbox' id='apospash' name='apospash' value='1'>Απο τη Γενική στην Ειδική Αγωγή</div></td></tr>";
+                echo "<tr><td colspan=2>Επιθυμώ απόσπαση</td><td colspan=5><div name='main'><input type='checkbox' id='apospash' name='apospash' value='1'>Απο τη Γενική στην Ειδική Αγωγή</div></td></tr>";
             echo "<tr><td colspan=2></td><td colspan=5><div class='other' name='other' id='other'>";
             if ($didakt)
                 echo "α) Διδακτορικό Ειδ.Αγωγής<input type='checkbox' name='didakt' value='1' checked><br>";
@@ -312,47 +315,45 @@
             echo "<br><small>Αν επιθυμείτε απόσπαση ΚΑΙ σε σχολεία της Γενικής εκπ/σης, συμπληρώστε τη <a href='aposp2013.doc'>φόρμα</a> και στείλτε την στο $av_foreas </small></div></td></div></tr>";
             //echo "</div>";
             
-            echo "<tr height=20></tr><tr><td colspan=7><center>Σοβαροί λόγοι υγείας</center></td></tr>";
-            echo "<tr><td colspan=2><center>Ποσοστό αναπηρίας του ιδίου, παιδιών ή συζύγου</center></td><td colspan=5>";
+            echo "<tr><td colspan=7><b><center> Σοβαροί λόγοι υγείας</center></b></td></tr>";
+            echo "<tr><td colspan=2>Ποσοστό αναπηρίας του ιδίου, παιδιών ή συζύγου</td><td colspan=5>";
             cmbYgeia_edit($ygeia);
             echo "</td></tr>";
-            echo "<tr><td colspan=2><center>Ποσοστό αναπηρίας Γονέων</center></td><td colspan=5>";
+            echo "<tr><td colspan=2>Ποσοστό αναπηρίας Γονέων</td><td colspan=5>";
             cmbYgeia_g_edit($ygeia_g);
             echo "</td></tr>";
-            echo "<tr><td colspan=2><center>Ποσοστό αναπηρίας Αδελφών</center></td><td colspan=5>";
+            echo "<tr><td colspan=2>Ποσοστό αναπηρίας Αδελφών</td><td colspan=5>";
             cmbYgeia_a_edit($ygeia_a);
             echo "</td></tr>";
             if ($eksw)
-                echo "<tr><td colspan=2><center>Θεραπεία για εξωσωματική γονιμοποίηση</center></td><td colspan=5><input type='checkbox' name='eksw' value='1' checked></td></tr>";
+                echo "<tr><td colspan=2>Θεραπεία για εξωσωματική γονιμοποίηση</td><td colspan=5><input type='checkbox' name='eksw' value='1' checked></td></tr>";
             else
-                echo "<tr><td colspan=2><center>Θεραπεία για εξωσωματική γονιμοποίηση</center></td><td colspan=5><input type='checkbox' name='eksw' value='1'></td></tr>";
-            echo "<tr height=20></tr><tr><td colspan=2>Σχόλια - Παρατηρήσεις</td><td colspan=5><textarea cols=60 name='comments' >$comments</textarea></td></tr>";
+                echo "<tr><td colspan=2>Θεραπεία για εξωσωματική γονιμοποίηση</td><td colspan=5><input type='checkbox' name='eksw' value='1'></td></tr>";
+            echo "<tr><td colspan=2>Σχόλια - Παρατηρήσεις</td><td colspan=5><textarea class='form-control' cols=60 name='comments' >$comments</textarea></td></tr>";
             
             $blabla = "Δηλώνω υπεύθυνα ότι δεν έχω οριστεί στέλεχος εκπαίδευσης (λ.χ. προϊστάμενος/μένη ολιγοθέσιας σχολικής μονάδας, διευθυντής/ντρια σχολ. μονάδας) και ότι δεν υπηρετώ σε θέση με θητεία που λήγει μετά τις 31-08-$av_etos.";
             if ($ypdil)
-                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='ypdil' value='1' checked>$blabla</td></tr>";
+                echo "<tr><td colspan=7><input type='checkbox' name='ypdil' value='1' checked>$blabla</td></tr>";
             else
-                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='ypdil' value='1'>$blabla</td></tr>";
+                echo "<tr><td colspan=7><input type='checkbox' name='ypdil' value='1'>$blabla</td></tr>";
             echo "<tr><td colspan=7><small>Τελευταία ενημέρωση: ". date("d-m-Y, H:i:s", strtotime($row['updated']))."</small></td></tr>";
             echo "<input type='hidden' name = 'id' value='$id'>";
             echo "<input type='hidden' name = 'part' value='1'>";
-            echo "<tr><td colspan=7><center><INPUT TYPE='submit' name='save' VALUE='Αποθήκευση'></center></td></tr>";
-            echo "<tr><td colspan=7><center><INPUT TYPE='submit' name='next' VALUE='Συνέχεια στο Βήμα 2'></center></td></tr>";
+            echo "<tr><td colspan=7><INPUT TYPE='submit' name='save' class='btn btn-success' VALUE='Αποθήκευση'></td></tr>";
+            echo "<tr><td colspan=7><INPUT TYPE='submit' name='next' class='btn btn-info' VALUE='Συνέχεια στο Βήμα 2'></td></tr>";
             echo "</form>";
-            //echo "<tr><td colspan=7><center><form action='choices.php' method='POST'><input type='submit' value='Επόμενη σελίδα'></form></center></td></tr>";            
-            //echo "<tr><td colspan=4><center><INPUT TYPE='submit' onclick='return myaction()' name='submit' VALUE='Οριστική Υποβολή'></center></td>\n";
             echo "</tr>\n";
             echo "</form>";
-            echo "<tr><td colspan=7><center><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' value='Έξοδος'></form></center></td></tr>";
+            echo "<tr><td colspan=7><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' class='btn btn-danger' value='Έξοδος'></form></td></tr>";
         }
         echo "</table>";
-        echo "</center>";
+        echo "";
     }
     // if user has NOT saved an application
     else
     {
-        echo "<center>";        
-        echo "<table id=\"mytbl\" class=\"imagetable\" border=\"2\">\n";
+        echo "";        
+        echo "<table id=\"mytbl\" class=\"table table-striped table-bordered\" border=\"2\">\n";
         echo "<thead><th colspan=7>Φόρμα υποβολής στοιχείων</th></thead>";
         echo "<tr><td colspan=2>Ονοματεπώνυμο Εκπ/κού:</td><td colspan=5>".$name." ".$surname."</td></tr>";
         echo "<tr><td colspan=2>Πατρώνυμο: </td><td colspan=5>".$patrwnymo."</td></tr>";
@@ -362,9 +363,9 @@
         echo "<tr><td colspan=2>Συνολική υπηρεσία: <small>(Έως $av_endofyear)</small></td><td colspan=5>$eth Έτη, $mhnes Μήνες, $hmeres Ημέρες</td></tr>";
         
         echo "<form id='src' name='src' action='save.php' method='POST'>\n";
-        echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='org_eid' value='1'>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
-        echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='aitisi' value='1'>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
-        echo "<tr height=20></tr><tr><td colspan=7><center>Οικογενειακή Κατάσταση</center></td></tr>";
+        echo "<tr><td colspan=7><input type='checkbox' name='org_eid' value='1'>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
+        echo "<tr><td colspan=7><input type='checkbox' name='aitisi' value='1'>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
+        echo "<tr><td colspan=7><b><center>Οικογενειακή Κατάσταση</center></b</td></tr>";
         echo "<tr><td>Γάμος</td><td>";
         cmbGamos();
         echo "</td><td>Παιδιά</td><td>";
@@ -372,17 +373,17 @@
         echo "</td><td>Δήμος</td><td>";
         echo "<input size=30 name='dhmos_anhk'>";
         echo "</td><td></td></tr>";
-        echo "<tr height=20></tr><tr><td colspan=7><center>Εντοπιότητα</center></td></tr>";
+        echo "<tr><td colspan=7>Εντοπιότητα</td></tr>";
         echo "<tr><td colspan=2>Δήμος της Περιφερειακής Ενότητας $av_nomos που έχω εντοπιότητα</td><td colspan=5>";
         cmbDimos('ent',$mysqlconnection);
         echo "</td></tr>";
-        echo "<tr height=20></tr><tr><td colspan=7><center>Συνυπηρέτηση</center></td></tr>";
+        echo "<tr><td colspan=7>Συνυπηρέτηση</td></tr>";
         echo "<tr><td colspan=2>Δήμος της Περιφερειακής Ενότητας $av_nomos που έχω συνυπηρέτηση</td><td colspan=5>";
         cmbDimos('syn',$mysqlconnection);
         echo "</td></tr>";
-        echo "<tr height=20></tr><tr><td colspan=2><center>Ειδική Κατηγορία (κατά προτεραιότητα)</center></td><td colspan=5><input type='checkbox' name='eidikh' value='1'>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
+        echo "<tr><td colspan=2>Ειδική Κατηγορία (κατά προτεραιότητα)</td><td colspan=5><input type='checkbox' name='eidikh' value='1'>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
 
-            echo "<tr height=20></tr><tr><td colspan=2><center>Επιθυμώ απόσπαση</center></td><td colspan=5><div name='main'><input type='checkbox' id='apospash' name='apospash' value='1'>Απο τη Γενική στην Ειδική Αγωγή</div></td></tr>";
+            echo "<tr><td colspan=2>Επιθυμώ απόσπαση</td><td colspan=5><div name='main'><input type='checkbox' id='apospash' name='apospash' value='1'>Απο τη Γενική στην Ειδική Αγωγή</div></td></tr>";
             echo "<tr><td colspan=2></td><td colspan=5><div class='other' name='other' id='other'>";
             echo "α) Διδακτορικό Ειδ.Αγωγής<input type='checkbox' name='didakt' value='1'><br>";
             echo "β) Μεταπτυχιακό Ειδ.Αγωγής<input type='checkbox' name='metapt' value='1'><br>";
@@ -392,34 +393,36 @@
             echo "στ) Άλλο προσόν (π.χ. Braille, νοηματική): <input size=25 name='allo' value=$allo>";
             echo "<br><small>Αν επιθυμείτε απόσπαση ΚΑΙ σε σχολεία της Γενικής εκπ/σης, συμπληρώστε τη <a href='aposp2013.doc'>φόρμα</a> και στείλτε την στο $av_foreas </small></div></td></div></tr>";
         
-        echo "<tr height=20></tr><tr><td colspan=7><center>Σοβαροί λόγοι υγείας</center></td></tr>";
-        echo "<tr><td colspan=2><center>Ποσοστό αναπηρίας του ιδίου, παιδιών ή συζύγου</center></td><td colspan=5>";
+        echo "<tr><td colspan=7><b><center> Σοβαροί λόγοι υγείας</center></b></td></tr>";
+        echo "<tr><td colspan=2>Ποσοστό αναπηρίας του ιδίου, παιδιών ή συζύγου</td><td colspan=5>";
         cmbYgeia_edit(0);
         echo "</td></tr>";
-        echo "<tr><td colspan=2><center>Ποσοστό αναπηρίας Γονέων</center></td><td colspan=5>";
+        echo "<tr><td colspan=2>Ποσοστό αναπηρίας Γονέων</td><td colspan=5>";
         cmbYgeia_g_edit(0);
         echo "</td></tr>";
-        echo "<tr><td colspan=2><center>Ποσοστό αναπηρίας Αδελφών</center></td><td colspan=5>";
+        echo "<tr><td colspan=2>Ποσοστό αναπηρίας Αδελφών</td><td colspan=5>";
         cmbYgeia_a_edit(0);
         echo "</td></tr>";
-        echo "<tr><td colspan=2><center>Θεραπεία για εξωσωματική γονιμοποίηση</center></td><td colspan=5><input type='checkbox' name='eksw' value='1'></td></tr>";
-        echo "<tr height=20></tr><tr><td colspan=2>Σχόλια - Παρατηρήσεις</td><td colspan=5><textarea cols=60 name='comments' value='$comments'></textarea></td></tr>";        
+        echo "<tr><td colspan=2>Θεραπεία για εξωσωματική γονιμοποίηση</td><td colspan=5><input type='checkbox' name='eksw' value='1'></td></tr>";
+        echo "<tr><td colspan=2>Σχόλια - Παρατηρήσεις</td><td colspan=5><textarea cols=60 name='comments' value='$comments'></textarea></td></tr>";        
         $blabla = "Δηλώνω υπεύθυνα ότι δεν έχω οριστεί στέλεχος εκπαίδευσης (λ.χ. προϊστάμενος/μένη ολιγοθέσιας σχολικής μονάδας, διευθυντής/ντρια σχολ. μονάδας) και ότι δεν υπηρετώ σε θέση με θητεία που λήγει μετά τις 31-08-$av_etos.";
-        echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='ypdil' value='1'>$blabla</td></tr>";
+        echo "<tr><td colspan=7><input type='checkbox' name='ypdil' value='1'>$blabla</td></tr>";
         echo "<tr height=20><tr><tr><td colspan=7><small>Αποθηκεύστε για να μπορέσετε να προχωρήσετε στην υποβολή προτιμήσεων.</small></td></tr>";
         echo "<input type='hidden' name = 'id' value='$id'>";
         echo "<input type='hidden' name = 'part' value='1'>";
-        echo "<tr><td colspan=7><center><INPUT TYPE='submit' name='save' VALUE='Αποθήκευση'></center></td></tr>";
-        echo "<tr><td colspan=7><center><INPUT TYPE='submit' name='submit' VALUE='Συνέχεια στο Βήμα 2' disabled></center></td></tr>";
+        echo "<tr><td colspan=7><INPUT TYPE='submit' name='save' VALUE='Αποθήκευση'></td></tr>";
+        echo "<tr><td colspan=7><INPUT TYPE='submit' name='submit' VALUE='Συνέχεια στο Βήμα 2' disabled></td></tr>";
         echo "</form>";
-        echo "<tr><td colspan=7><center><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' value='Έξοδος'></form></center></td></tr>";
+        echo "<tr><td colspan=7><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' value='Έξοδος'></form></td></tr>";
         echo "</table>";
-        echo "</center>";
+        echo "";
     }
     mysqli_close($mysqlconnection);   
 ?>
   </div>
-</center>
+
 </div>
+</div>
+
   </body>
 </html>

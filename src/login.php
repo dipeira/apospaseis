@@ -8,9 +8,10 @@ include_once 'functions.php';
 ?>
 <html>
     <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title><?php echo $av_title." ".$av_foreas; ?></title></head>
+    <?php include_once('head.php'); ?>
 <body>
-<link href='https://fonts.googleapis.com/css?family=Roboto+Condensed&subset=greek,latin' rel='stylesheet' type='text/css'>
-<LINK href="style.css" rel="stylesheet" type="text/css">
+<!-- <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed&subset=greek,latin' rel='stylesheet' type='text/css'>
+<LINK href="style.css" rel="stylesheet" type="text/css"> -->
 <?php
 include_once ("class.login.php");   
     $log = new logmein();     //Instentiate the class
@@ -29,11 +30,22 @@ if ($_REQUEST['logout']==1)
 if (!isset($_REQUEST['action']))
 {
     ?>
-<center>
-<h2><?= $av_dnsh; ?>
-    <br><?= $av_title; ?> (<?= $av_foreas; ?>)</h2>
+    <div class="container">
+        <div class="jumbotron">
+            <h1 class="display-4"><?= $av_title; ?></h1>
+            <p class="lead"><?= $av_dnsh; ?></p>
+            <hr class="my-4">
+            <p><?= $av_foreas; ?></p>
+        </div>
+<div class="row">
+    <div class="col-md-12">
+<?="<h4>Διάστημα υποβολής αιτήσεων: από $av_active_from έως $av_active_to και ώρα $av_active_to_time.</h4>";?>
+</div>
+</div>
+    
+
 <?php
-    echo "<h3>Διάστημα υποβολής αιτήσεων: από $av_active_from έως $av_active_to και ώρα $av_active_to_time.</h3>";
+    
 
     if (!$av_is_active)
         echo "<h3>Η προθεσμία υποβολής αιτήσεων έχει παρέλθει.<br>Το σύστημα δεν είναι ενεργό αυτή τη στιγμή.</h3><br><br>";
@@ -57,6 +69,7 @@ if (!isset($_REQUEST['action']))
 //}
 //if($_REQUEST['action'] == "login" && !$timeout){
 if($_REQUEST['action'] == "login"){
+    print_r($_POST);
     if($log->login("logon", $_REQUEST['username'], $_REQUEST['password'], $_REQUEST[$av_extra_name]) == true)
     {
         session_start();
@@ -74,14 +87,15 @@ if($_REQUEST['action'] == "login"){
         echo '</script>';
     }
 else {
+    echo "<div class='container'>";
     echo "<h3>H είσοδος απέτυχε...</h3>";
     $extra_col = $av_extra ? " - ".$av_extra_label : '';
     echo "<br><p>Δοκιμάστε ξανά με έναν έγκυρο συνδυασμό Α.Μ. - Α.Φ.Μ.$extra_col</p>";
-    echo "<FORM><INPUT Type='button' VALUE='Επιστροφή' onClick='history.go(-1);return true;'></FORM>";
+    echo "<FORM><INPUT Type='button' class='btn btn-info' VALUE='Επιστροφή' onClick='history.go(-1);return true;'></FORM>";
+    echo "</div>";
 }
 }
 ?>
-
-</center>
+</div>
 </body>
 </html>

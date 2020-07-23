@@ -12,32 +12,40 @@
   if ($_SESSION['user']!=$av_admin)
     die("Authentication error");
 
-  if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $pcount = 0;
-    foreach ($_POST as $key => $value) {
-      if ($value == 'on')
-        $value = 1;
-      //echo $key . ' / ' . $value . "<br>";
-      global $av_params;
-      $query = "UPDATE $av_params SET pvalue='$value' where pkey='$key'";
-      $updresult = mysqli_query($conn, $query);
-      $pcount += mysqli_affected_rows($conn);
-    }
-    echo "Μεταβλήθηκαν $pcount παράμετροι...";
-  }
-
-  $conn = mysqli_connect($db_host, $db_user, $db_password, $db_name);
-  mysqli_set_charset($conn,"utf8");
-  $query = "SELECT * from $av_params";
-  $result = mysqli_query($conn, $query);
-  global $av_type;
 ?>
+<style>
+  .param-input {
+    width: 100%
+  }
+</style>
 <html>
   <?php require_once('head.php'); ?>
   <body>
+  <div class="container">
+    <?php
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+      $pcount = 0;
+      foreach ($_POST as $key => $value) {
+        if ($value == 'on')
+          $value = 1;
+        //echo $key . ' / ' . $value . "<br>";
+        global $av_params;
+        $query = "UPDATE $av_params SET pvalue='$value' where pkey='$key'";
+        $updresult = mysqli_query($conn, $query);
+        $pcount += mysqli_affected_rows($conn);
+      }
+      echo $pcount == 1 ? "<div class='alert alert-success' role='alert'>Μεταβλήθηκε $pcount παράμετρος...</div>" :
+      "<div class='alert alert-success' role='alert'>Μεταβλήθηκαν $pcount παράμετροι...</div>";
+    }
+    $conn = mysqli_connect($db_host, $db_user, $db_password, $db_name);
+    mysqli_set_charset($conn,"utf8");
+    $query = "SELECT * from $av_params";
+    $result = mysqli_query($conn, $query);
+    global $av_type;
+    ?>
     <h2>Παράμετροι εφαρμογής</h2>
     <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
-    <table class='imagetable'>
+    <table class='table table-striped table-hover table-sm' border='1'>
       <thead>
         <th>Περιγραφή</th>
         <th>Τιμή</th>
@@ -59,15 +67,16 @@
               '<option value="1">Αποσπάσεις</option><option value="2" selected="selected">Βελτιώσεις</option>';
             echo '</select></td>';
           } else
-            echo "<td><input value='".$row['pvalue']."' name='".$row['pkey']."'/></td>";
+            echo "<td><textarea class='param-input' rows='2' cols='40' name='".$row['pkey']."'>".$row['pvalue']."</textarea></td>";
           echo "</tr>";
         }
       ?>
       </tbody>
     </table>
     <br>
-    <input type="submit" name="submit" value="Υποβολή">
+    <input type="submit" name="submit" class='btn btn-success' value="Υποβολή">
     </form>
-    <input type="button" onclick="location.href='admin.php';" value="Επιστροφή" /> 
+    <input type="button" class='btn btn-info' onclick="location.href='admin.php';" value="Επιστροφή" /> 
+    </div>
   </body>
 </html>

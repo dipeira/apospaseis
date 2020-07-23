@@ -99,7 +99,7 @@ function getSchools ($epil, $dim, $omada, $conn, $sch, $show_inactive = false)
     $result = mysqli_query($conn, $query);
     while ($ar = mysqli_fetch_array($result))
         $arr[] = $ar;
-    $ret = "<select name='p".$epil."' id='p".$epil."' style='width:280px;'>";
+    $ret = "<select class='form-control' name='p".$epil."' id='p".$epil."' style='width:280px;'>";
     $ret .= "<option value=\"\"></option>";
     foreach ($arr as $res)
     {
@@ -140,7 +140,7 @@ function getDimos ($dimos_code, $conn)
 }
 function cmbGamos ()
 {
-    echo "<select name=\"gamos\" style=\"width:200px\">";
+    echo "<select class='form-control' name=\"gamos\" style=\"width:200px\">";
     echo "<option value=\"\" selected>(Παρακαλώ επιλέξτε:)</option>";
     echo "<option value=\"0\">Άγαμος</option>";
     echo "<option value=\"1\">Έγγαμος</option>";
@@ -152,7 +152,7 @@ function cmbGamos ()
 }
 function cmbPaidia ()
 {
-    echo "<select name=\"paidia\">";
+    echo "<select class='form-control' name=\"paidia\">";
     echo "<option value=\"\" selected>(Παρακαλώ επιλέξτε:)</option>";
     echo "<option value=\"0\">0</option>";
     echo "<option value=\"1\">1</option>";
@@ -164,7 +164,7 @@ function cmbPaidia ()
 }
 function cmbDimos ($str,$conn)
 {
-    echo "<select name=\"dhmos_$str\">";
+    echo "<select class='form-control' name=\"dhmos_$str\">";
     echo "<option value=\"0\" selected>(Παρακαλώ επιλέξτε:)</option>";
     global $av_dimos;
     $query = "SELECT * from $av_dimos";
@@ -176,7 +176,7 @@ function cmbDimos ($str,$conn)
 }
 function cmbDimos_edit ($str, $epil, $conn)
 {
-    echo "<select name=\"dhmos_$str\">";
+    echo "<select class='form-control' name=\"dhmos_$str\">";
     global $av_dimos;
     $query = "SELECT * from $av_dimos";
     $result = mysqli_query($conn, $query);
@@ -190,7 +190,7 @@ function cmbDimos_edit ($str, $epil, $conn)
 }
 function cmbPaidia_edit ($epil)
 {
-    echo "<select name=\"paidia\">";
+    echo "<select class='form-control' name=\"paidia\">";
     if ($epil=='') echo "<option value=\"\" selected>(Παρακαλώ επιλέξτε:)</option>";
     else echo "<option value=\"\">(Παρακαλώ επιλέξτε:)</option>";
     if ($epil==0) echo "<option value=\"0\" selected>0</option>";
@@ -209,7 +209,7 @@ function cmbPaidia_edit ($epil)
 }
 function cmbGamos_edit ($epil)
 {
-    echo "<select name=\"gamos\" style=\"width:200px\">";
+    echo "<select class='form-control' name=\"gamos\" style=\"width:200px\">";
     if ($epil=='') echo "<option value=\"\" selected>(Παρακαλώ επιλέξτε:)</option>";
     else echo "<option value=\"\">(Παρακαλώ επιλέξτε:)</option>";
     if ($epil==0) echo "<option value=\"0\" selected>Άγαμος</option>";
@@ -229,7 +229,7 @@ function cmbGamos_edit ($epil)
 
 function cmbYgeia_edit ($epil)
 {
-    echo "<select name=\"ygeia\">";
+    echo "<select class='form-control' name=\"ygeia\">";
     if ($epil==0) echo "<option value=\"0\" selected>(Παρακαλώ επιλέξτε:)</option>";
         else echo "<option value=\"0\">(Παρακαλώ επιλέξτε:)</option>";
     if ($epil==1) echo "<option value=\"1\" selected>50-60%</option>";
@@ -242,7 +242,7 @@ function cmbYgeia_edit ($epil)
 }
 function cmbYgeia_g_edit ($epil)
 {
-    echo "<select name=\"ygeia_g\">";
+    echo "<select class='form-control' name=\"ygeia_g\">";
     if ($epil==0) echo "<option value=\"0\" selected>(Παρακαλώ επιλέξτε:)</option>";
         else echo "<option value=\"0\">(Παρακαλώ επιλέξτε:)</option>";
     if ($epil==1) echo "<option value=\"1\" selected>50-66%</option>";
@@ -253,7 +253,7 @@ function cmbYgeia_g_edit ($epil)
 }
 function cmbYgeia_a_edit ($epil)
 {
-    echo "<select name=\"ygeia_a\">";
+    echo "<select class='form-control' name=\"ygeia_a\">";
     if ($epil==0) echo "<option value=\"0\" selected>(Παρακαλώ επιλέξτε:)</option>";
         else echo "<option value=\"0\">(Παρακαλώ επιλέξτε:)</option>";
     if ($epil==1) echo "<option value=\"1\" selected>67% και άνω</option>";

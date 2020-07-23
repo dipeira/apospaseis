@@ -17,13 +17,17 @@
 ?>
 <html>
   <head>
-	<LINK href="style.css" rel="stylesheet" type="text/css">
+  <?php require_once('head.php'); ?>
+	<!-- <LINK href="style.css" rel="stylesheet" type="text/css"> -->
     <LINK href="style_sorter.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title><?php echo $av_title." ($av_foreas) - Διαχείριση"; ?></title>
 	
 	<script type="text/javascript" src="../js/jquery.js"></script>
-    <script type="text/javascript" src="../js/jquery.tablesorter.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
     <script language="javascript" type="text/javascript">
         function myaction(){
             r=confirm("Είστε σίγουροι ότι θέλετε να αλλάξετε τα στοιχεία του υπαλλήλου;");
@@ -37,14 +41,26 @@
                 return false;
             }
         }
-        $(document).ready(function() { 
-            $(".tablesorter").tablesorter(); 
-        }
-); 
+        $(document).ready(function() {
+            $('#mytbl').DataTable({
+                "language": {
+                    "url": "https://cdn.datatables.net/plug-ins/1.10.21/i18n/Greek.json"
+                }
+            });
+        });
     </script>
     
+    <style>
+        table.dataTable.table-sm .sorting:before, table.dataTable.table-sm .sorting_asc:before, table.dataTable.table-sm .sorting_desc:before	{
+	        right: 1.1em !important;
+        }
+    </style>
     <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic&subset=greek,latin' rel='stylesheet' type='text/css'>
-
+    </head>
+    <body>
+    <div class="container">
+        
+    
 <?php
   if ($loggedin)
   {
@@ -170,9 +186,10 @@
         }
         else
             $dim = 0;
-        echo "<center>";        
-        echo "<table id=\"mytbl\" class=\"imagetable\" border=\"2\">\n";
-        echo "<thead><th colspan=7>Προτιμήσεις εκπαιδευτικού</th></thead>";
+        echo "<center>";   
+        echo "<h2>Αίτηση εκπαιδευτικού</h2>";
+        echo "<table id=\"mytbl\" class=\"table table-striped table-hover table-sm\" border=\"1\">\n";     
+        // echo "<thead><th colspan=7>Αίτηση εκπαιδευτικού</th></thead>";
         echo "<tr><td colspan=2>Ονοματεπώνυμο Εκπ/κού:</td><td colspan=5>".$name." ".$surname."</td></tr>";
         echo "<tr><td colspan=2>Πατρώνυμο: </td><td colspan=5>".$patrwnymo."</td></tr>";
         echo "<tr><td colspan=2>Κλάδος: </td><td colspan=5>".$klados."</td></tr>";
@@ -199,7 +216,7 @@
               echo "<tr><td colspan=2>Συνολική υπηρεσία: </td><td colspan=5><input size=2 name='ethy' value=$ethy> Έτη,<input size=2 name='mhnesy' value=$mhnesy> Μήνες,<input size=2 name='hmeresy' value=$hmeresy> Ημέρες</td></tr>";
             }
             if ($av_canalter)
-                echo "<tr><td colspan=2></td><td colspan=4><input type='submit' onclick='return myaction()' value='Αποθήκευση'></td></tr>";
+                echo "<tr><td colspan=2></td><td colspan=4><input type='submit' class='btn btn-info' onclick='return myaction()' value='Αποθήκευση'></td></tr>";
             // end of changeable elements
             // print moria analysis
             echo "<tr><td colspan=2>Ανάλυση μορίων: </td><td colspan=5>";
@@ -209,33 +226,33 @@
             }
             echo "</td></tr>";
             if ($org_eid)
-                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='org_eid' value='1' checked disabled>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
+                echo "<tr><td colspan=7><input type='checkbox' name='org_eid' value='1' checked disabled>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
             else
-                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='org_eid' value='1' disabled>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
+                echo "<tr><td colspan=7><input type='checkbox' name='org_eid' value='1' disabled>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
             if ($aitisi)
-                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='aitisi' value='1' disabled checked>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
+                echo "<tr><td colspan=7><input type='checkbox' name='aitisi' value='1' disabled checked>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
             else
-                echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='aitisi' value='1' disabled>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
-            echo "<tr height=20></tr><tr><td colspan=7><center>Οικογενειακή Κατάσταση</center></td></tr>";
+                echo "<tr><td colspan=7><input type='checkbox' name='aitisi' value='1' disabled>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
+            echo "<tr><td colspan=7><center>Οικογενειακή Κατάσταση</center></td></tr>";
             echo "<tr><td>Γάμος</td><td>";
             echo getGamos($gamos);
             echo "</td><td>Παιδιά</td><td>$paidia</td><td>Δήμος</td><td>$dhmos_anhk</td></tr>";
-            echo "<tr height=20></tr><tr><td colspan=7><center>Εντοπιότητα</center></td></tr>";
+            echo "<tr><td colspan=7><center>Εντοπιότητα</center></td></tr>";
             echo "<tr><td colspan=2>Δήμος της Περιφερειακής Ενότητας Ηρακλείου που έχω εντοπιότητα</td><td colspan=5>";
             echo getDimos($dhmos_ent, $mysqlconnection);
             echo "</td></tr>";
-            echo "<tr height=20></tr><tr><td colspan=7><center>Συνυπηρέτηση</center></td></tr>";
+            echo "<tr><td colspan=7><center>Συνυπηρέτηση</center></td></tr>";
             echo "<tr><td colspan=2>Δήμος της Περιφερειακής Ενότητας Ηρακλείου που έχω συνυπηρέτηση</td><td colspan=5>";
             echo getDimos($dhmos_syn, $mysqlconnection);
             echo "</td></tr>";
             if ($eidikh)
-                echo "<tr height=20></tr><tr><td colspan=2><center>Ειδική Κατηγορία</center></td><td colspan=5><input type='checkbox' name='eidikh' value='1' disabled checked>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
+                echo "<tr><td colspan=2><center>Ειδική Κατηγορία</center></td><td colspan=5><input type='checkbox' name='eidikh' value='1' disabled checked>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
             else
-                echo "<tr height=20></tr><tr><td colspan=2><center>Ειδική Κατηγορία</center></td><td colspan=5><input type='checkbox' name='eidikh' value='1' disabled>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
+                echo "<tr><td colspan=2><center>Ειδική Κατηγορία</center></td><td colspan=5><input type='checkbox' name='eidikh' value='1' disabled>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
             if ($apospash)
-                echo "<tr height=20></tr><tr><td colspan=2><center>Επιθυμώ απόσπαση</center></td><td colspan=5><input type='checkbox' name='apospash' value='1' disabled checked>Απο τη Γενική στην Ειδική Αγωγή</td></tr>";
+                echo "<tr><td colspan=2><center>Επιθυμώ απόσπαση</center></td><td colspan=5><input type='checkbox' name='apospash' value='1' disabled checked>Απο τη Γενική στην Ειδική Αγωγή</td></tr>";
             else
-                echo "<tr height=20></tr><tr><td colspan=2><center>Επιθυμώ απόσπαση</center></td><td colspan=5><input type='checkbox' name='apospash' value='1' disabled>Απο τη Γενική στην Ειδική Αγωγή</td></tr>";
+                echo "<tr><td colspan=2><center>Επιθυμώ απόσπαση</center></td><td colspan=5><input type='checkbox' name='apospash' value='1' disabled>Απο τη Γενική στην Ειδική Αγωγή</td></tr>";
             echo "<div id='ea'><tr><td colspan=2></td><td colspan=5>";
             if ($didakt)
                 echo "α) Διδακτορικό Ειδ.Αγωγής<input type='checkbox' name='didakt' value='1' disabled checked><br>";
@@ -257,7 +274,7 @@
             echo "στ) Άλλο προσόν (π.χ. Braille, νοηματική): $allo";
             echo "</td></tr></div>";
 
-            echo "<tr height=20></tr><tr><td colspan=7><center>Σοβαροί λόγοι υγείας</center></td></tr>";
+            echo "<tr><td colspan=7><center>Σοβαροί λόγοι υγείας</center></td></tr>";
             echo "<tr><td colspan=2><center>Του ιδίου, παιδιών ή συζύγου</center></td><td colspan=5>";
             echo getYgeia($ygeia);
             echo "</td></tr>";
@@ -271,13 +288,13 @@
                 echo "<tr><td colspan=2><center>Θεραπεία για εξωσωματική γονιμοποίηση</center></td><td colspan=5><input type='checkbox' name='eksw' value='1' checked disabled></td></tr>";
             else
                 echo "<tr><td colspan=2><center>Θεραπεία για εξωσωματική γονιμοποίηση</center></td><td colspan=5><input type='checkbox' name='eksw' value='1' disabled></td></tr>";
-            echo "<tr height=20></tr><tr><td colspan=2>Σχόλια - Παρατηρήσεις</td><td colspan=5>$comments</td></tr>";    
+            echo "<tr><td colspan=2>Σχόλια - Παρατηρήσεις</td><td colspan=5>$comments</td></tr>";    
             $blabla = "Δηλώνω υπεύθυνα ότι δεν έχω οριστεί στέλεχος εκπαίδευσης (λ.χ. προϊστάμενος/μένη ολιγοθέσιας σχολικής μονάδας, διευθυντής/ντρια σχολ. μονάδας)<br> και ότι δεν υπηρετώ σε θέση με θητεία που λήγει μετά τις 31-08-$av_etos.";
-            echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='ypdil' value='1' checked disabled>$blabla</td></tr>";
+            echo "<tr><td colspan=7><input type='checkbox' name='ypdil' value='1' checked disabled>$blabla</td></tr>";
             echo "</table>";    
         }
         echo "<br>";
-        echo "<table id=\"mytbl\" class=\"imagetable\" border=\"2\">\n";
+        echo "<table id=\"mytbl\" class=\"table table-striped table-bordered table-responsive\" border=\"2\">\n";
         echo "<tr><td colspan=4><center><strong>Προτιμήσεις</strong></center></td></tr>";
         
         for ($i = 0; $i < $av_choices; $i++) {
@@ -293,14 +310,14 @@
         echo "<tr><td colspan=4><center><input type='hidden' name='emp_id' value=$emp_id></td></tr>";
         // change employee elements
         if ($av_type == 1){
-            echo "<tr><td colspan=4><center><a href='criteria.php?userid=$am'><button type='button'>Επεξεργασία</button></a></center></td></tr>";
+            echo "<tr><td colspan=4><center><a href='criteria.php?userid=$am'><button type='button' class='btn btn-success'>Επεξεργασία</button></a></center></td></tr>";
         }
         echo "</form>";
-        echo "<tr><td colspan=4><center><form action='admin.php'><input type='submit' value='Έπιστροφή'></form></center></td></tr>";
+        echo "<tr><td colspan=4><center><form action='admin.php'><input type='submit' class='btn btn-danger' value='Έπιστροφή'></form></center></td></tr>";
         echo "</table>";   
         if ($submitted && $av_type == 1){
             echo "<form action='admin.php' method='post'>";
-            echo "<br><table class='imagetable' border=2><th colspan=2>Έλεγχος αίτησης</th>";
+            echo "<br><table class='table table-striped table-sm' border=2><th colspan=2>Έλεγχος αίτησης</th>";
             echo "<tr><td>Ειδική κατηγορία:</td><td>";
             $chkd = $row['eid_kat'] ? 'checked' : '';
             echo "<input type='checkbox' name='eid_kat' value='1' $chkd>";
@@ -311,7 +328,7 @@
                 "<input type='checkbox' name='checked' value='1'>";
             echo "</td></tr>";
             echo "<td>Σχόλια ελέγχου:</td><td><textarea rows=4 cols=60 name='check_comments' >".$row['check_comments']."</textarea></td></tr>";
-            echo "<tr><td colspan=2><input type='submit' value='Αποθήκευση' onclick='return myaction()'/></td></tr>";
+            echo "<tr><td colspan=2><input type='submit' class='btn btn-success' value='Αποθήκευση' onclick='return myaction()'/></td></tr>";
             echo "<input type='hidden' name='id' value=$id>";
             echo "</form>";
         }
@@ -484,9 +501,9 @@
             "<a href='admin.php?action=$expLink'>Απόκρυψη σχολείων</a>" : 
             "<a href='admin.php?action=$expLink&schools=1'>Εμφάνιση σχολείων";
         echo $getSchoolLink."<br><br>";
-        echo "<BUTTON TYPE='submit'>Εξαγωγή στο excel</BUTTON><br><br>";
+        echo "<BUTTON TYPE='submit' class='btn btn-success'>Εξαγωγή στο excel</BUTTON><br><br>";
         echo "</form>";
-        echo "<form action='admin.php'><input type='submit' value='Επιστροφή'></form>";
+        echo "<form action='admin.php'><input type='submit' class='btn btn-info' value='Επιστροφή'></form>";
         //ob_end_clean();
     }
     /////////////////
@@ -512,12 +529,14 @@
             $result = mysqli_query($mysqlconnection, $query);
             $num = mysqli_num_rows($result);
             if ($num > 0){
-                echo "<table id=\"mytbl\" class=\"imagetable tablesorter\" border=\"2\">\n";
+                echo "<table id=\"mytbl\" class=\"table table-striped table-bordered table-responsive\" border=\"2\">\n";
                 echo "<thead>";
                 echo "<th>Επώνυμο</th>\n";
                 echo "<th>Όνομα</th>\n";
                 echo "<th>Ειδικότητα</th>\n";
                 echo "<th>A.M.</th>\n";
+                echo "</thead>";
+                echo "<tbody>";
                 while ($i < $num){
                     $row = mysqli_fetch_assoc($result);
                     $surname = $row['surname'];
@@ -529,10 +548,11 @@
 
                     $i++;
                 }
+                echo "</tbody>";
                 echo "</table>";
             }
             echo "Σύνολο: $num";
-            echo "<form action='admin.php'><input type='submit' value='Επιστροφή'></form>";	
+            echo "<form action='admin.php'><input type='submit' class='btn btn-info' value='Επιστροφή'></form>";	
     }
     /////////////////////////////////////
     // applications ONLY in eidiki agogi
@@ -545,14 +565,14 @@
         $result = mysqli_query($mysqlconnection, $query);
         $num = mysqli_num_rows($result);
         if ($num > 0){
-            echo "<table id=\"mytbl\" class=\"imagetable tablesorter\" border=\"2\">\n";
+            echo "<table id=\"mytbl\" class=\"table table-striped table-bordered table-responsive\" border=\"2\">\n";
             echo "<thead>";
-            echo "<tr><th>Α/Α</th>\n";
+            echo "<th>Α/Α</th>\n";
             echo "<th>Επώνυμο</th>\n";
             echo "<th>Όνομα</th>\n";
             echo "<th>Ειδικότητα</th>\n";
             echo "<th>A.M.</th>\n";
-            echo "<th>Κατηγορία</th>";
+            echo "<th>Κατηγορία</th></thead>";
             while ($i < $num){
                 $row = mysqli_fetch_assoc($result);
                 $id = $row['id'];
@@ -569,11 +589,11 @@
             }
             echo "</table>";
             echo "Σύνολο: $num";
-            echo "<br><a href='admin.php?action=export_eid'>Εξαγωγή</a><br><br>";
+            echo "<br><a href='admin.php?action=export_eid' class='btn btn-success'>Εξαγωγή</a><br><br>";
         } else {
             echo "<h3>Δεν υπάρχουν αιτήσεις...</h3>";
         }
-        echo "<form action='admin.php'><input type='submit' value='Επιστροφή'></form>";	
+        echo "<form action='admin.php'><input type='submit' class='btn btn-info' value='Επιστροφή'></form>";	
     }
     // of nothing or not submitted
     ///////////////////
@@ -592,6 +612,44 @@
       }
 
       ?>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <!-- <a class="navbar-brand" href="#">Navbar</a> -->
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Αρχική<span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Εισαγωγή
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="import.php">Εισαγωγή δεδομένων</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Εξαγωγή
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="admin.php?action=eidiki">Αιτήσεις στην Ειδική αγωγή (από τη Γενική αγωγή ή από την Ειδική αγωγή)</a>
+          <a class="dropdown-item" href="admin.php?action=export">Από τη Γενική στη Γενική (για πρόγραμμα PPYSDE)</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="params.php">Παράμετροι</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0" action='login.php'>
+      <input type='hidden' name = 'logout' value=1>
+      <!-- <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"> -->
+      <button class="btn btn-danger my-2 my-sm-0" type="submit">Έξοδος</button>
+    </form>
+  </div>
+</nav>
       <script language="javascript" type="text/javascript">
         function onCheck() {
             var checkBox = document.getElementById("submitted_box");
@@ -632,12 +690,13 @@
             // check if filter
             if ($hasFilter){
                 echo "<p>Ενεργό φίλτρο: ".$_GET['filter'];
-                echo "&nbsp;&nbsp;<input type=\"button\" onclick=\"location.href='admin.php';\" value=\"Επαναφορά\" /> ";
+                echo "&nbsp;&nbsp;<input type=\"button\" class='btn btn-info' onclick=\"location.href='admin.php';\" value=\"Επαναφορά\" /> ";
                 echo "<br><br>";
             }
-            echo "<table id=\"mytbl\" class=\"imagetable tablesorter\" border=\"2\">\n";
-            echo "<thead>";
-            echo "<tr><th width='5%'>Α/Α</th>\n";
+            echo "<div class='table-responsive'>";
+            echo "<table id=\"mytbl\" class=\"table table-striped table-hover table-sm\" border=\"2\">\n";
+            echo "<thead class='thead-light'>";
+            echo "<tr><th>Α/Α</th>\n";
             echo "<th>Επώνυμο</th>\n";
             echo "<th>Όνομα</th>\n";
             echo "<th>Ειδικότητα</th>\n";
@@ -718,7 +777,7 @@
                 $i++;
                 $aa++;
             }
-            echo "</tbody></table>";
+            echo "</tbody></table></div>";
             $query = "select count(*) as plithos from $av_emp";
             $result = mysqli_query($mysqlconnection, $query);
             $row = mysqli_fetch_assoc($result);
@@ -732,20 +791,7 @@
                 echo "<strong>$blanks</strong> κενές (αρνητικές) αιτήσεις.<br>";
             //echo "<br><a href='admin.php?action=nothing'>Εκπ/κοί που δεν έχουν κάνει καμία αποθήκευση ή υποβολή ($nothing)</a>";
             echo "<br><a href='admin.php?action=saved'>Εκπ/κοί που έχουν αποθηκεύσει αλλά δεν έχουν υποβάλει αίτηση ($saved)</a>";
-            echo "<br><br><h3>Λοιπές λειτουργίες</h3>";
-            echo "<h4>Εξαγωγή</h4>";
-            if ($av_type == 1){
-              echo "<a href='admin.php?action=eidiki'>Αιτήσεις στην Ειδική αγωγή (από τη Γενική αγωγή ή από την Ειδική αγωγή)</a>";
-              echo "<br><a href='admin.php?action=export'>Από τη Γενική στη Γενική (για πρόγραμμα PPYSDE)</a><br>";
-            } else {
-              echo "<a href='admin.php?action=export'>Για πρόγραμμα PPYSDE</a><br>";
-            }
         }       
-        echo "<br><br><a href=\"import.php\">Εισαγωγή Δεδομένων</a><br>";
-        echo "<br><a href=\"params.php\">Μεταβολή παραμέτρων</a><br>";
-        echo "<br><form action='login.php'>";
-        echo "<input type='hidden' name = 'logout' value=1>";
-        echo "<input type='submit' value='Έξοδος'></form>";
         echo "</center>";
     }   
 

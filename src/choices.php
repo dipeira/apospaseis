@@ -50,10 +50,13 @@
 	echo '</script>';
   }
 ?>
-  <div id="left1">
-      <?php include('help2.php'); ?>
-  </div>
-  <div id="right1">
+  <!-- <div id="left1">
+      <!-- <?php include('help2.php'); ?> -->
+  <!-- </div> -->
+  <!-- <div id="right1"> -->
+  <div class="container">
+    
+  
 <?php
   if ($loggedin)
   {
@@ -155,7 +158,7 @@
             echo "<h3><center>Η αίτηση έχει υποβληθεί και δεν μπορείτε να την επεξεργαστείτε.</center></h3>";
         echo "<center>";
         
-        echo "<table id=\"mytbl\" class=\"imagetable\" border=\"2\">\n";
+        echo "<table id=\"mytbl\" class=\"table table-striped table-bordered table-responsive\" border=\"2\">\n";
         if ($av_type == 1)
             echo "<thead><th colspan=4>Βήμα 2: Υποβολή προτιμήσεων</th></thead>";
         else
@@ -185,10 +188,10 @@
             }
             echo "<tr><td colspan=4><small>Υποβλήθηκε στις: ".  date("d-m-Y, H:i:s", strtotime($row['updated']))."</small></td></tr>";
             $ser = serialize($sch_arr);
-            echo "<tr><td colspan=4><center><form action='print.php' method='POST'><input type='hidden' name = 'cred_arr' value='$ser_cred'><input type='hidden' name = 'sch_arr' value='$ser'><input type='submit' value='Εκτύπωση'></form></center></td></tr>";
+            echo "<tr><td colspan=4><center><form action='print.php' method='POST'><input type='hidden' name = 'cred_arr' value='$ser_cred'><input type='hidden' name = 'sch_arr' value='$ser'><input type='submit' class='btn btn-success' value='Εκτύπωση'></form></center></td></tr>";
             if ($av_type == 1)
-                echo "<tr><td colspan=4><center><form action='criteria.php'><input type='submit' value='Επιστροφή στο Βήμα 1'></form></center></td></tr>";
-            echo "<tr><td colspan=4><center><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' value='Έξοδος'></form></center></td></tr>";
+                echo "<tr><td colspan=4><center><form action='criteria.php'><input type='submit' class='btn btn-info' value='Επιστροφή στο Βήμα 1'></form></center></td></tr>";
+            echo "<tr><td colspan=4><center><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' class='btn btn-danger' value='Έξοδος'></form></center></td></tr>";
         }
         // if not submitted
         else
@@ -218,17 +221,17 @@
             if ($has_aitisi)
                   echo "<tr><td colspan=4><small>Τελευταία ενημέρωση: ". date("d-m-Y, H:i:s", strtotime($row['updated']))."</small></td></tr>";
             echo "<input type='hidden' name = 'id' value='$id'>";
-            echo "<tr><td colspan=4><center><INPUT TYPE='submit' name='save' VALUE='Αποθήκευση'></center></td></tr>";
+            echo "<tr><td colspan=4><center><INPUT TYPE='submit' name='save' class='btn btn-success' VALUE='Αποθήκευση'></center></td></tr>";
             if ($av_type == 1)
-                echo "<tr><td colspan=4><center><INPUT TYPE='submit' name='prev' VALUE='Επιστροφή στο Βήμα 1'></center></td></tr>";
+                echo "<tr><td colspan=4><center><INPUT TYPE='submit' name='prev' class='btn btn-info' VALUE='Επιστροφή στο Βήμα 1'></center></td></tr>";
             if (!$has_aitisi){
-              echo "<tr><td colspan=4><center><INPUT TYPE='submit' onclick='return myaction()' name='submit' VALUE='Οριστική Υποβολή' disabled></center></td>\n";
+              echo "<tr><td colspan=4><center><INPUT TYPE='submit' onclick='return myaction()' name='submit' class='btn btn-warning' VALUE='Οριστική Υποβολή' disabled></center></td>\n";
             } else {
-              echo "<tr><td colspan=4><center><INPUT TYPE='submit' onclick='return myaction()' name='submit' VALUE='Οριστική Υποβολή'></center></td>\n";
+              echo "<tr><td colspan=4><center><INPUT TYPE='submit' onclick='return myaction()' name='submit' class='btn btn-warning' VALUE='Οριστική Υποβολή'></center></td>\n";
             }
             echo "</tr>\n";
             echo "</form>";
-            echo "<tr><td colspan=4><center><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' value='Έξοδος'></form></center></td></tr>";
+            echo "<tr><td colspan=4><center><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' class='btn btn-danger' value='Έξοδος'></form></center></td></tr>";
         }
         echo "</table>";
         echo "</center>";

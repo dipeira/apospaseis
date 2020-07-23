@@ -21,6 +21,7 @@
 <html>
   <?php require_once('head.php'); ?>
   <body>
+  <div class="container">
 <?php
 if (!isset($_POST['submit']))
 {
@@ -37,11 +38,11 @@ if (!isset($_POST['submit']))
     echo "<input type='radio' name='type' value='4'>Υπάλληλοι για βελτίωση&nbsp;<a href='../files/apo_employee_velt.csv'>(δείγμα)</a><br>";
     echo "<input type='radio' name='type' value='2'>Σχολεία&nbsp;<a href='../files/apo_school.csv'>(δείγμα)</a><br>";
     echo "<input type='radio' name='type' value='3' >Δήμοι&nbsp;<a href='../files/apo_dimos.csv'>(δείγμα)</a><br>";
-    print "<input type='submit' name='submit' value='Μεταφόρτωση'></form>";
+    print "<input type='submit' name='submit' class='btn btn-success' value='Μεταφόρτωση'></form>";
     echo "<small>ΣΗΜ.: Η εισαγωγή ενδέχεται να διαρκέσει μερικά λεπτά, ειδικά για μεγάλα αρχεία.<br>Μη φύγετε από τη σελίδα αν δεν πάρετε κάποιο μήνυμα.</small>";
     echo "</form>";
     echo "<br><br>";
-    echo "<a href='admin.php'>Επιστροφή</a>";
+    echo "<a href='admin.php' class='btn btn-info'>Επιστροφή</a>";
 	exit;
 }
 
@@ -152,7 +153,7 @@ if (!isset($_POST['submit']))
                 
     echo "<a href='import.php'>Επιστροφή</a>";
 ?>
-
+</div>
 </body>
 </html>
 	

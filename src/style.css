@@ -1,31 +1,3 @@
-table.imagetable {
-	font-size : 70%;
-	font-family : 'Roboto Condensed',Verdana,Helvetica,Arial,sans-serif;
-	font-size:15px;
-	color:#333333;
-	border-width: 1px;
-	border-color: #999999;
-	border-collapse: collapse;
-  table-layout: fixed
-}
-table.imagetable th {
-	font-family : 'Roboto Condensed',Verdana,Helvetica,Arial,sans-serif;
-	background:#b5cfd2 url('images/cell-blue.jpg');
-	border-width: 1px;
-	padding: 8px;
-	border-style: solid;
-	border-color: #999999;
-}
-table.imagetable td {
-	font-size : 100%;
-	font-family : 'Roboto Condensed',Verdana,Helvetica,Arial,sans-serif;
-	background:#dcddc0 url('images/cell-grey.jpg');
-	border-width: 1px;
-	padding: 6px;
-	border-style: solid;
-	border-color: #999999;
-  word-wrap: break-word
-}
 p.main{
   text-align: justify;
 }
@@ -109,3 +81,4 @@ margin-left: 295px;
 	margin: 0;
 	padding: 15px;
 }
+
