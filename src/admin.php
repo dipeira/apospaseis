@@ -575,7 +575,7 @@
             echo "<th>Κατηγορία</th></thead>";
             while ($i < $num){
                 $row = mysqli_fetch_assoc($result);
-                $id = $row['id'];
+                $id = $row['ait_id'];
                 $surname = $row['surname'];
                 $name = $row['name'];
                 $klados = $row['klados'];

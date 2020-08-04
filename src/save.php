@@ -2,11 +2,7 @@
 	header('Content-type: text/html; charset=utf-8'); 
         session_start();
 ?>
-<html>
-  <?php require_once('head.php'); ?>
-  <body> 
 <?php
-  $error_found = 0;
   require_once "../config.php";
   require_once 'functions.php';
       
@@ -77,9 +73,7 @@
 		  
 	  if (!$_POST['ypdil'])
       {
-        echo "<h2>Λάθος!</h2>";
-        echo "Για να συνεχίσετε, πρέπει <strong>υποχρεωτικά</strong> να διαβάσετε και να τσεκάρετε την υπεύθυνη δήλωση στο τέλος της προηγούμενης σελίδας.<br><br>";
-        echo "<form action='criteria.php'><input type='submit' value='Επιστροφή'></form>";
+        echo json_encode(Array('type'=>'error','title'=>'Σφάλμα','message'=>"Σφάλμα! Για να συνεχίσετε, πρέπει <strong>υποχρεωτικά</strong> να διαβάσετε και να τσεκάρετε την υπεύθυνη δήλωση στο τέλος της σελίδας."));
         exit;
       }
       
@@ -100,13 +94,9 @@
                 $qry1 = "values ($emp_id,$gamos,$paidia,$aitisi,'$dhmos_anhk',$dhmos_ent,$dhmos_syn,$eidikh,$apospash,$didakt,$metapt,$didask,$eth,$mhnes,$hmeres,$ygeia,$ygeia_g,$ygeia_a,$eksw,'$comments',$org_eid,'$allo',1,$paidag)";
                 $query = $qry0.$qry1;
         }
-            mysqli_query($mysqlconnection, $query);
-                
-        // if save button was pressed return, else proceed to 2nd page
-        if (isset($_POST['save']))
-           echo "  <meta http-equiv=\"refresh\" content=\"0; URL=criteria.php\">";
-        else
-           echo "  <meta http-equiv=\"refresh\" content=\"0; URL=choices.php\">";
+        mysqli_query($mysqlconnection, $query);
+        echo json_encode(Array('type'=>'success', 'title'=>'Επιτυχία!', 'message'=>"Επιτυχής αποθήκευση!"));
+
   }
   else
   // if page 2
@@ -125,42 +115,32 @@
         $sum += strlen ($el);
     // only for apospaseis (επιτρέπει αρνητική δήλωση (χωρίς καμία επιλογή) μόνο στις βελτιώσεις, στις αποσπάσεις βγάζει μήνυμα λάθους)
 	if (!$sum && $av_type == 1){
-        echo "Πρέπει να εισάγετε τουλάχιστον μία επιλογή";
-        $error_found = 1;
+        echo json_encode(Array('type'=>'error', 'title'=>'Σφάλμα!', 'message'=>"Πρέπει να εισάγετε τουλάχιστον μία επιλογή"));
+        die();
     }
     // if blanks
     if (!empty($error)){
-        $error_found = 1;
-        echo "<br>ΛΑΘΟΣ στην(-ις) προτίμηση(-εις): ";
+        $msg = "<br>ΣΦΑΛΜΑ στην(-ις) προτίμηση(-εις): ";
         foreach ($error as $ar_er)
             $ret .= ($ar_er+1).", ";
         $ret = rtrim($ret,", ");
-        echo "<strong>$ret</strong>";
+        $msg.= "<strong>$ret</strong>";
+        echo json_encode(Array('type'=>'error', 'title'=>'Σφάλμα!', 'message'=>$msg));
+        die();
     }
     // if doubles
     if ($dbl)
     {
-        $error_found = 1;
-        echo "<br>ΛΑΘΟΣ: H αίτηση περιέχει διπλές προτιμήσεις:";
+        $msg = "ΣΦΑΛΜΑ: H αίτηση περιέχει διπλές προτιμήσεις:";
         $arr2 = array_diff_key($sch_arr, array_unique($sch_arr));
         //print_r($arr2);
         foreach ($arr2 as $ar1)
             if (!empty($ar1))
-                echo "<br><strong>".getSchooledc($ar1,$mysqlconnection);
+                $msg .= "<br>".getSchooledc($ar1,$mysqlconnection);
         //echo "</body></html>";
         //exit;
-    }
-
-    if ($error_found && $_POST['submit'])
-    {
-        echo "<br><br><strong>Βρέθηκαν λάθη και η υποβολή δεν μπορεί να πραγματοποιηθεί.</strong>";
-        echo "<form action='choices.php'><input type='submit' value='Επιστροφή'></form>";
-        exit;
-    }
-    if ($error_found)
-    {
-        echo "<br><br>Παρακαλώ διορθώστε.";
-        echo "<form action='choices.php'><input type='submit' value='Επιστροφή'></form>";
+        echo json_encode(Array('type'=>'error', 'title'=>'Σφάλμα!', 'message'=>$msg));
+        die();
     }
 
     for ($i = 1; $i < 21; $i++) {
@@ -169,7 +149,7 @@
 
     $emp_id = $_POST['id'];
 
-    if ($_POST['submit'])
+    if ($_POST['submitbtn'])
         $submit=1;
 
     $query = "SELECT * from $av_ait WHERE emp_id = $emp_id";
@@ -205,17 +185,10 @@
     }
     mysqli_close($mysqlconnection);
 
-    if (!$error_found)
-        echo "  <meta http-equiv=\"refresh\" content=\"0; URL=choices.php\">";
-    else
-        exit;
-
-    if (isset($_POST['save']))
-        echo "  <meta http-equiv=\"refresh\" content=\"0; URL=choices.php\">";
-    else
-        echo "  <meta http-equiv=\"refresh\" content=\"0; URL=criteria.php\">";
+    if ($submit){
+        echo json_encode(Array('type'=>'success', 'title'=>'Επιτυχία!', 'message'=>"Επιτυχής υποβολή!"));    
+    } else {
+        echo json_encode(Array('type'=>'success', 'title'=>'Επιτυχία!', 'message'=>"Επιτυχής αποθήκευση!"));
+    }
 }
-echo "</body>";
-echo "</html>";
-
 ?>

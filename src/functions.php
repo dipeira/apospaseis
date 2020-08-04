@@ -99,7 +99,7 @@ function getSchools ($epil, $dim, $omada, $conn, $sch, $show_inactive = false)
     $result = mysqli_query($conn, $query);
     while ($ar = mysqli_fetch_array($result))
         $arr[] = $ar;
-    $ret = "<select class='form-control' name='p".$epil."' id='p".$epil."' style='width:280px;'>";
+    $ret = "<select class='form-control' name='p".$epil."' id='p".$epil."' style='width:100%;'>";
     $ret .= "<option value=\"\"></option>";
     foreach ($arr as $res)
     {
@@ -140,7 +140,7 @@ function getDimos ($dimos_code, $conn)
 }
 function cmbGamos ()
 {
-    echo "<select class='form-control' name=\"gamos\" style=\"width:200px\">";
+    echo "<select class='form-control' name=\"gamos\">";
     echo "<option value=\"\" selected>(Παρακαλώ επιλέξτε:)</option>";
     echo "<option value=\"0\">Άγαμος</option>";
     echo "<option value=\"1\">Έγγαμος</option>";
@@ -209,7 +209,7 @@ function cmbPaidia_edit ($epil)
 }
 function cmbGamos_edit ($epil)
 {
-    echo "<select class='form-control' name=\"gamos\" style=\"width:200px\">";
+    echo "<select class='form-control' name=\"gamos\">";
     if ($epil=='') echo "<option value=\"\" selected>(Παρακαλώ επιλέξτε:)</option>";
     else echo "<option value=\"\">(Παρακαλώ επιλέξτε:)</option>";
     if ($epil==0) echo "<option value=\"0\" selected>Άγαμος</option>";

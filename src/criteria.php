@@ -3,8 +3,30 @@
   require_once "../config.php";
   require_once 'functions.php';
 ?>
-<html>
   <?php require_once('head.php'); ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script>
+  $(function () {
+    $('#src').on('submit', function (e) {
+      e.preventDefault();
+      $.ajax({
+        type: 'post',
+        url: 'save.php',
+        data: $('#src').serialize(),
+        success: function (data) {
+          Swal.fire({
+            title: data.title,
+            html: data.message,
+            icon: data.type,
+            confirmButtonText: 'OK'
+          })
+        },
+        dataType:'json'
+      });
+    });
+});
+</script>
+<html>
   <body>
 <?php
   $timeout = 0;
@@ -52,7 +74,7 @@
     if ($_SESSION['user']=="$av_admin" && !isset($_GET['userid']))
         echo "  <meta http-equiv=\"refresh\" content=\"0; URL=admin.php\">";
 ?>
-<div class="container">
+<div class="container-md">
     
   <!-- <div id="left1">
       <!-- <?php include('help.php'); ?> -->
@@ -251,7 +273,8 @@
             echo "<tr><td colspan=7><small>Υποβλήθηκε στις: ".  date("d-m-Y, H:i:s", strtotime($row['submit_date']))."</small></td></tr>";
             echo "<input type='hidden' name = 'id' value='$id'>";
             echo "</form>";
-            echo "<tr><td colspan=7><form action='choices.php' method='POST'><input type='submit' class='btn btn-info' value='Συνέχεια στο Βήμα 2'></form></td></tr>";
+            echo "<tr><td colspan=7><a href='choices.php' class='btn btn-info'>Συνέχεια στο Βήμα 2</a></td></tr>";
+            //echo "<tr><td colspan=7><form action='choices.php' method='POST'><input type='submit' class='btn btn-info' value='Συνέχεια στο Βήμα 2'></form></td></tr>";
             echo "<tr><td colspan=7><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' class='btn btn-danger' value='Έξοδος'></form></td></tr>";
         }
         // if not submitted
@@ -340,7 +363,8 @@
             echo "<input type='hidden' name = 'id' value='$id'>";
             echo "<input type='hidden' name = 'part' value='1'>";
             echo "<tr><td colspan=7><INPUT TYPE='submit' name='save' class='btn btn-success' VALUE='Αποθήκευση'></td></tr>";
-            echo "<tr><td colspan=7><INPUT TYPE='submit' name='next' class='btn btn-info' VALUE='Συνέχεια στο Βήμα 2'></td></tr>";
+            //echo "<tr><td colspan=7><INPUT TYPE='submit' name='next' class='btn btn-info' VALUE='Συνέχεια στο Βήμα 2'></td></tr>";
+            echo "<tr><td colspan=7><a href='choices.php' class='btn btn-info'>Συνέχεια στο Βήμα 2</a></td></tr>";
             echo "</form>";
             echo "</tr>\n";
             echo "</form>";
@@ -410,10 +434,11 @@
         echo "<tr height=20><tr><tr><td colspan=7><small>Αποθηκεύστε για να μπορέσετε να προχωρήσετε στην υποβολή προτιμήσεων.</small></td></tr>";
         echo "<input type='hidden' name = 'id' value='$id'>";
         echo "<input type='hidden' name = 'part' value='1'>";
-        echo "<tr><td colspan=7><INPUT TYPE='submit' name='save' VALUE='Αποθήκευση'></td></tr>";
-        echo "<tr><td colspan=7><INPUT TYPE='submit' name='submit' VALUE='Συνέχεια στο Βήμα 2' disabled></td></tr>";
+        echo "<tr><td colspan=7><INPUT TYPE='submit' class='btn btn-success' name='save' VALUE='Αποθήκευση'></td></tr>";
+        //echo "<tr><td colspan=7><INPUT TYPE='submit' class='btn btn-info' name='submit' VALUE='Συνέχεια στο Βήμα 2' disabled></td></tr>";
+        echo "<tr><td colspan=7><a href='choices.php' class='btn btn-info'>Συνέχεια στο Βήμα 2</a></td></tr>";
         echo "</form>";
-        echo "<tr><td colspan=7><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' value='Έξοδος'></form></td></tr>";
+        echo "<tr><td colspan=7><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' class='btn btn-danger' value='Έξοδος'></form></td></tr>";
         echo "</table>";
         echo "";
     }

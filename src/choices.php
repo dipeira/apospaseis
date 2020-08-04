@@ -3,6 +3,8 @@
   header('Content-type: text/html; charset=utf-8'); 
   Require_once "../config.php";
   require_once "functions.php";
+  require_once('head.php');
+
   // check if admin 
     if ($_SESSION['user']==$av_admin)
     {
@@ -13,10 +15,33 @@
 	echo '</script>';
 	}
 ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+<script>
+  $(function () {
+    $('#src').on('submit', function (e) {
+      e.preventDefault();
+      $.ajax({
+        type: 'post',
+        url: 'save.php',
+        data: $('#src').serialize(),
+        success: function (data) {
+          Swal.fire({
+            title: data.title,
+            html: data.message,
+            icon: data.type,
+            confirmButtonText: 'OK'
+          });
+        },
+        dataType:'json'
+      });
+    });
+});
+</script>
+
 <html>
-  <?php require_once('head.php'); ?>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
   <body>
 <?php
   $timeout = 0;
@@ -62,8 +87,9 @@
   {
     $mysqlconnection = mysqli_connect($db_host, $db_user, $db_password,$db_name);
     mysqli_set_charset($mysqlconnection,"utf8");
-  
+    echo "<div class='row'>";
     echo "<center><h2>$av_title ($av_foreas)</h2></center>";
+    echo "</div>";
     
     $query = "SELECT * from $av_emp WHERE am = ".$_SESSION['user'];
     
@@ -156,26 +182,27 @@
     }	
         if ($submitted)
             echo "<h3><center>Η αίτηση έχει υποβληθεί και δεν μπορείτε να την επεξεργαστείτε.</center></h3>";
-        echo "<center>";
+        echo "<div class='row'>";            
+        //echo "<center>";
         
-        echo "<table id=\"mytbl\" class=\"table table-striped table-bordered table-responsive\" border=\"2\">\n";
+        echo "<table id=\"mytbl\" class=\"table table-striped table-bordered\" border=\"2\">\n";
         if ($av_type == 1)
-            echo "<thead><th colspan=4>Βήμα 2: Υποβολή προτιμήσεων</th></thead>";
+            echo "<thead><th colspan=2>Βήμα 2: Υποβολή προτιμήσεων</th></thead>";
         else
-            echo "<thead><th colspan=4>Υποβολή προτιμήσεων</th></thead>";
-        echo "<tr><td>Ονοματεπώνυμο Εκπ/κού:</td><td colspan=3>".$name." ".$surname."</td></tr>";
-        echo "<tr><td>Πατρώνυμο: </td><td colspan=3>".$patrwnymo."</td></tr>";
-        echo "<tr><td>Κλάδος: </td><td colspan=3>".$klados."</td></tr>";
-        echo "<tr><td>A.M.: </td><td colspan=3>".$am."</td></tr>";
-        echo "<tr><td>Οργανική θέση: </td><td colspan=3>".$organ."</td></tr>";
+            echo "<thead><th colspan=2>Υποβολή προτιμήσεων</th></thead>";
+        echo "<tr><td>Ονοματεπώνυμο Εκπ/κού:</td><td >".$name." ".$surname."</td></tr>";
+        echo "<tr><td>Πατρώνυμο: </td><td >".$patrwnymo."</td></tr>";
+        echo "<tr><td>Κλάδος: </td><td >".$klados."</td></tr>";
+        echo "<tr><td>A.M.: </td><td >".$am."</td></tr>";
+        echo "<tr><td>Οργανική θέση: </td><td >".$organ."</td></tr>";
         if ($av_type == 2) {
-          echo "<tr><td>Μόρια βελτίωσης: </td><td colspan=3>".$moria."</td></tr>";
-          echo "<tr><td>Δήμος εντοπιότητας: </td><td colspan=3>".$entopiothta."</td></tr>";
-          echo "<tr><td>Δήμος συνυπηρέτησης: </td><td colspan=3>".$synyphrethsh."</td></tr>";
+          echo "<tr><td>Μόρια βελτίωσης: </td><td >".$moria."</td></tr>";
+          echo "<tr><td>Δήμος εντοπιότητας: </td><td >".$entopiothta."</td></tr>";
+          echo "<tr><td>Δήμος συνυπηρέτησης: </td><td >".$synyphrethsh."</td></tr>";
         }
-        echo "<tr><td colspan=4><center><strong>Προτιμήσεις</strong></center></td></tr>";
+        echo "<tr><td colspan=2><center><strong>Προτιμήσεις</strong></center></td></tr>";
         
-        //echo "<tr><td colspan=4><center><INPUT TYPE='button' onclick='toggleFormElements(true)' name='submit' VALUE='Αρνητική Δήλωση'></center></td></tr>\n";
+        //echo "<tr><td colspan=2><center><INPUT TYPE='button' onclick='toggleFormElements(true)' name='submit' VALUE='Αρνητική Δήλωση'></center></td></tr>\n";
         
         // if user has submitted
         if ($submitted)
@@ -186,12 +213,13 @@
               echo "<tr><td>".($i+1)."η προτίμηση</td><td>".${'s'.$i}."</td></tr>\n";
               array_push($sch_arr, ${'s'.$i});
             }
-            echo "<tr><td colspan=4><small>Υποβλήθηκε στις: ".  date("d-m-Y, H:i:s", strtotime($row['updated']))."</small></td></tr>";
+            echo "<tr><td colspan=2><small>Υποβλήθηκε στις: ".  date("d-m-Y, H:i:s", strtotime($row['updated']))."</small></td></tr>";
             $ser = serialize($sch_arr);
-            echo "<tr><td colspan=4><center><form action='print.php' method='POST'><input type='hidden' name = 'cred_arr' value='$ser_cred'><input type='hidden' name = 'sch_arr' value='$ser'><input type='submit' class='btn btn-success' value='Εκτύπωση'></form></center></td></tr>";
+            echo "<tr><td colspan=2><center><form action='print.php' method='POST'><input type='hidden' name = 'cred_arr' value='$ser_cred'><input type='hidden' name = 'sch_arr' value='$ser'><input type='submit' class='btn btn-success' value='Εκτύπωση'></form></center></td></tr>";
             if ($av_type == 1)
-                echo "<tr><td colspan=4><center><form action='criteria.php'><input type='submit' class='btn btn-info' value='Επιστροφή στο Βήμα 1'></form></center></td></tr>";
-            echo "<tr><td colspan=4><center><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' class='btn btn-danger' value='Έξοδος'></form></center></td></tr>";
+                //echo "<tr><td colspan=2><center><form action='criteria.php'><input type='submit' class='btn btn-info' value='Επιστροφή στο Βήμα 1'></form></center></td></tr>";
+                echo "<tr><td colspan=2><center><a href='criteria.php' class='btn btn-info'>Επιστροφή στο Βήμα 1</a></center></td></tr>";
+            echo "<tr><td colspan=2><center><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' class='btn btn-danger' value='Έξοδος'></form></center></td></tr>";
         }
         // if not submitted
         else
@@ -199,12 +227,49 @@
             echo "<form id='src' name='src' action='save.php' method='POST' >\n";
             ?>
                 <script language="javascript" type="text/javascript">
-                    function myaction(){
-                        r=confirm("Είστε σίγουροι ότι θέλετε να υποβάλετε οριστικά την αίτηση;");
-                        if (r==false){
-                            return false;
+                  $(function () {
+                    $('#submitbtn').on('click', function (e) {
+                      e.preventDefault();
+                        swal.fire({
+                        title: 'Είστε σίγουροι ότι θέλετε να υποβάλετε οριστικά την αίτηση;',
+                        text: "Δεν μπορείτε να αναιρέσετε αυτήν την ενέργεια!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Ναι',
+                        cancelButtonText: 'Όχι',
+                      }).then((result) => {
+                        if (result.value) {
+                          $.ajax({
+                          type: 'post',
+                          url: 'save.php',
+                          data: $('#src').serialize() + '&submitbtn=true',
+                          success: function (data) {
+                            //location.reload();
+                            Swal.fire({
+                              title: data.title,
+                              html: data.message,
+                              icon: data.type,
+                              confirmButtonText: 'OK'
+                            }).then((result) => {
+                              location.reload();  
+                            });
+                          },
+                          dataType:'json'
+                        });
+                        } else if (
+                          /* Read more about handling dismissals below */
+                          result.dismiss === Swal.DismissReason.cancel
+                        ) {
+                          swal.fire(
+                            'Ακυρώθηκε',
+                            'Η υποβολή ακυρώθηκε από τον χρήστη...',
+                            'error'
+                          )
+                          return false;
                         }
-                    }
+                      })
+                    });
+                  });
                 </script>
                    
                   <?php
@@ -219,22 +284,24 @@
                   echo "<tr><td>".($i+1)."η Προτίμηση</td><td>".getSchools($i+1, $dim, 0, $mysqlconnection, ${"s".$i});
             }
             if ($has_aitisi)
-                  echo "<tr><td colspan=4><small>Τελευταία ενημέρωση: ". date("d-m-Y, H:i:s", strtotime($row['updated']))."</small></td></tr>";
+                  echo "<tr><td colspan=2><small>Τελευταία ενημέρωση: ". date("d-m-Y, H:i:s", strtotime($row['updated']))."</small></td></tr>";
             echo "<input type='hidden' name = 'id' value='$id'>";
-            echo "<tr><td colspan=4><center><INPUT TYPE='submit' name='save' class='btn btn-success' VALUE='Αποθήκευση'></center></td></tr>";
+            echo "<tr><td colspan=2><center><INPUT TYPE='submit' name='save' class='btn btn-success' VALUE='Αποθήκευση'></center></td></tr>";
             if ($av_type == 1)
-                echo "<tr><td colspan=4><center><INPUT TYPE='submit' name='prev' class='btn btn-info' VALUE='Επιστροφή στο Βήμα 1'></center></td></tr>";
+                //echo "<tr><td colspan=2><center><INPUT TYPE='submit' name='prev' class='btn btn-info' VALUE='Επιστροφή στο Βήμα 1'></center></td></tr>";
+                echo "<tr><td colspan=2><center><a href='criteria.php' class='btn btn-info'>Επιστροφή στο Βήμα 1</a></center></td></tr>";
             if (!$has_aitisi){
-              echo "<tr><td colspan=4><center><INPUT TYPE='submit' onclick='return myaction()' name='submit' class='btn btn-warning' VALUE='Οριστική Υποβολή' disabled></center></td>\n";
+              echo "<tr><td colspan=2><center><button TYPE='submit' id='submitbtn' name='submitbtn' class='btn btn-warning' disabled>Οριστική Υποβολή</button></center></td>\n";
             } else {
-              echo "<tr><td colspan=4><center><INPUT TYPE='submit' onclick='return myaction()' name='submit' class='btn btn-warning' VALUE='Οριστική Υποβολή'></center></td>\n";
+              echo "<tr><td colspan=2><center><button TYPE='submit' id='submitbtn' name='submitbtn' class='btn btn-warning'>Οριστική Υποβολή</button></center></td>\n";
             }
             echo "</tr>\n";
             echo "</form>";
-            echo "<tr><td colspan=4><center><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' class='btn btn-danger' value='Έξοδος'></form></center></td></tr>";
+            echo "<tr><td colspan=2><center><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' class='btn btn-danger' value='Έξοδος'></form></center></td></tr>";
         }
         echo "</table>";
-        echo "</center>";
+        //echo "</center>";
+        echo "</div>";
     //} //has aitisi
      mysqli_close($mysqlconnection);   
     }

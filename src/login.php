@@ -69,7 +69,6 @@ if (!isset($_REQUEST['action']))
 //}
 //if($_REQUEST['action'] == "login" && !$timeout){
 if($_REQUEST['action'] == "login"){
-    print_r($_POST);
     if($log->login("logon", $_REQUEST['username'], $_REQUEST['password'], $_REQUEST[$av_extra_name]) == true)
     {
         session_start();
