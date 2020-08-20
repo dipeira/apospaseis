@@ -41,6 +41,7 @@
 
 <html>
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+  <link href="css/select2-bootstrap4.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
   <body>
 <?php
@@ -315,6 +316,7 @@
 <script type="text/javascript">
   $('select').select2({
       placeholder: ' ',
-      allowClear: true
+      allowClear: true,
+      theme: 'bootstrap4'
   });
 </script>
