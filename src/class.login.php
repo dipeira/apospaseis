@@ -25,22 +25,27 @@ class logmein {
     }
     	
     //table fields
-    var $user_column = 'am';     //USERNAME column (value MUST be valid email)
+    var $user_column = null;     //USERNAME column (value MUST be valid email)
     var $pass_column = 'afm';      //PASSWORD column
  
     //encryption
     var $encrypt = false;       //set to true to use md5 encryption for the password
  
+    function __construct($name) {
+        global $av_type;
+        $this->user_column = $av_type == '3' ? 'surname' : 'am';
+      }
     //connect to database
     function dbconnect(){
         $this->get_vars();
         $this->theConnection = mysqli_connect($this->hostname_logon, $this->username_logon, $this->password_logon, $this->database_logon) or die ('Unable to connect to the database');
+        $this->theConnection->set_charset('utf8');
         return;
     }
  
     //login function
     function login($table, $username, $password, $extraval){
-        global $av_extra, $av_extra_name, $av_extra_label;
+        global $av_extra, $av_extra_name, $av_extra_label, $av_type;
         //connect to DB
         $this->dbconnect();
         //make sure table name is set
@@ -54,9 +59,13 @@ class logmein {
         // sugarvag: leading zero?
         if (strlen($password) == 8)
             $password = '0'.$password;
+        // uppercase surname
+        if ($av_type == 3) {
+            $username = strtoupper($username);
+        }
         // sugarvag: check if employee can apply
         $extraquery = $av_extra ? " AND ".$av_extra_name."='".$extraval."'" : '';
-        $qry = "SELECT * FROM $this->user_table WHERE am='$username' AND $this->pass_column='$password'".$extraquery;
+        $qry = "SELECT * FROM $this->user_table WHERE $this->user_column='$username' AND $this->pass_column='$password'".$extraquery;
         $res = $this->qry($qry);
         
         $rows_emp = mysqli_num_rows($res);
@@ -84,8 +93,9 @@ class logmein {
                 return false;
             }
         }
-        else
+        else {
             return false;
+        }
     }
  
     //prevent injection
@@ -158,14 +168,14 @@ class logmein {
     }
  
     //login form
-    function loginform($formname, $formclass, $formaction){
+    function loginform($formname, $formclass, $formaction, $username_text){
         global $av_extra, $av_extra_name, $av_extra_label;
         //connect to DB
         $this->dbconnect();
         echo '
 <form name="'.$formname.'" method="post" id="'.$formname.'" class="'.$formclass.'" enctype="application/x-www-form-urlencoded" action="'.$formaction.'" autocomplete="off">
 <div class="form-group">
-    <label for="username">Αριθμός Μητρώου Εκπ/κού</label>
+    <label for="username">'.$username_text.'</label>
     <input type="text" class="form-control" id="username" name="username">
   </div>
   <div class="form-group">

@@ -92,7 +92,11 @@
     echo "<center><h2>$av_title ($av_foreas)</h2></center>";
     echo "</div>";
     
-    $query = "SELECT * from $av_emp WHERE am = ".$_SESSION['user'];
+    if ($av_type == 3) {
+      $query = "SELECT * from $av_emp WHERE surname = '".$_SESSION['user']."'";  
+    } else {
+      $query = "SELECT * from $av_emp WHERE am = ".$_SESSION['user'];
+    }
     
     $result = mysqli_query($mysqlconnection, $query);
     $row = mysqli_fetch_assoc($result);
@@ -194,8 +198,10 @@
         echo "<tr><td>Ονοματεπώνυμο Εκπ/κού:</td><td >".$name." ".$surname."</td></tr>";
         echo "<tr><td>Πατρώνυμο: </td><td >".$patrwnymo."</td></tr>";
         echo "<tr><td>Κλάδος: </td><td >".$klados."</td></tr>";
-        echo "<tr><td>A.M.: </td><td >".$am."</td></tr>";
-        echo "<tr><td>Οργανική θέση: </td><td >".$organ."</td></tr>";
+        if ($av_type != 3){
+          echo "<tr><td>A.M.: </td><td >".$am."</td></tr>";
+          echo "<tr><td>Οργανική θέση: </td><td >".$organ."</td></tr>";
+        }
         if ($av_type == 2) {
           echo "<tr><td>Μόρια βελτίωσης: </td><td >".$moria."</td></tr>";
           echo "<tr><td>Δήμος εντοπιότητας: </td><td >".$entopiothta."</td></tr>";

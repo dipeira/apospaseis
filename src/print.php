@@ -28,7 +28,11 @@
     $mysqlconnection = mysqli_connect($db_host, $db_user, $db_password,$db_name);
     mysqli_set_charset($mysqlconnection,"utf8");
     //user 
-    $query = "SELECT * from $av_emp WHERE am = ".$_SESSION['user'];
+    if ($av_type == 3) {
+        $query = "SELECT * from $av_emp WHERE surname = '".$_SESSION['user']."'";    
+    } else {
+        $query = "SELECT * from $av_emp WHERE am = ".$_SESSION['user'];
+    }
     $result = mysqli_query($mysqlconnection, $query);
     $row = mysqli_fetch_assoc($result);
     
@@ -82,8 +86,10 @@
     echo "<tr><td colspan=2>Ονοματεπώνυμο Εκπ/κού:</td><td colspan=5>".$name." ".$surname."</td></tr>";
     echo "<tr><td colspan=2>Πατρώνυμο: </td><td colspan=5>".$patrwnymo."</td></tr>";
     echo "<tr><td colspan=2>Κλάδος: </td><td colspan=5>".$klados."</td></tr>";
-    echo "<tr><td colspan=2>A.M.: </td><td colspan=5>".$am."</td></tr>";
-    echo "<tr><td colspan=2>Οργανική θέση: </td><td colspan=5>$organ</td></tr>";    
+    if ($av_type != 3){
+        echo "<tr><td colspan=2>A.M.: </td><td colspan=5>".$am."</td></tr>";
+        echo "<tr><td colspan=2>Οργανική θέση: </td><td colspan=5>$organ</td></tr>";    
+    }
     if ($av_type == 1)
     {
 		echo "<tr><td colspan=2>Συνολική υπηρεσία: </td><td colspan=5>$ethy Έτη, $mhnesy Μήνες, $hmeresy Ημέρες</td></tr>";

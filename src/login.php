@@ -45,12 +45,12 @@ if (!isset($_REQUEST['action']))
     
 
 <?php
-    
-
     if (!$av_is_active)
         echo "<h3>Η προθεσμία υποβολής αιτήσεων έχει παρέλθει.<br>Το σύστημα δεν είναι ενεργό αυτή τη στιγμή.</h3><br><br>";
-    if ($av_display_login)
-        $log->loginform("login", "id", "");
+    if ($av_display_login){
+        $username_text = $av_type == '3' ? 'Επώνυμο εκπ/κού' : 'Αριθμός Μητρώου Εκπ/κού';
+        $log->loginform("login", "id", "", $username_text);
+    }
     
 	echo "<br><br><small>$av_custom</small><br><br>";
 		
@@ -89,7 +89,8 @@ else {
     echo "<div class='container'>";
     echo "<h3>H είσοδος απέτυχε...</h3>";
     $extra_col = $av_extra ? " - ".$av_extra_label : '';
-    echo "<br><p>Δοκιμάστε ξανά με έναν έγκυρο συνδυασμό Α.Μ. - Α.Φ.Μ.$extra_col</p>";
+    echo $av_type == 3 ? "<br><p>Δοκιμάστε ξανά με έναν έγκυρο συνδυασμό Επωνύμου - Α.Φ.Μ.$extra_col</p>" :
+        "<br><p>Δοκιμάστε ξανά με έναν έγκυρο συνδυασμό Α.Μ. - Α.Φ.Μ.$extra_col</p>";
     echo "<FORM><INPUT Type='button' class='btn btn-info' VALUE='Επιστροφή' onClick='history.go(-1);return true;'></FORM>";
     echo "</div>";
 }
