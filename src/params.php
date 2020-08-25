@@ -9,7 +9,7 @@
   if($_SESSION['loggedin'] == false)
     header("Location: login.php");
   // check if admin 
-  if ($_SESSION['user']!=$av_admin)
+  if ($_SESSION['user']!=$av_admin && $_SESSION['user']!='admin')
     die("Authentication error");
 
 ?>

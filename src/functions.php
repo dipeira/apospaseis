@@ -504,4 +504,9 @@ function count_rows($conn){
 
   return array('emp' => $emp, 'sch' => $sch, 'dimos' => $dimos);
 }
+
+function filterAFM($afm) {
+    $afm = (string)$afm;
+    return strlen($afm) == 8 ? '0'.$afm : $afm;
+}
 ?>

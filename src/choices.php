@@ -6,7 +6,7 @@
   require_once('head.php');
 
   // check if admin 
-    if ($_SESSION['user']==$av_admin)
+    if ($_SESSION['user']==$av_admin || $_SESSION['user']=='admin')
     {
         //$isadmin = 1;
         $page = 'admin.php';

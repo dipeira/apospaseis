@@ -65,7 +65,7 @@
   if ($loggedin)
   {
     // check if admin 
-    if ($_SESSION['user']!=$av_admin)
+    if ($_SESSION['user']!=$av_admin && $_SESSION['user']!='admin')
         die("Σφάλμα αυθεντικοποίησης...");
 
     $mysqlconnection = mysqli_connect($db_host, $db_user, $db_password, $db_name);
@@ -348,7 +348,13 @@
             JOIN $av_emp e ON a.emp_id=e.id 
             JOIN $av_sch s ON s.kwdikos = e.org 
             WHERE submitted=1 $andClause";
-        } else {
+        } elseif ($av_type == 3) {
+            $query = "SELECT e.id,LPAD(e.afm,9,0),e.name,e.surname,e.patrwnymo,e.klados,a.choices
+            FROM $av_ait a 
+            JOIN $av_emp e ON a.emp_id=e.id 
+            WHERE submitted=1";
+        }
+        else {
             $query = "SELECT e.id,e.am,e.name,e.surname,e.patrwnymo,s.name as sch_name,e.moria,e.entopiothta,e.synyphrethsh,e.org,e.klados,a.choices
             FROM $av_ait a 
             JOIN $av_emp e ON a.emp_id=e.id 
@@ -383,8 +389,10 @@
             unset($tmpdata['synyphrethsh']);
             
             // Mark diathesi pyspe/pysde or veltiwsh
-            $tmpdata['mdv'] = $row0['org'] == 2222222 ?
-                'Δ' : 'Β';
+            if ($av_type == 1 || $av_type == 2){
+                $tmpdata['mdv'] = $row0['org'] == 2222222 ?
+                    'Δ' : 'Β';
+            }
             // merge arrays
             if ($av_dntes) {
 		        $tmp = '';
@@ -451,7 +459,11 @@
         
         $columns = array();
                         
-        array_push($columns,'am','name','surname','patrwnymo','org','org_code','klados','mdv');
+        if ($av_type == 3) {
+            array_push($columns,'afm','name','surname','patrwnymo','klados');
+        } else {
+            array_push($columns,'am','name','surname','patrwnymo','org','org_code','klados','mdv');
+        }
         
         if ($av_type == 2) {
           array_push($columns,'moria','entopiothta','synyphrethsh');
@@ -534,7 +546,7 @@
                 echo "<th>Επώνυμο</th>\n";
                 echo "<th>Όνομα</th>\n";
                 echo "<th>Ειδικότητα</th>\n";
-                echo "<th>A.M.</th>\n";
+                echo $av_type == 3 ? "<th>A.Φ.M.</th>\n" : "<th>A.M.</th>\n";
                 echo "</thead>";
                 echo "<tbody>";
                 while ($i < $num){
@@ -542,7 +554,7 @@
                     $surname = $row['surname'];
                     $name = $row['name'];
                     $klados = $row['klados'];
-                    $am = $row['am'];
+                    $am = $av_type == 3 ? filterAFM($row['afm']) : $row['am'];
                     echo "<tr><td><a href='admin.php?id=".$row['ait_id']."&action=view'>$surname</a></td>";
                     echo "<td>$name</td><td>$klados</td><td>$am</td></tr>";
 
@@ -604,7 +616,13 @@
       session_start();
       echo "<center><h1>$av_title ($av_foreas)</h1>";
       echo "<h2>Διαχείριση ";
-      echo $av_type == 1 ? "<i>(λειτουργία αποσπάσεων)</i>" : "<i>(λειτουργία βελτιώσεων)</i>";
+      if ($av_type == 1){ 
+        echo "<i>(λειτουργία αποσπάσεων)</i>";
+      } elseif ($av_type == 2) {
+        echo "<i>(λειτουργία βελτιώσεων)</i>";
+      } elseif ($av_type == 3) {
+        echo "<i>(λειτουργία τοποθετήσεων αναπληρωτών)</i>";
+      }
       echo "</h2></center>";
       echo "<center>";
       if (file_exists('init.php')){
@@ -700,7 +718,7 @@
             echo "<th>Επώνυμο</th>\n";
             echo "<th>Όνομα</th>\n";
             echo "<th>Ειδικότητα</th>\n";
-            echo "<th>A.M.</th>\n";
+            echo $av_type == 3 ? "<th>A.Φ.M.</th>\n" : "<th>A.M.</th>\n";
             echo "<th>Υποβλήθηκε</th>\n";
             echo "<th>Ημ/νία - Ώρα</th>\n";
             if ($av_type == 1){
@@ -722,7 +740,7 @@
                 $name = $row['name'];
                 $klados = $row['klados'];
                 $submitted = $row['submitted'];
-                $am = $row['am'];
+                $am = $av_type == 3 ? filterAFM($row['afm']) : $row['am'];
                 $choices = $row['choices'];
                 if ($submitted==0)
                 {
