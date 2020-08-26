@@ -647,16 +647,38 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="import.php">Εισαγωγή δεδομένων</a>
+          <a class="dropdown-item" href="import_kena.php">Εισαγωγή κενών</a>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Εξαγωγή
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <?php if ($av_type == 1): ?>
           <a class="dropdown-item" href="admin.php?action=eidiki">Αιτήσεις στην Ειδική αγωγή (από τη Γενική αγωγή ή από την Ειδική αγωγή)</a>
+        <?php
+          endif;
+          if ($av_type == 1):
+        ?>
           <a class="dropdown-item" href="admin.php?action=export">Από τη Γενική στη Γενική (για πρόγραμμα PPYSDE)</a>
         </div>
+        <?php
+          elseif ($av_type == 2 || $av_type == 3): ?>
+          <a class="dropdown-item" href="admin.php?action=export">Αιτήσεων</a>
+          <?php endif; ?>
       </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Τοποθέτηση
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <?php if ($av_type == 3): ?>
+          <a class="dropdown-item" href="topothetish_anapl.php">Τοποθέτηση αναπληρωτών</a>
+        <?php
+          endif;
+        ?>
+        </div>
+      </li> 
       <li class="nav-item">
         <a class="nav-link" href="params.php">Παράμετροι</a>
       </li>
