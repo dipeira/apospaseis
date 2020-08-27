@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS `apo_employee` (
   `entopiothta` TEXT NULL DEFAULT NULL,
   `synyphrethsh` TEXT NULL DEFAULT NULL,
   `seira` int(11) NULL DEFAULT NULL,
+  `ada` varchar(20) NULL DEFAULT NULL,
   `lastlogin` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
@@ -81,6 +82,14 @@ CREATE TABLE IF NOT EXISTS `apo_params` (
   `pdescr` varchar(200) NOT NULL,
   `pcheck` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `apo_kena`;
+CREATE TABLE `apo_kena` (
+  `id` int(11) NOT NULL,
+  `klados` varchar(10) NOT NULL,
+  `kena` text NOT NULL,
+  `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 --
 -- Αρχικά δεδομένα του πίνακα `apo_params`

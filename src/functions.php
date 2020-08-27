@@ -509,4 +509,38 @@ function filterAFM($afm) {
     $afm = (string)$afm;
     return strlen($afm) == 8 ? '0'.$afm : $afm;
 }
+
+function uploaded_kena($conn) {
+  global $av_kena;
+  $qry = "select * from $av_kena";
+  $result = mysqli_query($conn, $qry);
+  if (mysqli_num_rows($result) > 0){
+    echo "<h4>Καταχωρημένα κενά</h4>";
+    echo "<table class='table table-striped table-hover table-sm' border='1'>";
+    echo "<thead><th>Κλάδος</th><th>Ημερομηνία καταχώρησης</th></thead>";
+    while ($row = mysqli_fetch_assoc($result)){
+      echo "<tr><td>".$row['klados']."</td><td>".$row['updated']."</td></tr>";
+    } 
+    echo "</table>";
+  } else {
+    echo "<h4>Δεν έχουν καταχωρηθεί κενά σχολείων...</h4>";
+  }
+}
+
+function kladoi_select($conn){
+    global $av_emp;
+    $qry = "SELECT DISTINCT(klados) FROM $av_emp WHERE 1 ORDER BY klados";
+    echo $query;
+    $result = mysqli_query($conn, $qry);
+    if (mysqli_num_rows($result) > 0){
+        echo "<select name='klados' id='klados' class='form-control'>";
+        echo "<option value=''>-- Επιλέξτε κλάδο --</option>";
+        while ($row = mysqli_fetch_assoc($result)){
+          echo "<option value='".$row['klados']."'>".$row['klados']."</option>";
+        } 
+        echo "</select>";
+      } else {
+        echo "<h4>Δε βρέθηκαν κλάδοι...</h4>";
+      }
+}
 ?>

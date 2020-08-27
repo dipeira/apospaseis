@@ -29,34 +29,13 @@ if (!isset($_POST['submit']))
   $rows = count_rows($mysqlconnection);
   echo "<form enctype='multipart/form-data' action='import_kena.php' method='post'>";
   echo "Αρχείο προς εισαγωγή: &nbsp;&nbsp;<a href='../files/apo_kena.csv'>(Δείγμα)</a><br />\n";
-  echo "<input size='50' type='file' name='filename'><br />\n";
+  echo "<input size='50' type='file' name='filename'><br /><br>\n";
 
-  $qry = "select * from $av_kena";
-  $result = mysqli_query($mysqlconnection, $qry);
-  if (mysqli_num_rows > 0){
-    echo "<br><h4>Καταχωρημένα κενά</h4>";
-    echo "<table class='table table-striped table-hover table-sm' border='1'>";
-    echo "<thead><th>Κλάδος</th><th>Ημερομηνία καταχώρησης</th></thead>";
-    while ($row = mysqli_fetch_assoc($result)){
-      echo "<tr><td>".$row['klados']."</td><td>".$row['updated']."</td></tr>";
-    } 
-    echo "</table>";
-  } else {
-    echo "<br><h5>Δεν έχουν καταχωρηθεί κενά σχολείων...</h5>";
-  }
+  uploaded_kena($mysqlconnection);
 
     echo "<br>Κλάδος:<br>";
-    ?>
-    <select name="klados" id="klados" class="form-control">
-      <option value="">-- Επιλέξτε κλάδο --</option>
-      <option value="ΠΕ70">ΠΕ70</option>
-      <option value="ΠΕ60">ΠΕ70</option>
-      <option value="ΠΕ05">ΠΕ05</option>
-      <option value="ΠΕ07">ΠΕ07</option>
-      <option value="ΠΕ11">ΠΕ11</option>
-    </select>
-    <br>
-    <?php
+    kladoi_select($mysqlconnection);
+    echo "<br>";
     
     print "<input type='submit' name='submit' class='btn btn-success' value='Μεταφόρτωση'></form>";
     //echo "<small>ΣΗΜ.: Η εισαγωγή ενδέχεται να διαρκέσει μερικά λεπτά, ειδικά για μεγάλα αρχεία.<br>Μη φύγετε από τη σελίδα αν δεν πάρετε κάποιο μήνυμα.</small>";

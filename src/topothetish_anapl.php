@@ -28,30 +28,10 @@ if (!isset($_POST['submit']))
 	echo "<h2>Τοποθέτηση αναπληρωτών</h2>";
   echo "<form enctype='multipart/form-data' action='topothetish_anapl.php' method='post'>";
   echo "<br>Επιλογή κλάδου προς τοποθέτηση:<br>";
-  ?>
-  <select name="klados" id="klados" class="form-control">
-    <option value="">-- Επιλέξτε κλάδο --</option>
-    <option value="ΠΕ70">ΠΕ70</option>
-    <option value="ΠΕ60">ΠΕ70</option>
-    <option value="ΠΕ05">ΠΕ05</option>
-    <option value="ΠΕ07">ΠΕ07</option>
-    <option value="ΠΕ11">ΠΕ11</option>
-  </select>
-  <br>
-  <?php
-  $qry = "select * from $av_kena";
-  $result = mysqli_query($mysqlconnection, $qry);
-  if (mysqli_num_rows > 0){
-    echo "<h4>Καταχωρημένα κενά</h4>";
-    echo "<table class='table table-striped table-hover table-sm' border='1'>";
-    echo "<thead><th>Κλάδος</th><th>Ημερομηνία καταχώρησης</th></thead>";
-    while ($row = mysqli_fetch_assoc($result)){
-      echo "<tr><td>".$row['klados']."</td><td>".$row['updated']."</td></tr>";
-    } 
-    echo "</table>";
-  } else {
-    echo "<h4>Δεν έχουν καταχωρηθεί κενά σχολείων...</h4>";
-  }
+  kladoi_select($mysqlconnection);
+  echo "<br>";
+  // check existing kena
+  uploaded_kena($mysqlconnection);
   
   print "<a href='import_kena.php' class='btn btn-info'>Εισαγωγή κενών</a>";
   print "<br><br><input type='submit' name='submit' class='btn btn-success' value='Τοποθέτηση'></form>";
@@ -76,7 +56,6 @@ if (!isset($_POST['submit']))
       die();
     }
 
-
     // get kena
     $query = "select kena from $av_kena WHERE klados='$klados'";
     $result = mysqli_query($mysqlconnection, $query);
@@ -87,8 +66,9 @@ if (!isset($_POST['submit']))
     
     // get employees by seira
     $employees = Array();
-    $query = "select afm,seira from $av_emp WHERE klados='$klados' AND seira > 0 ORDER BY seira";
+    $query = "select afm,seira from $av_emp e JOIN $av_ait a ON e.id = a.emp_id WHERE klados='$klados' AND seira > 0 and a.submitted = 1 ORDER BY seira";
     $result = mysqli_query($mysqlconnection, $query);
+
     while ($row = mysqli_fetch_assoc($result)){
       $employees[] = $row['afm'];
     }
@@ -105,27 +85,33 @@ if (!isset($_POST['submit']))
     
     // make placements
     $placements = Array();
+    $is_placed = false;
+    $placed = $unplaced = $num = 0;
     foreach ($employees as $afm) {
+      $num++;
       foreach ($choices[$afm] as $choice) {
-        
-        //echo "<br>".$kena[$choice]."<br>";
         if ($kena[$choice] < 0){
           $kena[$choice] += 1;
           $placements[$afm] = $choice;
+          $placed++;
+          $is_placed = true;
           break;
-        } else {
-            $placements[$afm] = 'none';
         }
+        $placements[$afm] = 'none';
       }
     }
 
     // temp debug info
     echo "<br><br>initial kena<br>";
     print_r($initial_kena);
+    echo "<br>synolo: ".abs(array_sum($initial_kena));
     echo "<br><br>final kena<br>";
     print_r($kena);
+    echo "<br>synolo: ".abs(array_sum($kena));
     echo "<br><br>Placements<br>";
     print_r($placements);
+    $unplaced = $num - $placed;
+    echo "<br><br>Stats: Placed: $placed, unplaced: $unplaced, synolo: $num";
     die();
     // end of debug
   }
