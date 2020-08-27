@@ -27,9 +27,24 @@ if (!isset($_POST['submit']))
 {
 	echo "<h2> Εισαγωγή κενών στη βάση δεδομένων </h2>";
   $rows = count_rows($mysqlconnection);
-    echo "<form enctype='multipart/form-data' action='import_kena.php' method='post'>";
-    echo "Αρχείο προς εισαγωγή: &nbsp;&nbsp;<a href='../files/apo_kena.csv'>(Δείγμα)</a><br />\n";
-    echo "<input size='50' type='file' name='filename'><br />\n";
+  echo "<form enctype='multipart/form-data' action='import_kena.php' method='post'>";
+  echo "Αρχείο προς εισαγωγή: &nbsp;&nbsp;<a href='../files/apo_kena.csv'>(Δείγμα)</a><br />\n";
+  echo "<input size='50' type='file' name='filename'><br />\n";
+
+  $qry = "select * from $av_kena";
+  $result = mysqli_query($mysqlconnection, $qry);
+  if (mysqli_num_rows > 0){
+    echo "<br><h4>Καταχωρημένα κενά</h4>";
+    echo "<table class='table table-striped table-hover table-sm' border='1'>";
+    echo "<thead><th>Κλάδος</th><th>Ημερομηνία καταχώρησης</th></thead>";
+    while ($row = mysqli_fetch_assoc($result)){
+      echo "<tr><td>".$row['klados']."</td><td>".$row['updated']."</td></tr>";
+    } 
+    echo "</table>";
+  } else {
+    echo "<br><h5>Δεν έχουν καταχωρηθεί κενά σχολείων...</h5>";
+  }
+
     echo "<br>Κλάδος:<br>";
     ?>
     <select name="klados" id="klados" class="form-control">

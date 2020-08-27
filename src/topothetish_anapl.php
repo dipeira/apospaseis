@@ -41,14 +41,17 @@ if (!isset($_POST['submit']))
   <?php
   $qry = "select * from $av_kena";
   $result = mysqli_query($mysqlconnection, $qry);
-  echo "<h4>Καταχωρημένα κενά</h4>";
-  echo "<table class='table table-striped table-hover table-sm' border='1'>";
-  echo "<thead><th>Κλάδος</th><th>Ημερομηνία καταχώρησης</th></thead>";
-  while ($row = mysqli_fetch_assoc($result)){
-    echo "<tr><td>".$row['klados']."</td><td>".$row['updated']."</td></tr>";
+  if (mysqli_num_rows > 0){
+    echo "<h4>Καταχωρημένα κενά</h4>";
+    echo "<table class='table table-striped table-hover table-sm' border='1'>";
+    echo "<thead><th>Κλάδος</th><th>Ημερομηνία καταχώρησης</th></thead>";
+    while ($row = mysqli_fetch_assoc($result)){
+      echo "<tr><td>".$row['klados']."</td><td>".$row['updated']."</td></tr>";
+    } 
+    echo "</table>";
+  } else {
+    echo "<h4>Δεν έχουν καταχωρηθεί κενά σχολείων...</h4>";
   }
-    
-  echo "</table>";
   
   print "<a href='import_kena.php' class='btn btn-info'>Εισαγωγή κενών</a>";
   print "<br><br><input type='submit' name='submit' class='btn btn-success' value='Τοποθέτηση'></form>";
@@ -68,7 +71,7 @@ if (!isset($_POST['submit']))
     $qry = "SELECT * FROM $av_kena WHERE klados = '$klados'";
     $result = mysqli_query($mysqlconnection, $qry);
     if (mysqli_num_rows($result) == 0) {
-      echo "<h2>Σφάλμα</h2>";
+      echo "<h2>Σφάλμα: Δεν έχουν καταχωρηθεί κενά σχολείων για τον κλάδο που επιλέξατε...</h2>";
       echo "<a href='admin.php' class='btn btn-info'>Επιστροφή</a>";
       die();
     }
@@ -115,86 +118,16 @@ if (!isset($_POST['submit']))
         }
       }
     }
+
+    // temp debug info
     echo "<br><br>initial kena<br>";
     print_r($initial_kena);
     echo "<br><br>final kena<br>";
     print_r($kena);
     echo "<br><br>Placements<br>";
     print_r($placements);
-      die();
-      
-
-      /*
-      for x in sorted_anapl:
-   prot = anapl_prot[x]
-   for y in prot:
-     if kena.get(str(y)) > 0:
-       kena[str(y)] -= 1
-       topo[x] = y
-       break
-     topo[x] = "none"
-      */
-      
-      $update = false;
-      
-      
-      $num = $kena_num = 0;
-
-      $checked = 0;
-      $headers = 1;
-      
-      $kena = Array();
-
-      while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
-          // convert to utf8 using mb_helper
-          $data = array_map('mb_helper', $data);
-          // skip header line
-          if ($headers){
-              $headers = 0;
-              continue;
-          }
-          // check if csv & table columns are equal
-          if (!$checked)
-          {
-              $csvcols = count($data);
-              
-              $tblcols = 2;
-              if ($csvcols <> $tblcols)
-              {
-                  echo "<h3>Σφάλμα: Λάθος αρχείο (Στήλες αρχείου: $csvcols <> στήλες πίνακα: $tblcols)</h3>";
-                  $ret = 0;
-                  break;
-              }
-              else
-                  $checked = 1;
-          }
-          $kena[$data[0]] = $data[1];
-
-          $num++;
-          $kena_num -= $data[1];
-      }
-
-      fclose($handle);
-      
-      $kena_ser = serialize($kena);
-      // update db
-      if ($update) {
-        $import = "UPDATE $av_kena SET kena = '$kena_ser' WHERE klados = '" . $_POST['klados'] . "'";
-      } else {
-        $import="INSERT into $av_kena(klados,kena) values('".$_POST['klados']."','".$kena_ser."')";
-      }
-      $result = mysqli_query($mysqlconnection, $import);
-      if ($result){
-          print "<h3>Η εισαγωγή πραγματοποιήθηκε με επιτυχία!</h3>";
-          echo "Έγινε εισαγωγή $kena_num κενών κλάδου ".$_POST['klados']." σε $num σχολεία.<br>";
-      }
-      else
-      {
-          echo "<h3>Παρουσιάστηκε σφάλμα κατά την εισαγωγή</h3>";
-          echo "Ελέγξτε το αρχείο ή επικοινωνήστε με το διαχειριστή.<br>";
-          echo mysqli_error($mysqlconnection) ? "Μήνυμα λάθους:".mysqli_error($mysqlconnection) : '';
-          //echo $num ? "Έγινε εισαγωγή $num εγγραφών στον πίνακα $tbl.<br>" : '';
-      }
+    die();
+    // end of debug
   }
   else {
       echo "Δεν επιλέξατε αρχείο<br><br>";
