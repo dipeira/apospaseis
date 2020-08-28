@@ -31,6 +31,8 @@
             html: data.message,
             icon: data.type,
             confirmButtonText: 'OK'
+          }).then((result) => {
+            location.reload();  
           });
         },
         dataType:'json'
