@@ -31,7 +31,7 @@ class logmein {
     //encryption
     var $encrypt = false;       //set to true to use md5 encryption for the password
  
-    function __construct($name) {
+    function __construct() {
         global $av_type;
         $this->user_column = $av_type == '3' ? 'surname' : 'am';
       }
