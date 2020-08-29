@@ -228,7 +228,15 @@
             }
             echo "<tr><td colspan=2><small>Υποβλήθηκε στις: ".  date("d-m-Y, H:i:s", strtotime($row['updated']))."</small></td></tr>";
             $ser = serialize($sch_arr);
-            echo "<tr><td colspan=2><center><form action='print.php' method='POST'><input type='hidden' name = 'cred_arr' value='$ser_cred'><input type='hidden' name = 'sch_arr' value='$ser'><input type='submit' class='btn btn-success' value='Εκτύπωση'></form></center></td></tr>";
+            if ($av_type == 1){
+              echo "<tr><td colspan=2><center>";
+              echo "<form action='print.php' method='POST'>";
+              echo "<input type='hidden' name = 'cred_arr' value='$ser_cred'>";
+              echo "<input type='hidden' name = 'sch_arr' value='$ser'>";
+              echo "<input type='submit' class='btn btn-success' value='Εκτύπωση'></form></center></td></tr>";
+            } else {
+              echo "<tr><td colspan=2><center><input type='button' class='btn btn-success' value='Εκτύπωση' onclick='javascript:window.print()' /></center></td></tr>";
+            }
             if ($av_type == 1)
                 //echo "<tr><td colspan=2><center><form action='criteria.php'><input type='submit' class='btn btn-info' value='Επιστροφή στο Βήμα 1'></form></center></td></tr>";
                 echo "<tr><td colspan=2><center><a href='criteria.php' class='btn btn-info'>Επιστροφή στο Βήμα 1</a></center></td></tr>";
