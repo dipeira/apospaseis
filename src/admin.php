@@ -19,7 +19,7 @@
   <head>
   <?php require_once('head.php'); ?>
 	<!-- <LINK href="style.css" rel="stylesheet" type="text/css"> -->
-    <LINK href="style_sorter.css" rel="stylesheet" type="text/css">
+    <!-- <LINK href="style_sorter.css" rel="stylesheet" type="text/css"> -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title><?php echo $av_title." ($av_foreas) - Διαχείριση"; ?></title>
