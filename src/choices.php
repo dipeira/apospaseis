@@ -95,7 +95,7 @@
     echo "</div>";
     
     if ($av_type == 3) {
-      $query = "SELECT * from $av_emp WHERE surname = '".$_SESSION['user']."'";  
+      $query = "SELECT * from $av_emp WHERE afm = '".$_SESSION['loggedin']."'";  
     } else {
       $query = "SELECT * from $av_emp WHERE am = ".$_SESSION['user'];
     }
@@ -108,7 +108,11 @@
     $patrwnymo = $row['patrwnymo'];
     $klados = $row['klados'];
     $id = $row['id'];
-    $am = $_SESSION['user'];
+    if ($av_type == 3){
+      $afm = $_SESSION['loggedin'];
+    } else {
+      $am = $_SESSION['user'];
+    }
     $organ_code = $row['org'];
     $organ = getSchooledc($organ_code, $mysqlconnection);
     $moria = $row['moria'];
