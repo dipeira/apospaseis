@@ -30,6 +30,9 @@ if (!isset($_POST['submit']))
   echo "<br>Επιλογή κλάδου προς τοποθέτηση:<br>";
   kladoi_select($mysqlconnection);
   echo "<br>";
+  echo "Επιλογή ΑΔΑ προς τοποθέτηση:<br>";
+  ada_select($mysqlconnection);
+  echo "<br>";
   // check existing kena
   uploaded_kena($mysqlconnection);
   
@@ -44,20 +47,21 @@ if (!isset($_POST['submit']))
 
     
   //Upload File
-  if (isset($_POST['klados'])) {
+  if (isset($_POST['klados']) && isset($_POST['ada'])) {
     $klados = $_POST['klados'];
-
+    $ada = $_POST['ada'];
+    echo "<h1>Τοποθετήσεις κλάδου $klados (ΑΔΑ: $ada)</h1>";
     // check if kena exist
-    $qry = "SELECT * FROM $av_kena WHERE klados = '$klados'";
+    $qry = "SELECT * FROM $av_kena WHERE klados = '$klados' AND ada = '$ada'";
     $result = mysqli_query($mysqlconnection, $qry);
     if (mysqli_num_rows($result) == 0) {
-      echo "<h2>Σφάλμα: Δεν έχουν καταχωρηθεί κενά σχολείων για τον κλάδο που επιλέξατε...</h2>";
+      echo "<h2>Σφάλμα: Δεν έχουν καταχωρηθεί κενά σχολείων για το συνδυασμό κλάδου-ΑΔΑ που επιλέξατε...</h2>";
       echo "<a href='admin.php' class='btn btn-info'>Επιστροφή</a>";
       die();
     }
 
     // get kena
-    $query = "select kena from $av_kena WHERE klados='$klados'";
+    $query = "select kena from $av_kena WHERE klados='$klados' AND ada = '$ada'";
     $result = mysqli_query($mysqlconnection, $query);
     $row = mysqli_fetch_assoc($result);
     
@@ -66,7 +70,7 @@ if (!isset($_POST['submit']))
     
     // get employees by seira
     $employees = Array();
-    $query = "select afm,seira from $av_emp e JOIN $av_ait a ON e.id = a.emp_id WHERE klados='$klados' AND seira > 0 and a.submitted = 1 ORDER BY seira";
+    $query = "select afm,seira from $av_emp e JOIN $av_ait a ON e.id = a.emp_id WHERE klados='$klados' AND ada = '$ada' AND seira > 0 and a.submitted = 1 ORDER BY seira";
     $result = mysqli_query($mysqlconnection, $query);
 
     while ($row = mysqli_fetch_assoc($result)){
@@ -101,25 +105,73 @@ if (!isset($_POST['submit']))
       }
     }
 
-    // temp debug info
-    echo "<br><br>initial kena<br>";
-    print_r($initial_kena);
-    echo "<br>synolo: ".abs(array_sum($initial_kena));
-    echo "<br><br>final kena<br>";
-    print_r($kena);
-    echo "<br>synolo: ".abs(array_sum($kena));
-    echo "<br><br>Placements<br>";
-    print_r($placements);
-    $unplaced = $num - $placed;
-    echo "<br><br>Stats: Placed: $placed, unplaced: $unplaced, synolo: $num";
-    die();
+    ?>
+    <div id="accordion">
+  <div class="card">
+    <div class="card-header" id="headingOne">
+      <h5 class="mb-0">
+        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          Αρχικά κενά
+        </button>
+      </h5>
+    </div>
+
+    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+      <div class="card-body">
+        <?php
+        echo "<h3>Αρχικά κενά</h3>";
+        kena_tbl($initial_kena, $mysqlconnection);
+        echo "Σύνολο: ".abs(array_sum($initial_kena));
+        ?>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header" id="headingTwo">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+          Τελικά κενά
+        </button>
+      </h5>
+    </div>
+    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+      <div class="card-body">
+        <?php
+         echo "<h3>Τελικά κενά</h3>";
+         kena_tbl($kena, $mysqlconnection);
+         echo "Σύνολο: ".abs(array_sum($kena));
+        ?>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header" id="headingThree">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+          Τοποθετήσεις
+        </button>
+      </h5>
+    </div>
+    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+      <div class="card-body">
+        <?php
+        echo "<h3>Τοποθετήσεις</h3>";
+        placements_tbl($placements, $mysqlconnection);
+        $unplaced = $num - $placed;
+        echo "Στατιστικά: Τοποθετήθηκαν: $placed, Δεν τοποθετήθηκαν: $unplaced, Σύνολο: $num";
+        ?>
+      </div>
+    </div>
+  </div>
+</div>
+<?php
     // end of debug
   }
   else {
       echo "Δεν επιλέξατε αρχείο<br><br>";
   }
                 
-    echo "<a href='admin.php' class='btn btn-info'>Επιστροφή</a>";
+    echo "<br><a href='admin.php' class='btn btn-info'>Επιστροφή</a>";
 ?>
 </div>
 </body>

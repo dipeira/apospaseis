@@ -124,10 +124,11 @@
     }
     if ($av_athmia)
     {
-        if (strpos($klados,"ΠΕ6") !== false)
-            $dim = 1;
-        else
-            $dim = 2;
+        // if (strpos($klados,"ΠΕ6") !== false)
+        //     $dim = 1;
+        // else
+        //     $dim = 2;
+        $dim = 0;
     }
     else
         $dim = 0;

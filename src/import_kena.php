@@ -36,6 +36,10 @@ if (!isset($_POST['submit']))
     echo "<br>Κλάδος:<br>";
     kladoi_select($mysqlconnection);
     echo "<br>";
+
+    echo "ΑΔΑ:<br>";
+    ada_select($mysqlconnection);
+    echo "<br>";
     
     print "<input type='submit' name='submit' class='btn btn-success' value='Μεταφόρτωση'></form>";
     //echo "<small>ΣΗΜ.: Η εισαγωγή ενδέχεται να διαρκέσει μερικά λεπτά, ειδικά για μεγάλα αρχεία.<br>Μη φύγετε από τη σελίδα αν δεν πάρετε κάποιο μήνυμα.</small>";
@@ -55,7 +59,15 @@ if (!isset($_POST['submit']))
        
         $update = false;
         // check if kena exist
-        $qry = "SELECT * FROM $av_kena WHERE klados = '".$_POST['klados']."'";
+        $klados = $_POST['klados'];
+        $ada = $_POST['ada'];
+
+        if (strlen($klados) == 0 || strlen($ada) == 0){
+          echo "<h4>Σφάλμα: Δεν επιλέξατε κλάδο ή ΑΔΑ</h4>";
+          echo "<a href='admin.php' class='btn btn-info'>Επιστροφή</a>";
+          die();
+        }
+        $qry = "SELECT * FROM $av_kena WHERE klados = '$klados' AND ada = '$ada'";
         
         $result = mysqli_query($mysqlconnection, $qry);
         if (mysqli_num_rows($result) > 0) {
@@ -103,21 +115,20 @@ if (!isset($_POST['submit']))
         $kena_ser = serialize($kena);
         // update db
         if ($update) {
-          $import = "UPDATE $av_kena SET kena = '$kena_ser' WHERE klados = '" . $_POST['klados'] . "'";
+          $import = "UPDATE $av_kena SET kena = '$kena_ser' WHERE klados = '$klados' AND ada = '$ada'";
         } else {
-          $import="INSERT into $av_kena(klados,kena) values('".$_POST['klados']."','".$kena_ser."')";
+          $import="INSERT into $av_kena(klados,kena,ada) values('$klados','$kena_ser','$ada')";
         }
         $result = mysqli_query($mysqlconnection, $import);
         if ($result){
             print "<h3>Η εισαγωγή πραγματοποιήθηκε με επιτυχία!</h3>";
-            echo "Έγινε εισαγωγή $kena_num κενών κλάδου ".$_POST['klados']." σε $num σχολεία.<br>";
+            echo "Έγινε εισαγωγή $kena_num κενών κλάδου $klados (ΑΔΑ: $ada) σε $num σχολεία.<br>";
         }
         else
         {
             echo "<h3>Παρουσιάστηκε σφάλμα κατά την εισαγωγή</h3>";
             echo "Ελέγξτε το αρχείο ή επικοινωνήστε με το διαχειριστή.<br>";
             echo mysqli_error($mysqlconnection) ? "Μήνυμα λάθους:".mysqli_error($mysqlconnection) : '';
-            //echo $num ? "Έγινε εισαγωγή $num εγγραφών στον πίνακα $tbl.<br>" : '';
         }
     }
     else {

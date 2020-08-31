@@ -829,7 +829,7 @@
             echo "Έχουν υποβληθεί <strong>$sub_total</strong> αιτήσεις.<br>";
             if ($blanks)
                 echo "<strong>$blanks</strong> κενές (αρνητικές) αιτήσεις.<br>";
-            //echo "<br><a href='admin.php?action=nothing'>Εκπ/κοί που δεν έχουν κάνει καμία αποθήκευση ή υποβολή ($nothing)</a>";
+            echo "<br><a href='admin.php?action=nothing'>Εκπ/κοί που δεν έχουν κάνει καμία αποθήκευση ή υποβολή ($nothing)</a>";
             echo "<br><a href='admin.php?action=saved'>Εκπ/κοί που έχουν αποθηκεύσει αλλά δεν έχουν υποβάλει αίτηση ($saved)</a>";
         }       
         echo "</center>";

@@ -517,9 +517,9 @@ function uploaded_kena($conn) {
   if (mysqli_num_rows($result) > 0){
     echo "<h4>Καταχωρημένα κενά</h4>";
     echo "<table class='table table-striped table-hover table-sm' border='1'>";
-    echo "<thead><th>Κλάδος</th><th>Ημερομηνία καταχώρησης</th></thead>";
+    echo "<thead><th>Κλάδος</th><th>ΑΔΑ</th><th>Ημερομηνία καταχώρησης</th></thead>";
     while ($row = mysqli_fetch_assoc($result)){
-      echo "<tr><td>".$row['klados']."</td><td>".$row['updated']."</td></tr>";
+      echo "<tr><td>".$row['klados']."</td><td>".$row['ada']."</td><td>".$row['updated']."</td></tr>";
     } 
     echo "</table>";
   } else {
@@ -527,10 +527,42 @@ function uploaded_kena($conn) {
   }
 }
 
+function kena_tbl($kena, $conn) {
+    echo "<table class='table table-striped table-hover table-sm' border='1'>";
+    echo "<thead><th>Σχολεία</th><th>Κενά</th></thead>";
+    foreach ($kena as $key=>$value){
+      echo "<tr><td>".getschooledc($key,$conn)."</td><td>".$value."</td></tr>";
+    } 
+    echo "</table>";
+}
+
+function getEmployee ($afm,$conn)
+{
+  global $av_emp;
+  $query = "SELECT * from $av_emp where afm='".$afm."'";
+  $result = mysqli_query($conn, $query);
+  if (mysqli_num_rows($result)==0) {
+      return "";
+  }
+  else {
+    $row = mysqli_fetch_array($result);
+    return $row;
+  }
+}
+
+function placements_tbl($placements, $conn) {
+  echo "<table class='table table-striped table-hover table-sm' border='1'>";
+  echo "<thead><th>Επώνυμο</th><th>Όνομα</th><th>Πατρώνυμο</th><th>Σειρά</th><th>Σχολείο τοποθέτησης</th></thead>";
+  foreach ($placements as $key=>$value){
+    $row = getEmployee($key,$conn);
+    echo "<tr><td>".$row['surname']."</td><td>".$row['name']."</td><td>".$row['patrwnymo']."</td><td>".$row['seira']."</td><td>".getschooledc($value,$conn)."</td></tr>";
+  } 
+  echo "</table>";
+}
+
 function kladoi_select($conn){
     global $av_emp;
     $qry = "SELECT DISTINCT(klados) FROM $av_emp WHERE 1 ORDER BY klados";
-    echo $query;
     $result = mysqli_query($conn, $qry);
     if (mysqli_num_rows($result) > 0){
         echo "<select name='klados' id='klados' class='form-control'>";
@@ -543,4 +575,22 @@ function kladoi_select($conn){
         echo "<h4>Δε βρέθηκαν κλάδοι...</h4>";
       }
 }
+
+function ada_select($conn){
+  global $av_emp;
+  $qry = "SELECT DISTINCT(ada) FROM $av_emp WHERE 1 ORDER BY ada";
+  $result = mysqli_query($conn, $qry);
+  if (mysqli_num_rows($result) > 0){
+      echo "<select name='ada' id='ada' class='form-control'>";
+      echo "<option value=''>-- Επιλέξτε ΑΔΑ --</option>";
+      while ($row = mysqli_fetch_assoc($result)){
+        echo "<option value='".$row['ada']."'>".$row['ada']."</option>";
+      } 
+      echo "</select>";
+    } else {
+      echo "<h4>Δε βρέθηκαν ΑΔΑ...</h4>";
+    }
+}
+
+
 ?>
