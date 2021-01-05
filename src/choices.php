@@ -118,6 +118,11 @@
     $moria = $row['moria'];
     $entopiothta = $row['entopiothta'];
     $synyphrethsh = $row['synyphrethsh'];
+    if ($av_type == 3) {
+      $ada = $row['ada'];
+      // override av_choices
+      $av_choices = getKenaSchoolNumber($klados,$ada,$mysqlconnection);
+    }
     // find school team if apospaseis
     if ($av_type == 1)
     {
@@ -300,7 +305,11 @@
                 for ($i=0; $i<$av_choices; $i++)
                   echo "<tr><td>".($i+1)."η Προτίμηση</td><td>".getSchools($i+1, $dim, $omada, $mysqlconnection, ${"s".$i});
             }
-            else
+            // if anaplirotes
+            else if ($av_type == 3) {
+              for ($i=0; $i<$av_choices; $i++)
+                  echo "<tr><td>".($i+1)."η Προτίμηση</td><td>".getKenaSchools($i+1, $klados, $ada, $mysqlconnection, ${"s".$i});              
+            } else
             {
                 for ($i=0; $i<$av_choices; $i++)
                   echo "<tr><td>".($i+1)."η Προτίμηση</td><td>".getSchools($i+1, $dim, 0, $mysqlconnection, ${"s".$i});
@@ -336,7 +345,7 @@
 
 <script type="text/javascript">
   $('select').select2({
-      placeholder: ' ',
+      placeholder: 'Επιλογή σχολείου',
       allowClear: true,
       theme: 'bootstrap4'
   });

@@ -32,12 +32,12 @@ if (!isset($_POST['submit']))
   echo "<br>";
   echo "Επιλογή ΑΔΑ προς τοποθέτηση:<br>";
   ada_select($mysqlconnection);
-  echo "<br>";
+  print "<br><br><input type='submit' name='submit' class='btn btn-success' value='Τοποθέτηση'></form>";
   // check existing kena
   uploaded_kena($mysqlconnection);
   
-  print "<a href='import_kena.php' class='btn btn-info'>Εισαγωγή κενών</a>";
-  print "<br><br><input type='submit' name='submit' class='btn btn-success' value='Τοποθέτηση'></form>";
+  print "<a href='import_kena.php' class='btn btn-sm btn-info'>Εισαγωγή κενών</a>";
+  
   //echo "<small>ΣΗΜ.: Η εισαγωγή ενδέχεται να διαρκέσει μερικά λεπτά, ειδικά για μεγάλα αρχεία.<br>Μη φύγετε από τη σελίδα αν δεν πάρετε κάποιο μήνυμα.</small>";
   echo "</form>";
   echo "<br><br>";
@@ -89,7 +89,6 @@ if (!isset($_POST['submit']))
     
     // make placements
     $placements = Array();
-    $is_placed = false;
     $placed = $unplaced = $num = 0;
     foreach ($employees as $afm) {
       $num++;
@@ -98,7 +97,6 @@ if (!isset($_POST['submit']))
           $kena[$choice] += 1;
           $placements[$afm] = $choice;
           $placed++;
-          $is_placed = true;
           break;
         }
         $placements[$afm] = 'none';

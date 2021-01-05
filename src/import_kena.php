@@ -23,6 +23,22 @@
   <body>
   <div class="container">
 <?php
+if (isset($_GET['view'])){
+  echo "<h2>Προβολή κενών</h2>";
+  // get kena
+  $query = "select * from $av_kena WHERE id = ".$_GET['view'];
+  $result = mysqli_query($mysqlconnection, $query);
+  $row = mysqli_fetch_assoc($result);
+  
+  $kena = unserialize($row['kena']);
+  echo "<p>Κλάδος: ".$row['klados']."<br>";
+  echo "ΑΔΑ: ".$row['ada'];
+  echo "<br>Ημ/νία - ώρα καταχώρησης: ".$row['updated']."</p>";
+  kena_tbl($kena, $mysqlconnection);
+  echo "<a href='import_kena.php' class='btn btn-info'>Επιστροφή</a>";
+  die();
+}
+
 if (!isset($_POST['submit']))
 {
 	echo "<h2> Εισαγωγή κενών στη βάση δεδομένων </h2>";

@@ -5,7 +5,8 @@ require_once '../config.php';
 $conn = @mysqli_connect($db_host, $db_user, $db_password, $db_name);
 
 // find calling script (php file)
-$script = end(explode('/', $_SERVER['PHP_SELF']));
+$tmp = explode('/', $_SERVER['PHP_SELF']);
+$script = end($tmp);
 
 if (!$conn && $script != 'init.php') {
   echo "<h3>Σφάλμα: Δεν υπάρχει η βάση.<br>Αρχικοποιήστε με το <a href='init.php'>αρχείο init.php</a> ή επικοινωνήστε με το διαχειριστή.</h3>";
@@ -38,7 +39,7 @@ function getSchooledc ($id,$conn)
         $query = "SELECT name from $av_sch where kwdikos='".$id."'";
         $result = mysqli_query($conn, $query);
         if (mysqli_num_rows($result)==0) {
-            return "";
+            return "Κανένα σχολείο";
         }
         else {
           $row = mysqli_fetch_array($result);
@@ -83,6 +84,18 @@ function getSchoolcode ($id, $conn)
         return $row['kwdikos'];
     }
 }
+function getSchoolfromcode ($code, $conn)
+{
+    global $av_sch;
+    $query = "SELECT name from $av_sch where kwdikos=".$code;
+    $result = mysqli_query($conn, $query);
+    if (mysqli_num_rows($result)==0) 
+        return 'Κανένα σχολείο';
+    else {
+        $row = mysqli_fetch_array($result);
+        return $row['name'];
+    }
+}
 
 // epil: epilogh 1-20 / dim: 2 dhmotiko,1 nip,0 ola / omada / sch: sxoleio (lektiko) / show_inactive
 function getSchools ($epil, $dim, $omada, $conn, $sch, $show_inactive = false)
@@ -111,6 +124,59 @@ function getSchools ($epil, $dim, $omada, $conn, $sch, $show_inactive = false)
     }
     $ret .= "</select>";
     return $ret;
+}
+
+function getKenaSchools ($epil, $klados, $ada, $conn, $sch)
+{
+    global $av_kena;
+    
+    // get kena
+    $query = "select kena from $av_kena WHERE klados='$klados' AND ada = '$ada'";
+    $result = mysqli_query($conn, $query);
+    $row = mysqli_fetch_assoc($result);
+    
+    $arr = array_keys(unserialize($row['kena']));
+
+    $ret = "<select class='form-control' name='p".$epil."' id='p".$epil."' style='width:100%;'>";
+    $ret .= "<option value=\"\"></option>";
+    foreach ($arr as $res)
+    {
+        $name = getSchoolfromcode($res,$conn);
+        //print_r($res);
+        if ($sch == $name)
+            $ret .= "<option value=\"$res\" selected>$name</option>";
+        else
+            $ret .= "<option value=\"$res\">$name</option>";
+    }
+    $ret .= "</select>";
+    return $ret;
+}
+
+function getKena($klados, $ada, $conn){
+    global $av_kena;
+    
+    // get kena
+    $query = "select kena from $av_kena WHERE klados='$klados' AND ada = '$ada'";
+    $result = mysqli_query($conn, $query);
+    $row = mysqli_fetch_assoc($result);
+    
+    $arr = array_keys(unserialize($row['kena']));
+    $ret = array();
+    foreach ($arr as $code) {
+        $ret[] = getSchoolfromcode($code, $conn);
+    }
+    return $ret;
+}
+
+function getKenaSchoolNumber($klados, $ada, $conn){
+    global $av_kena;
+    
+    // get kena
+    $query = "select kena from $av_kena WHERE klados='$klados' AND ada = '$ada'";
+    $result = mysqli_query($conn, $query);
+    $row = mysqli_fetch_assoc($result);
+    $arr = array_keys(unserialize($row['kena']));
+    return count($arr);    
 }
 
 function getGamos ($gamos)
@@ -519,7 +585,7 @@ function uploaded_kena($conn) {
     echo "<table class='table table-striped table-hover table-sm' border='1'>";
     echo "<thead><th>Κλάδος</th><th>ΑΔΑ</th><th>Ημερομηνία καταχώρησης</th></thead>";
     while ($row = mysqli_fetch_assoc($result)){
-      echo "<tr><td>".$row['klados']."</td><td>".$row['ada']."</td><td>".$row['updated']."</td></tr>";
+      echo "<tr><td><a href='import_kena.php?view=".$row['id']."'>".$row['klados']."</a></td><td>".$row['ada']."</td><td>".$row['updated']."</td></tr>";
     } 
     echo "</table>";
   } else {
@@ -530,10 +596,14 @@ function uploaded_kena($conn) {
 function kena_tbl($kena, $conn) {
     echo "<table class='table table-striped table-hover table-sm' border='1'>";
     echo "<thead><th>Σχολεία</th><th>Κενά</th></thead>";
+    $i = $sum = 0;
     foreach ($kena as $key=>$value){
+      $i++;
       echo "<tr><td>".getschooledc($key,$conn)."</td><td>".$value."</td></tr>";
+      $sum += abs($value);
     } 
     echo "</table>";
+    echo "<p>$sum κενά σε $i σχολεία.</p>";
 }
 
 function getEmployee ($afm,$conn)
@@ -555,7 +625,9 @@ function placements_tbl($placements, $conn) {
   echo "<thead><th>Επώνυμο</th><th>Όνομα</th><th>Πατρώνυμο</th><th>Σειρά</th><th>Σχολείο τοποθέτησης</th></thead>";
   foreach ($placements as $key=>$value){
     $row = getEmployee($key,$conn);
-    echo "<tr><td>".$row['surname']."</td><td>".$row['name']."</td><td>".$row['patrwnymo']."</td><td>".$row['seira']."</td><td>".getschooledc($value,$conn)."</td></tr>";
+    $school = getschooledc($value,$conn);
+    $sch_td_class = strcmp($school,"Κανένα σχολείο") == 0 ? 'background: red' : '';
+    echo "<tr><td>".$row['surname']."</td><td>".$row['name']."</td><td>".$row['patrwnymo']."</td><td>".$row['seira']."</td><td style='$sch_td_class'>".$school."</td></tr>";
   } 
   echo "</table>";
 }

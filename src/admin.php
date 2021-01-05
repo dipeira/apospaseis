@@ -58,7 +58,7 @@
     <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic&subset=greek,latin' rel='stylesheet' type='text/css'>
     </head>
     <body>
-    <div class="container">
+    <div class="container-fluid">
         
     
 <?php
@@ -193,7 +193,11 @@
         echo "<tr><td colspan=2>Ονοματεπώνυμο Εκπ/κού:</td><td colspan=5>".$name." ".$surname."</td></tr>";
         echo "<tr><td colspan=2>Πατρώνυμο: </td><td colspan=5>".$patrwnymo."</td></tr>";
         echo "<tr><td colspan=2>Κλάδος: </td><td colspan=5>".$klados."</td></tr>";
+        if ($av_type == 3){
+            echo "<tr><td colspan=2>A.Δ.Α: </td><td colspan=5>".$row['ada']."</td></tr>";    
+        } else {
         echo "<tr><td colspan=2>A.M.: </td><td colspan=5>".$am."</td></tr>";
+        }
         echo "<form id='src' name='src' action='admin.php' method='POST'>\n";
         // organ & synolikh yphresia can be changed
         if (!$av_canalter)
@@ -740,7 +744,7 @@
             echo "<th>Επώνυμο</th>\n";
             echo "<th>Όνομα</th>\n";
             echo "<th>Ειδικότητα</th>\n";
-            echo $av_type == 3 ? "<th>A.Φ.M.</th>\n" : "<th>A.M.</th>\n";
+            echo $av_type == 3 ? "<th>A.Φ.M.</th>\n<th>Α.Δ.Α.</th>\n" : "<th>A.M.</th>\n";
             echo "<th>Υποβλήθηκε</th>\n";
             echo "<th>Ημ/νία - Ώρα</th>\n";
             if ($av_type == 1){
@@ -763,6 +767,7 @@
                 $klados = $row['klados'];
                 $submitted = $row['submitted'];
                 $am = $av_type == 3 ? filterAFM($row['afm']) : $row['am'];
+                $ada = $av_type == 3 ? '<td>'.$row['ada'].'</td>' : '';
                 $choices = $row['choices'];
                 if ($submitted==0)
                 {
@@ -783,7 +788,7 @@
                 }
                 echo "</td>";
                 echo "<td><span title='Προβολή'><a href='admin.php?id=$id&action=view'>$surname</a></span></td><td>$name</td>";
-                echo "<td><a href='admin.php?filter=$klados'>$klados</a></td><td>$am</td><td>$sub";
+                echo "<td><a href='admin.php?filter=$klados'>$klados</a></td><td>$am</td>$ada<td>$sub";
                 if ($submitted && $av_canundo)
                 {
                     echo "&nbsp;<span title=\"Αναίρεση Υποβολής\"><a href=\"admin.php?id=$id&action=undo\"><img style=\"border: 0pt none;\" src=\"images/undo.png\" onclick='return myaction_yp()'/></a></span>";
