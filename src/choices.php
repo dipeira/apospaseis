@@ -122,6 +122,9 @@
       $ada = $row['ada'];
       // override av_choices
       $av_choices = getKenaSchoolNumber($klados,$ada,$mysqlconnection);
+      if ($av_choices == 0){
+        $nokena = true;
+      }
     }
     // find school team if apospaseis
     if ($av_type == 1)
@@ -297,6 +300,9 @@
                       })
                     });
                   });
+                  $(function () {
+                    $('[data-toggle="tooltip"]').tooltip()
+                  })
                 </script>
                    
                   <?php
@@ -307,8 +313,12 @@
             }
             // if anaplirotes
             else if ($av_type == 3) {
-              for ($i=0; $i<$av_choices; $i++)
+              if ($nokena) {
+                echo "<tr><td colspan=2><h3>Δεν έχουν καταχωρηθεί κενά για την ειδικότητά σας. Παρακαλώ προσπαθήστε αργότερα ή επικοινωνήστε με τη Δ/νση.</h3></td></tr>";
+              } else {
+                for ($i=0; $i<$av_choices; $i++)
                   echo "<tr><td>".($i+1)."η Προτίμηση</td><td>".getKenaSchools($i+1, $klados, $ada, $mysqlconnection, ${"s".$i});              
+              }
             } else
             {
                 for ($i=0; $i<$av_choices; $i++)
@@ -322,7 +332,7 @@
                 //echo "<tr><td colspan=2><center><INPUT TYPE='submit' name='prev' class='btn btn-info' VALUE='Επιστροφή στο Βήμα 1'></center></td></tr>";
                 echo "<tr><td colspan=2><center><a href='criteria.php' class='btn btn-info'>Επιστροφή στο Βήμα 1</a></center></td></tr>";
             if (!$has_aitisi){
-              echo "<tr><td colspan=2><center><button TYPE='submit' id='submitbtn' name='submitbtn' class='btn btn-warning' disabled>Οριστική Υποβολή</button></center></td>\n";
+              echo "<tr><td colspan=2><center><button TYPE='submit' id='submitbtn' name='submitbtn' class='btn btn-warning' disabled data-toggle='tooltip' data-placement='left' title='Πρέπει να αποθηκεύσετε πριν υποβάλετε οριστικά'>Οριστική Υποβολή</button></center></td>\n";
             } else {
               echo "<tr><td colspan=2><center><button TYPE='submit' id='submitbtn' name='submitbtn' class='btn btn-warning'>Οριστική Υποβολή</button></center></td>\n";
             }
