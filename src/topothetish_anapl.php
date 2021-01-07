@@ -18,8 +18,53 @@
   $mysqlconnection = mysqli_connect($db_host, $db_user, $db_password, $db_name);
   mysqli_set_charset($mysqlconnection,"utf8");
 ?>
+
 <html>
   <?php require_once('head.php'); ?>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.6.5/css/buttons.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.6.5/css/buttons.bootstrap4.min.css">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title><?php echo $av_title." ($av_foreas) - Διαχείριση"; ?></title>
+	
+	<script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+  <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.5/js/dataTables.buttons.min.js"></script>
+  <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.5/js/buttons.flash.min.js"></script>
+  <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.5/js/buttons.html5.min.js"></script>
+  <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.5/js/buttons.bootstrap4.min.js"></script>
+  <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.5/js/buttons.print.min.js"></script>
+  <script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<!--https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js
+https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js
+ -->
+  <script>
+    $(document).ready(function() {
+        $('.toptable').DataTable({
+            "language": {
+                "url": "https://cdn.datatables.net/plug-ins/1.10.21/i18n/Greek.json"
+            },
+            dom: 'Bflrtip',
+            buttons: [
+              {
+                extend: 'copy',
+                text: 'Αντιγραφή',
+              },
+              {
+                extend: 'excel',
+                text: 'Εξαγωγή σε excel',
+                filename: 'export'
+              },
+              {
+                extend: 'print',
+                text: 'Εκτύπωση',
+              }
+            ]
+        });
+    });
+  </script>
   <body>
   <div class="container">
 <?php

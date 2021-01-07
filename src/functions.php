@@ -594,7 +594,7 @@ function uploaded_kena($conn) {
 }
 
 function kena_tbl($kena, $conn) {
-    echo "<table class='table table-striped table-hover table-sm' border='1'>";
+    echo "<table class='table table-striped table-hover table-sm toptable' border='1'>";
     echo "<thead><th>Σχολεία</th><th>Κενά</th></thead>";
     $i = $sum = 0;
     foreach ($kena as $key=>$value){
@@ -621,7 +621,7 @@ function getEmployee ($afm,$conn)
 }
 
 function placements_tbl($placements, $conn) {
-  echo "<table class='table table-striped table-hover table-sm' border='1'>";
+  echo "<table class='table table-striped table-hover table-sm toptable' border='1'>";
   echo "<thead><th>Επώνυμο</th><th>Όνομα</th><th>Πατρώνυμο</th><th>Σειρά</th><th>Σχολείο τοποθέτησης</th></thead>";
   foreach ($placements as $key=>$value){
     $row = getEmployee($key,$conn);
