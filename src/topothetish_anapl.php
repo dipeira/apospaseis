@@ -61,7 +61,8 @@ https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js
                 extend: 'print',
                 text: 'Εκτύπωση',
               }
-            ]
+            ],
+            "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Όλα"] ]
         });
     });
   </script>
@@ -77,7 +78,7 @@ if (!isset($_POST['submit']))
   echo "<br>";
   echo "Επιλογή ΑΔΑ προς τοποθέτηση:<br>";
   ada_select($mysqlconnection);
-  print "<br><br><input type='submit' name='submit' class='btn btn-success' value='Τοποθέτηση'></form>";
+  print "<br><input type='submit' name='submit' class='btn btn-success' value='Τοποθέτηση'></form><br>";
   // check existing kena
   uploaded_kena($mysqlconnection);
   
@@ -150,62 +151,63 @@ if (!isset($_POST['submit']))
 
     ?>
     <div id="accordion">
-  <div class="card">
-    <div class="card-header" id="headingOne">
-      <h5 class="mb-0">
-        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-          Αρχικά κενά
-        </button>
-      </h5>
+      <div class="card">
+      <div class="card-header" id="headingOne">
+        <h5 class="mb-0">
+          <button class="btn btn-link " data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            Τοποθετήσεις
+          </button>
+        </h5>
+      </div>
+      <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+        <div class="card-body">
+          <?php
+          echo "<h3>Τοποθετήσεις</h3>";
+          placements_tbl($placements, $mysqlconnection);
+          $unplaced = $num - $placed;
+          echo "Στατιστικά: Τοποθετήθηκαν: $placed, Δεν τοποθετήθηκαν: $unplaced, Σύνολο: $num";
+          ?>
+        </div>
+      </div>
     </div>
+    <div class="card">
+      <div class="card-header" id="headingTwo">
+        <h5 class="mb-0">
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+            Τελικά κενά
+          </button>
+        </h5>
+      </div>
+      <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+        <div class="card-body">
+          <?php
+          echo "<h3>Τελικά κενά</h3>";
+          kena_tbl($kena, $mysqlconnection);
+          echo "Σύνολο: ".abs(array_sum($kena));
+          ?>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header" id="headingThree">
+        <h5 class="mb-0">
+          <button class="btn btn-link" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+            Αρχικά κενά
+          </button>
+        </h5>
+      </div>
 
-    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-      <div class="card-body">
-        <?php
-        echo "<h3>Αρχικά κενά</h3>";
-        kena_tbl($initial_kena, $mysqlconnection);
-        echo "Σύνολο: ".abs(array_sum($initial_kena));
-        ?>
+      <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+        <div class="card-body">
+          <?php
+          echo "<h3>Αρχικά κενά</h3>";
+          kena_tbl($initial_kena, $mysqlconnection);
+          echo "Σύνολο: ".abs(array_sum($initial_kena));
+          ?>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="card">
-    <div class="card-header" id="headingTwo">
-      <h5 class="mb-0">
-        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-          Τελικά κενά
-        </button>
-      </h5>
-    </div>
-    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-      <div class="card-body">
-        <?php
-         echo "<h3>Τελικά κενά</h3>";
-         kena_tbl($kena, $mysqlconnection);
-         echo "Σύνολο: ".abs(array_sum($kena));
-        ?>
-      </div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-header" id="headingThree">
-      <h5 class="mb-0">
-        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-          Τοποθετήσεις
-        </button>
-      </h5>
-    </div>
-    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
-      <div class="card-body">
-        <?php
-        echo "<h3>Τοποθετήσεις</h3>";
-        placements_tbl($placements, $mysqlconnection);
-        $unplaced = $num - $placed;
-        echo "Στατιστικά: Τοποθετήθηκαν: $placed, Δεν τοποθετήθηκαν: $unplaced, Σύνολο: $num";
-        ?>
-      </div>
-    </div>
-  </div>
+  
 </div>
 <?php
     // end of debug

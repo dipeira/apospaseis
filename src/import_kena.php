@@ -29,7 +29,21 @@ if (isset($_GET['view'])){
   $query = "select * from $av_kena WHERE id = ".$_GET['view'];
   $result = mysqli_query($mysqlconnection, $query);
   $row = mysqli_fetch_assoc($result);
-  
+  ?>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
+  <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+  <script>
+  $(document).ready(function() {
+    $('.toptable').DataTable({
+      "language": {
+          "url": "https://cdn.datatables.net/plug-ins/1.10.21/i18n/Greek.json"
+      },
+      "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Όλα"] ]
+    });
+  });
+  </script>
+  <?php
   $kena = unserialize($row['kena']);
   echo "<p>Κλάδος: ".$row['klados']."<br>";
   echo "ΑΔΑ: ".$row['ada'];
@@ -47,9 +61,9 @@ if (!isset($_POST['submit']))
   echo "Αρχείο προς εισαγωγή: &nbsp;&nbsp;<a href='../files/apo_kena.csv'>(Δείγμα)</a><br />\n";
   echo "<input size='50' type='file' name='filename'><br /><br>\n";
 
-  uploaded_kena($mysqlconnection);
+  
 
-    echo "<br>Κλάδος:<br>";
+    echo "Κλάδος:<br>";
     kladoi_select($mysqlconnection);
     echo "<br>";
 
@@ -58,9 +72,9 @@ if (!isset($_POST['submit']))
     echo "<br>";
     
     print "<input type='submit' name='submit' class='btn btn-success' value='Μεταφόρτωση'></form>";
-    //echo "<small>ΣΗΜ.: Η εισαγωγή ενδέχεται να διαρκέσει μερικά λεπτά, ειδικά για μεγάλα αρχεία.<br>Μη φύγετε από τη σελίδα αν δεν πάρετε κάποιο μήνυμα.</small>";
-    echo "</form>";
-    echo "<br><br>";
+    echo "</form><br>";
+    uploaded_kena($mysqlconnection);
+    echo "<br>";
     echo "<a href='admin.php' class='btn btn-info'>Επιστροφή</a>";
 	exit;
 }
