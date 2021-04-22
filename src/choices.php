@@ -140,7 +140,7 @@
             $dim = 1;
         else
             $dim = 2;
-        $dim = 0;
+        //$dim = 0;
     }
     else
         $dim = 0;
