@@ -101,23 +101,25 @@
   else
   // if page 2
   {
-    $sch_arr = array();
-    for ($i = 1; $i < $av_choices+1; $i++) {
-        array_push($sch_arr, $_POST['p'.$i]);
+    $sch_arr = $_POST['choices']; //array();
+    // for ($i = 1; $i < $av_choices+1; $i++) {
+    //     array_push($sch_arr, $_POST['p'.$i]);
+    // }
+    // check if all schools blank
+    // only for apospaseis (επιτρέπει αρνητική δήλωση (χωρίς καμία επιλογή) μόνο στις βελτιώσεις, στις αποσπάσεις βγάζει μήνυμα λάθους)
+    if ($av_type != 1 && !is_array($sch_arr)){
+        echo json_encode(Array('type'=>'error', 'title'=>'Σφάλμα!', 'message'=>"Πρέπει να εισάγετε τουλάχιστον μία επιλογή"));
+        die();
     }
 
     $error = array_check($sch_arr);
     $dbl = array_dbl($sch_arr);
     $ret="";
-    // check if all schools blank
-    $sum = 0;
-    foreach ($sch_arr as $el)
-        $sum += strlen ($el);
-    // only for apospaseis (επιτρέπει αρνητική δήλωση (χωρίς καμία επιλογή) μόνο στις βελτιώσεις, στις αποσπάσεις βγάζει μήνυμα λάθους)
-	if (!$sum && $av_type == 1){
-        echo json_encode(Array('type'=>'error', 'title'=>'Σφάλμα!', 'message'=>"Πρέπει να εισάγετε τουλάχιστον μία επιλογή"));
-        die();
-    }
+    
+    // foreach ($sch_arr as $el)
+    //     $sum += strlen ($el);
+    
+	
     // if blanks
     if (!empty($error)){
         $msg = "<br>ΣΦΑΛΜΑ στην(-ις) προτίμηση(-εις): ";
@@ -143,11 +145,18 @@
         die();
     }
 
-    for ($i = 1; $i < 21; $i++) {
-      ${'p'.$i} = $_POST['p'.$i] ? getSchoolcode($_POST['p'.$i], $mysqlconnection) : 0;
+    // for ($i = 1; $i < 21; $i++) {
+    //   ${'p'.$i} = $_POST['p'.$i] ? getSchoolcode($_POST['p'.$i], $mysqlconnection) : 0;
+    // }
+
+    $school_codes = [];
+    if (count($sch_arr) > 0){
+        foreach ($sch_arr as $sch) {
+            $school_codes[] = getSchoolcodefromname($sch, $mysqlconnection);  
+        }
     }
 
-    $emp_id = $_POST['id'];
+    $emp_id = $_POST['empid'];
 
     if ($_POST['submitbtn'])
         $submit=1;
@@ -157,7 +166,7 @@
     $num_rows = $result ? mysqli_num_rows($result) : 0;
     $exists = $num_rows > 0 ? 1 : 0;
     // serialize user choices
-    $ser_p = serialize($sch_arr);
+    $ser_p = serialize($school_codes);
 
     if ($exists)
     {

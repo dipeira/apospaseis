@@ -84,6 +84,18 @@ function getSchoolcode ($id, $conn)
         return $row['kwdikos'];
     }
 }
+function getSchoolcodefromname ($name, $conn)
+{
+    global $av_sch;
+    $query = "SELECT kwdikos from $av_sch where name='".$name."'";
+    $result = mysqli_query($conn, $query);
+    if (mysqli_num_rows($result)==0) 
+        return 0;
+    else {
+        $row = mysqli_fetch_array($result);
+        return $row['kwdikos'];
+    }
+}
 function getSchoolfromcode ($code, $conn)
 {
     global $av_sch;
@@ -664,5 +676,27 @@ function ada_select($conn){
     }
 }
 
+function getKenaForList($klados, $ada, $conn) {
+    // get kena
+    global $av_kena, $av_sch;
+    $query = "select kena from $av_kena WHERE klados='$klados' AND ada='$ada'";
+
+    $result = mysqli_query($conn, $query);
+    $row = mysqli_fetch_assoc($result);
+
+    $kena = unserialize($row['kena']);
+    $ar_keys = array_keys($kena);
+    $ret = [];
+    
+    foreach ($ar_keys as $key) {
+        $query = "select name from $av_sch WHERE kwdikos='$key'";
+        $result = mysqli_query($conn, $query);
+        $row = mysqli_fetch_assoc($result);
+
+        array_push($ret, $row['name']);
+    }
+    
+    return $ret;
+}
 
 ?>

@@ -222,6 +222,10 @@
           echo "<tr><td>Δήμος εντοπιότητας: </td><td >".$entopiothta."</td></tr>";
           echo "<tr><td>Δήμος συνυπηρέτησης: </td><td >".$synyphrethsh."</td></tr>";
         }
+        // if anaplirotes, suggest dual list
+        if ($av_type == 3) {
+          echo "<tr><td colspan=2><a href='choices_anapl.php' class='btn btn-info'>Μετάβαση σε προβολή διπλής λίστας</a></td></tr>";  
+        }
         echo "<tr><td colspan=2><center><strong>Προτιμήσεις</strong></center></td></tr>";
         
         //echo "<tr><td colspan=2><center><INPUT TYPE='button' onclick='toggleFormElements(true)' name='submit' VALUE='Αρνητική Δήλωση'></center></td></tr>\n";
