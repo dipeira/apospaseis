@@ -101,23 +101,35 @@
   else
   // if page 2
   {
-    $sch_arr = $_POST['choices']; //array();
-    // for ($i = 1; $i < $av_choices+1; $i++) {
-    //     array_push($sch_arr, $_POST['p'.$i]);
-    // }
+    if ($_POST['duallist']){
+        $sch_arr = $_POST['choices'];
+    } else {
+        $sch_arr = array();
+        for ($i = 1; $i < $av_choices+1; $i++) {
+            array_push($sch_arr, $_POST['p'.$i]);
+        }
+    }
+    
     // check if all schools blank
     // only for apospaseis (επιτρέπει αρνητική δήλωση (χωρίς καμία επιλογή) μόνο στις βελτιώσεις, στις αποσπάσεις βγάζει μήνυμα λάθους)
-    if ($av_type != 1 && !is_array($sch_arr)){
-        echo json_encode(Array('type'=>'error', 'title'=>'Σφάλμα!', 'message'=>"Πρέπει να εισάγετε τουλάχιστον μία επιλογή"));
-        die();
+    if ($_POST['duallist']){
+        if ($av_type != 1 && !is_array($sch_arr)){
+            echo json_encode(Array('type'=>'error', 'title'=>'Σφάλμα!', 'message'=>"Πρέπει να εισάγετε τουλάχιστον μία επιλογή"));
+            die();
+        }
+    } else {
+        $sum = 0;
+        foreach ($sch_arr as $el)
+            $sum += strlen ($el);
+        if (!$sum && $av_type == 1){
+            echo json_encode(Array('type'=>'error', 'title'=>'Σφάλμα!', 'message'=>"Πρέπει να εισάγετε τουλάχιστον μία επιλογή"));
+            die();
+        }
     }
 
     $error = array_check($sch_arr);
     $dbl = array_dbl($sch_arr);
     $ret="";
-    
-    // foreach ($sch_arr as $el)
-    //     $sum += strlen ($el);
     
 	
     // if blanks
@@ -144,19 +156,19 @@
         echo json_encode(Array('type'=>'error', 'title'=>'Σφάλμα!', 'message'=>$msg));
         die();
     }
-
-    // for ($i = 1; $i < 21; $i++) {
-    //   ${'p'.$i} = $_POST['p'.$i] ? getSchoolcode($_POST['p'.$i], $mysqlconnection) : 0;
-    // }
-
-    $school_codes = [];
-    if (count($sch_arr) > 0){
-        foreach ($sch_arr as $sch) {
-            $school_codes[] = getSchoolcodefromname($sch, $mysqlconnection);  
+    if ($_POST['duallist']) {
+        $school_codes = [];
+        if (count($sch_arr) > 0){
+            foreach ($sch_arr as $sch) {
+                $school_codes[] = getSchoolcodefromname($sch, $mysqlconnection);  
+            }
         }
+    } else {
+        $school_codes = array_filter($sch_arr, function($value) { return !is_null($value) && $value !== ''; });
     }
 
-    $emp_id = $_POST['empid'];
+
+    $emp_id = $_POST['duallist'] ? $_POST['empid'] : $_POST['id'];
 
     if ($_POST['submitbtn'])
         $submit=1;

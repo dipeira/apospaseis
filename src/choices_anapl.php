@@ -301,7 +301,8 @@
         let choices = dsl.getSelection(true) ? dsl.getSelection(true) : [];
         let postData = {
           empid: empid,
-          choices: choices
+          choices: choices,
+          duallist: true
         };
         $.ajax({
           type: 'post',
