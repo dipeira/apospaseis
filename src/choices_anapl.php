@@ -337,7 +337,8 @@
             let postData = {
               empid: empid,
               choices: choices,
-              submitbtn: true
+              submitbtn: true,
+              duallist: true
             };
             $.ajax({
             type: 'post',

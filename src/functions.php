@@ -644,6 +644,18 @@ function placements_tbl($placements, $conn) {
   echo "</table>";
 }
 
+function placements_neod_tbl($placements, $conn) {
+    echo "<table class='table table-striped table-hover table-sm toptable' border='1'>";
+    echo "<thead><th>Επώνυμο</th><th>Όνομα</th><th>Πατρώνυμο</th><th>Μόρια</th><th>Υπηρ</th><th>Σειρά</th><th>Σχολείο τοποθέτησης</th></thead>";
+    foreach ($placements as $key=>$value){
+      $row = getEmployee($key,$conn);
+      $school = getschooledc($value,$conn);
+      $sch_td_class = strcmp($school,"Κανένα σχολείο") == 0 ? 'background: red' : '';
+      echo "<tr><td>".$row['surname']."</td><td>".$row['name']."</td><td>".$row['patrwnymo']."</td><td>".$row['moria']."</td><td>".$row['neod_yphr']."</td><td>".$row['seira']."</td><td style='$sch_td_class'>".$school."</td></tr>";
+    } 
+    echo "</table>";
+  }
+
 function kladoi_select($conn){
     global $av_emp;
     $qry = "SELECT DISTINCT(klados) FROM $av_emp WHERE 1 ORDER BY klados";
