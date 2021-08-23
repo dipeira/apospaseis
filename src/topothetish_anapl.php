@@ -47,6 +47,7 @@ https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js
                 "url": "https://cdn.datatables.net/plug-ins/1.10.21/i18n/Greek.json"
             },
             dom: 'Bflrtip',
+            order: [[ 3, "asc" ]],
             buttons: [
               {
                 extend: 'copy',
@@ -62,7 +63,19 @@ https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js
                 text: 'Εκτύπωση',
               }
             ],
-            "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Όλα"] ]
+            "lengthMenu": [ [25, 50, -1], [25, 50, "Όλα"] ]
+        });
+        $('.kenatable').DataTable({
+            "language": {
+                "url": "https://cdn.datatables.net/plug-ins/1.10.21/i18n/Greek.json"
+            },
+            dom: 'Bflrtip',
+            buttons: [
+              { extend: 'copy', text: 'Αντιγραφή',  },
+              { extend: 'excel', text: 'Εξαγωγή σε excel', filename: 'export' },
+              { extend: 'print', text: 'Εκτύπωση', }
+            ],
+            "lengthMenu": [ [25, 50, -1], [25, 50, "Όλα"] ]
         });
     });
   </script>

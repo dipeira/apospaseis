@@ -606,7 +606,7 @@ function uploaded_kena($conn) {
 }
 
 function kena_tbl($kena, $conn) {
-    echo "<table class='table table-striped table-hover table-sm toptable' border='1'>";
+    echo "<table class='table table-striped table-hover table-sm kenatable' border='1'>";
     echo "<thead><th>Σχολεία</th><th>Κενά</th></thead>";
     $i = $sum = 0;
     foreach ($kena as $key=>$value){
@@ -632,14 +632,29 @@ function getEmployee ($afm,$conn)
   }
 }
 
+function getAitisi ($emp_id,$conn)
+{
+  global $av_ait;
+  $query = "SELECT * from $av_ait where emp_id='".$emp_id."'";
+  $result = mysqli_query($conn, $query);
+  if (mysqli_num_rows($result)==0) {
+      return "";
+  }
+  else {
+    $row = mysqli_fetch_array($result);
+    return $row;
+  }
+}
+
 function placements_tbl($placements, $conn) {
   echo "<table class='table table-striped table-hover table-sm toptable' border='1'>";
   echo "<thead><th>Επώνυμο</th><th>Όνομα</th><th>Πατρώνυμο</th><th>Σειρά</th><th>Σχολείο τοποθέτησης</th></thead>";
   foreach ($placements as $key=>$value){
     $row = getEmployee($key,$conn);
+    $aitisi = getAitisi($row['id'], $conn);
     $school = getschooledc($value,$conn);
     $sch_td_class = strcmp($school,"Κανένα σχολείο") == 0 ? 'background: red' : '';
-    echo "<tr><td>".$row['surname']."</td><td>".$row['name']."</td><td>".$row['patrwnymo']."</td><td>".$row['seira']."</td><td style='$sch_td_class'>".$school."</td></tr>";
+    echo "<tr><td><a href='admin.php?id=".$aitisi['id']."&action=view' target='_blank'>".$row['surname']."</a></td><td>".$row['name']."</td><td>".$row['patrwnymo']."</td><td>".$row['seira']."</td><td style='$sch_td_class'>".$school."</td></tr>";
   } 
   echo "</table>";
 }
@@ -649,9 +664,10 @@ function placements_neod_tbl($placements, $conn) {
     echo "<thead><th>Επώνυμο</th><th>Όνομα</th><th>Πατρώνυμο</th><th>Μόρια</th><th>Υπηρ</th><th>Σειρά</th><th>Σχολείο τοποθέτησης</th></thead>";
     foreach ($placements as $key=>$value){
       $row = getEmployee($key,$conn);
+      $aitisi = getAitisi($row['id'], $conn);
       $school = getschooledc($value,$conn);
       $sch_td_class = strcmp($school,"Κανένα σχολείο") == 0 ? 'background: red' : '';
-      echo "<tr><td>".$row['surname']."</td><td>".$row['name']."</td><td>".$row['patrwnymo']."</td><td>".$row['moria']."</td><td>".$row['neod_yphr']."</td><td>".$row['seira']."</td><td style='$sch_td_class'>".$school."</td></tr>";
+      echo "<tr><td><a href='admin.php?id=".$aitisi['id']."&action=view' target='_blank'>".$row['surname']."</a></td><td>".$row['name']."</td><td>".$row['patrwnymo']."</td><td>".$row['moria']."</td><td>".$row['neod_yphr']."</td><td>".$row['seira']."</td><td style='$sch_td_class'>".$school."</td></tr>";
     } 
     echo "</table>";
   }

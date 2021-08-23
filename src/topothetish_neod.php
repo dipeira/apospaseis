@@ -50,22 +50,25 @@ https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js
                 "url": "https://cdn.datatables.net/plug-ins/1.10.21/i18n/Greek.json"
             },
             dom: 'Bflrtip',
+            order: [[ 3, "desc" ], [ 4, "desc"], [ 5, "asc"]],
             buttons: [
-              {
-                extend: 'copy',
-                text: 'Αντιγραφή',
-              },
-              {
-                extend: 'excel',
-                text: 'Εξαγωγή σε excel',
-                filename: 'export'
-              },
-              {
-                extend: 'print',
-                text: 'Εκτύπωση',
-              }
+              { extend: 'copy', text: 'Αντιγραφή',  },
+              { extend: 'excel', text: 'Εξαγωγή σε excel', filename: 'export' },
+              { extend: 'print', text: 'Εκτύπωση', }
             ],
-            "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Όλα"] ]
+            "lengthMenu": [ [25, 50, -1], [25, 50, "Όλα"] ]
+        });
+        $('.kenatable').DataTable({
+            "language": {
+                "url": "https://cdn.datatables.net/plug-ins/1.10.21/i18n/Greek.json"
+            },
+            dom: 'Bflrtip',
+            buttons: [
+              { extend: 'copy', text: 'Αντιγραφή',  },
+              { extend: 'excel', text: 'Εξαγωγή σε excel', filename: 'export' },
+              { extend: 'print', text: 'Εκτύπωση', }
+            ],
+            "lengthMenu": [ [25, 50, -1], [25, 50, "Όλα"] ]
         });
     });
   </script>
@@ -128,8 +131,8 @@ if (!isset($_POST['submit']))
       unset($row['afm']);
       $employees[$afm] = $row;
     }
-print_r($employees);
-echo "<br><br>";
+// print_r($employees);
+// echo "<br><br>";
 
     // get choices
     $afms = implode(",", array_keys($employees));
@@ -139,9 +142,9 @@ echo "<br><br>";
     while ($row = mysqli_fetch_assoc($result)){
       $choices[$row['afm']] = unserialize($row['choices']);
     }
-echo "choices: ";
-print_r($choices);
-echo "<br><br>";
+// echo "choices: ";
+// print_r($choices);
+// echo "<br><br>";
     // get school dimoi
     $school_dimoi = Array();
     $query = "select kwdikos,dimos from $av_sch";
@@ -171,12 +174,12 @@ echo "<br><br>";
       }
       $choices_with_moria[$afm] = $with_moria;
     }
-    echo "choices with moria: ";
-    print_r($choices_with_moria);
-    echo "<br><br>";
-    echo "schools with moria: ";
-    print_r($schools_with_moria);
-    echo "<br><br>";
+    // echo "choices with moria: ";
+    // print_r($choices_with_moria);
+    // echo "<br><br>";
+    // echo "schools with moria: ";
+    // print_r($schools_with_moria);
+    // echo "<br><br>";
     
 
 
@@ -188,14 +191,13 @@ echo "<br><br>";
       $seira = array_column($school_moria, 'seira');
 
       array_multisort($moria, SORT_DESC, $yphr, SORT_DESC, $seira, SORT_ASC, $school_moria);
-      echo "<h5>$sch - Sorted</h5>";
-      print_r($school_moria);
+      // echo "<h5>$sch - Sorted</h5>";
+      // print_r($school_moria);
       $schools_with_moria[$sch] = $school_moria;
     }
     // echo "<br><br>Sorted:<br>";
     // print_r($schools_with_moria);
 
-    echo "<h2>Placements</h2>";
     // make placements
     $placements = Array();
     $placed = $unplaced = $num = 0;
@@ -207,17 +209,24 @@ echo "<br><br>";
         // ensure kena exist
         if ($kena[$choice] < 0){
           $school_with_moria = $schools_with_moria[$choice];
-          echo "<h3>$emp_afm - $choice</h3>";
-          print_r($school_with_moria);
+
+          // echo "<h3>$emp_afm - $choice</h3>";
+          // print_r($school_with_moria);
+
           // run through school's moria
           foreach ($school_with_moria as $arr) {
-            echo "<br>".$arr['afm'];
-            echo "<br>inarray: ".array_key_exists($arr['afm'],$placements);
-            if ($arr['afm'] = $emp_afm && array_key_exists($arr['afm'],$placements)){
-              continue;
+
+            // echo "<br>".$arr['surname'].": ".$emp_afm;
+            // echo "<br>inarray: ".array_key_exists($arr['afm'],$placements);
+            
+            if ($arr['afm'] = $emp_afm && array_key_exists($emp_afm,$placements)){
+              break;
             } else {
               $kena[$choice] += 1;
               $placements[$emp_afm] = $choice;
+
+              // echo "<br> **** Placed $emp_afm at $choice";
+
               $placed++;
               break;
             }
