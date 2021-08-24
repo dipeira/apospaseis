@@ -50,7 +50,7 @@ https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js
                 "url": "https://cdn.datatables.net/plug-ins/1.10.21/i18n/Greek.json"
             },
             dom: 'Bflrtip',
-            order: [[ 3, "desc" ], [ 4, "desc"], [ 5, "desc"], [ 6, "desc"], [ 7, "asc"]],
+            order: [[ 4, "desc" ], [ 5, "desc"], [ 6, "desc"], [ 7, "desc"], [ 8, "asc"]],
             buttons: [
               { extend: 'copy', text: 'Αντιγραφή',  },
               { extend: 'excel', text: 'Εξαγωγή σε excel', filename: 'export' },
