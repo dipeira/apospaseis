@@ -679,6 +679,7 @@
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
         <?php if ($av_type == 3): ?>
           <a class="dropdown-item" href="topothetish_anapl.php">Τοποθέτηση αναπληρωτών</a>
+          <a class="dropdown-item" href="topothetish_neod.php">Τοποθέτηση νεοδιόριστων</a>
         <?php
           endif;
         ?>
