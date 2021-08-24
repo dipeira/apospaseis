@@ -18,8 +18,8 @@
   $mysqlconnection = mysqli_connect($db_host, $db_user, $db_password, $db_name);
   mysqli_set_charset($mysqlconnection,"utf8");
 
-  define(MORIA_SYNYP, 2);
-  define(MORIA_ENTOP, 2);
+  define(MORIA_SYNYP, 4);
+  define(MORIA_ENTOP, 4);
 ?>
 
 <html>
@@ -50,7 +50,7 @@ https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js
                 "url": "https://cdn.datatables.net/plug-ins/1.10.21/i18n/Greek.json"
             },
             dom: 'Bflrtip',
-            order: [[ 3, "desc" ], [ 4, "desc"], [ 5, "asc"]],
+            order: [[ 3, "desc" ], [ 4, "desc"], [ 5, "desc"], [ 6, "desc"], [ 7, "asc"]],
             buttons: [
               { extend: 'copy', text: 'Αντιγραφή',  },
               { extend: 'excel', text: 'Εξαγωγή σε excel', filename: 'export' },
@@ -237,8 +237,8 @@ if (!isset($_POST['submit']))
 
       }
     }
-    echo "<h3>Placements</h3>";
-    print_r($placements);
+    // echo "<h3>Placements</h3>";
+    // print_r($placements);
     // die();
 
     ?>

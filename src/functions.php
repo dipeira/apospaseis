@@ -661,13 +661,13 @@ function placements_tbl($placements, $conn) {
 
 function placements_neod_tbl($placements, $conn) {
     echo "<table class='table table-striped table-hover table-sm toptable' border='1'>";
-    echo "<thead><th>Επώνυμο</th><th>Όνομα</th><th>Πατρώνυμο</th><th>Μόρια</th><th>Υπηρ</th><th>Σειρά</th><th>Σχολείο τοποθέτησης</th></thead>";
+    echo "<thead><th>Επώνυμο</th><th>Όνομα</th><th>Πατρώνυμο</th><th>Μόρια</th><th>Συνυπ</th><th>Εντοπ</th><th>Υπηρ</th><th>Σειρά</th><th>Σχολείο τοποθέτησης</th></thead>";
     foreach ($placements as $key=>$value){
       $row = getEmployee($key,$conn);
       $aitisi = getAitisi($row['id'], $conn);
       $school = getschooledc($value,$conn);
       $sch_td_class = strcmp($school,"Κανένα σχολείο") == 0 ? 'background: red' : '';
-      echo "<tr><td><a href='admin.php?id=".$aitisi['id']."&action=view' target='_blank'>".$row['surname']."</a></td><td>".$row['name']."</td><td>".$row['patrwnymo']."</td><td>".$row['moria']."</td><td>".$row['neod_yphr']."</td><td>".$row['seira']."</td><td style='$sch_td_class'>".$school."</td></tr>";
+      echo "<tr><td><a href='admin.php?id=".$aitisi['id']."&action=view' target='_blank'>".$row['surname']."</a></td><td>".$row['name']."</td><td>".$row['patrwnymo']."</td><td>".$row['moria']."</td><td>".$row['synyphrethsh']."</td><td>".$row['entopiothta']."</td><td>".$row['neod_yphr']."</td><td>".$row['seira']."</td><td style='$sch_td_class'>".$school."</td></tr>";
     } 
     echo "</table>";
   }
