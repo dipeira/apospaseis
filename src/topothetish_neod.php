@@ -122,7 +122,7 @@ if (!isset($_POST['submit']))
     
     // get employees by moria (oikogeneiaka)
     $employees = Array();
-    $query = "select surname,afm,moria,synyphrethsh,entopiothta,neod_yphr,seira from $av_emp e JOIN $av_ait a ON e.id = a.emp_id WHERE klados='$klados' AND ada = '$ada' and a.submitted = 1 ORDER BY moria DESC, synyphrethsh DESC, entopiothta DESC";
+    $query = "select surname,afm,moria,synyphrethsh,entopiothta,neod_yphr,seira from $av_emp e JOIN $av_ait a ON e.id = a.emp_id WHERE klados='$klados' AND ada = '$ada' and a.submitted = 1 ORDER BY moria DESC, synyphrethsh DESC, entopiothta DESC, neod_yphr DESC, seira ASC";
     $result = mysqli_query($mysqlconnection, $query);
 
     while ($row = mysqli_fetch_assoc($result)){
