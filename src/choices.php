@@ -31,6 +31,8 @@
             html: data.message,
             icon: data.type,
             confirmButtonText: 'OK'
+          }).then((result) => {
+            location.reload();  
           });
         },
         dataType:'json'
@@ -93,7 +95,7 @@
     echo "</div>";
     
     if ($av_type == 3) {
-      $query = "SELECT * from $av_emp WHERE surname = '".$_SESSION['user']."'";  
+      $query = "SELECT * from $av_emp WHERE afm = '".$_SESSION['loggedin']."'";  
     } else {
       $query = "SELECT * from $av_emp WHERE am = ".$_SESSION['user'];
     }
@@ -106,12 +108,24 @@
     $patrwnymo = $row['patrwnymo'];
     $klados = $row['klados'];
     $id = $row['id'];
-    $am = $_SESSION['user'];
+    if ($av_type == 3){
+      $afm = $_SESSION['loggedin'];
+    } else {
+      $am = $_SESSION['user'];
+    }
     $organ_code = $row['org'];
     $organ = getSchooledc($organ_code, $mysqlconnection);
     $moria = $row['moria'];
     $entopiothta = $row['entopiothta'];
     $synyphrethsh = $row['synyphrethsh'];
+    if ($av_type == 3) {
+      $ada = $row['ada'];
+      // override av_choices
+      $av_choices = getKenaSchoolNumber($klados,$ada,$mysqlconnection);
+      if ($av_choices == 0){
+        $nokena = true;
+      }
+    }
     // find school team if apospaseis
     if ($av_type == 1)
     {
@@ -126,6 +140,7 @@
             $dim = 1;
         else
             $dim = 2;
+        //$dim = 0;
     }
     else
         $dim = 0;
@@ -207,6 +222,10 @@
           echo "<tr><td>Δήμος εντοπιότητας: </td><td >".$entopiothta."</td></tr>";
           echo "<tr><td>Δήμος συνυπηρέτησης: </td><td >".$synyphrethsh."</td></tr>";
         }
+        // if anaplirotes, suggest dual list
+        if ($av_type == 3 && $has_aitisi) {
+          echo "<tr><td colspan=2><a href='choices_anapl.php' class='btn btn-info'>Μετάβαση σε προβολή διπλής λίστας</a></td></tr>";  
+        }
         echo "<tr><td colspan=2><center><strong>Προτιμήσεις</strong></center></td></tr>";
         
         //echo "<tr><td colspan=2><center><INPUT TYPE='button' onclick='toggleFormElements(true)' name='submit' VALUE='Αρνητική Δήλωση'></center></td></tr>\n";
@@ -222,7 +241,15 @@
             }
             echo "<tr><td colspan=2><small>Υποβλήθηκε στις: ".  date("d-m-Y, H:i:s", strtotime($row['updated']))."</small></td></tr>";
             $ser = serialize($sch_arr);
-            echo "<tr><td colspan=2><center><form action='print.php' method='POST'><input type='hidden' name = 'cred_arr' value='$ser_cred'><input type='hidden' name = 'sch_arr' value='$ser'><input type='submit' class='btn btn-success' value='Εκτύπωση'></form></center></td></tr>";
+            if ($av_type == 1){
+              echo "<tr><td colspan=2><center>";
+              echo "<form action='print.php' method='POST'>";
+              echo "<input type='hidden' name = 'cred_arr' value='$ser_cred'>";
+              echo "<input type='hidden' name = 'sch_arr' value='$ser'>";
+              echo "<input type='submit' class='btn btn-success' value='Εκτύπωση'></form></center></td></tr>";
+            } else {
+              echo "<tr><td colspan=2><center><input type='button' class='btn btn-success' value='Εκτύπωση' onclick='javascript:window.print()' /></center></td></tr>";
+            }
             if ($av_type == 1)
                 //echo "<tr><td colspan=2><center><form action='criteria.php'><input type='submit' class='btn btn-info' value='Επιστροφή στο Βήμα 1'></form></center></td></tr>";
                 echo "<tr><td colspan=2><center><a href='criteria.php' class='btn btn-info'>Επιστροφή στο Βήμα 1</a></center></td></tr>";
@@ -277,6 +304,9 @@
                       })
                     });
                   });
+                  $(function () {
+                    $('[data-toggle="tooltip"]').tooltip()
+                  })
                 </script>
                    
                   <?php
@@ -285,7 +315,15 @@
                 for ($i=0; $i<$av_choices; $i++)
                   echo "<tr><td>".($i+1)."η Προτίμηση</td><td>".getSchools($i+1, $dim, $omada, $mysqlconnection, ${"s".$i});
             }
-            else
+            // if anaplirotes
+            else if ($av_type == 3) {
+              if ($nokena) {
+                echo "<tr><td colspan=2><h3>Δεν έχουν καταχωρηθεί κενά για την ειδικότητά σας. Παρακαλώ προσπαθήστε αργότερα ή επικοινωνήστε με τη Δ/νση.</h3></td></tr>";
+              } else {
+                for ($i=0; $i<$av_choices; $i++)
+                  echo "<tr><td>".($i+1)."η Προτίμηση</td><td>".getKenaSchools($i+1, $klados, $ada, $mysqlconnection, ${"s".$i});              
+              }
+            } else
             {
                 for ($i=0; $i<$av_choices; $i++)
                   echo "<tr><td>".($i+1)."η Προτίμηση</td><td>".getSchools($i+1, $dim, 0, $mysqlconnection, ${"s".$i});
@@ -298,7 +336,7 @@
                 //echo "<tr><td colspan=2><center><INPUT TYPE='submit' name='prev' class='btn btn-info' VALUE='Επιστροφή στο Βήμα 1'></center></td></tr>";
                 echo "<tr><td colspan=2><center><a href='criteria.php' class='btn btn-info'>Επιστροφή στο Βήμα 1</a></center></td></tr>";
             if (!$has_aitisi){
-              echo "<tr><td colspan=2><center><button TYPE='submit' id='submitbtn' name='submitbtn' class='btn btn-warning' disabled>Οριστική Υποβολή</button></center></td>\n";
+              echo "<tr><td colspan=2><center><button TYPE='submit' id='submitbtn' name='submitbtn' class='btn btn-warning' disabled data-toggle='tooltip' data-placement='left' title='Πρέπει να αποθηκεύσετε πριν υποβάλετε οριστικά'>Οριστική Υποβολή</button></center></td>\n";
             } else {
               echo "<tr><td colspan=2><center><button TYPE='submit' id='submitbtn' name='submitbtn' class='btn btn-warning'>Οριστική Υποβολή</button></center></td>\n";
             }
@@ -321,7 +359,7 @@
 
 <script type="text/javascript">
   $('select').select2({
-      placeholder: ' ',
+      placeholder: 'Επιλογή σχολείου',
       allowClear: true,
       theme: 'bootstrap4'
   });

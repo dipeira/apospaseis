@@ -36,6 +36,7 @@ if (!isset($_POST['submit']))
     echo "<br>Τύπος (πίνακας) δεδομένων:<br>";
     echo "<input type='radio' name='type' value='1'>Υπάλληλοι για απόσπαση&nbsp;<a href='../files/apo_employee.csv'>(δείγμα)</a><br>";
     echo "<input type='radio' name='type' value='4'>Υπάλληλοι για βελτίωση&nbsp;<a href='../files/apo_employee_velt.csv'>(δείγμα)</a><br>";
+    echo "<input type='radio' name='type' value='5'>Αναπληρωτές&nbsp;<a href='../files/apo_anapl.csv'>(δείγμα)</a><br>";
     echo "<input type='radio' name='type' value='2'>Σχολεία&nbsp;<a href='../files/apo_school.csv'>(δείγμα)</a><br>";
     echo "<input type='radio' name='type' value='3' >Δήμοι&nbsp;<a href='../files/apo_dimos.csv'>(δείγμα)</a><br>";
     print "<input type='submit' name='submit' class='btn btn-success' value='Μεταφόρτωση'></form>";
@@ -58,6 +59,7 @@ if (!isset($_POST['submit']))
         {
             case 1:
             case 4:
+            case 5:
                 mysqli_query($mysqlconnection, "DELETE FROM $av_emp WHERE am <> '$av_admin'");
                 $tbl = $av_emp;
                 mysqli_query($mysqlconnection, "TRUNCATE $av_ait");
@@ -93,6 +95,9 @@ if (!isset($_POST['submit']))
                   case 4:
                     $tblcols = 10;
                     break;
+                  case 5:
+                    $tblcols = 7;
+                    break;
                   case 2:
                     $tblcols = 5;
                     break;
@@ -118,6 +123,9 @@ if (!isset($_POST['submit']))
                   break;
                 case 4:
                   $import="INSERT into $av_emp(name,surname,patrwnymo,klados,am,afm,org,moria,entopiothta,synyphrethsh) values('$data[0]','$data[1]','$data[2]','$data[3]','$data[4]','$data[5]','$data[6]',$data[7],'$data[8]','$data[9]')";
+                  break;
+                case 5:
+                  $import="INSERT into $av_emp(name,surname,patrwnymo,klados,afm,seira,ada) values('$data[0]','$data[1]','$data[2]','$data[3]','$data[4]','$data[5]','$data[6]')";
                   break;
                 // schools
                 case 2:

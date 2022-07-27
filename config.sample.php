@@ -21,6 +21,7 @@
   $av_sch = "apo_school";
   $av_dimos = "apo_dimos";
   $av_params = "apo_params";
+  $av_kena = "apo_kena";
 
 
   // Επιλογές Διαχειριστή για αρχικοποίηση βάσης δεδομένων

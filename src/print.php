@@ -41,7 +41,11 @@
     $patrwnymo = $row['patrwnymo'];
     $klados = $row['klados'];
     $id = $row['id'];
-    $am = $_SESSION['user'];
+    if ($av_type == 3){
+        $afm = $_SESSION['loggedin'];
+      } else {
+        $am = $_SESSION['user'];
+      }
     $organ = $row['org'];
     $organ = getSchooledc($organ, $mysqlconnection);
     $ethy = $row['eth'];
@@ -89,6 +93,8 @@
     if ($av_type != 3){
         echo "<tr><td colspan=2>A.M.: </td><td colspan=5>".$am."</td></tr>";
         echo "<tr><td colspan=2>Οργανική θέση: </td><td colspan=5>$organ</td></tr>";    
+    } else {
+        echo "<tr><td colspan=2>A.M.: </td><td colspan=5>".$afm."</td></tr>";
     }
     if ($av_type == 1)
     {

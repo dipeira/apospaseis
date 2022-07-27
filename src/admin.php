@@ -19,7 +19,7 @@
   <head>
   <?php require_once('head.php'); ?>
 	<!-- <LINK href="style.css" rel="stylesheet" type="text/css"> -->
-    <LINK href="style_sorter.css" rel="stylesheet" type="text/css">
+    <!-- <LINK href="style_sorter.css" rel="stylesheet" type="text/css"> -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title><?php echo $av_title." ($av_foreas) - Διαχείριση"; ?></title>
@@ -45,7 +45,8 @@
             $('#mytbl').DataTable({
                 "language": {
                     "url": "https://cdn.datatables.net/plug-ins/1.10.21/i18n/Greek.json"
-                }
+                },
+                "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Όλα"] ]
             });
         });
     </script>
@@ -58,7 +59,7 @@
     <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic&subset=greek,latin' rel='stylesheet' type='text/css'>
     </head>
     <body>
-    <div class="container">
+    <div class="container-fluid">
         
     
 <?php
@@ -193,7 +194,11 @@
         echo "<tr><td colspan=2>Ονοματεπώνυμο Εκπ/κού:</td><td colspan=5>".$name." ".$surname."</td></tr>";
         echo "<tr><td colspan=2>Πατρώνυμο: </td><td colspan=5>".$patrwnymo."</td></tr>";
         echo "<tr><td colspan=2>Κλάδος: </td><td colspan=5>".$klados."</td></tr>";
+        if ($av_type == 3){
+            echo "<tr><td colspan=2>A.Δ.Α: </td><td colspan=5>".$row['ada']."</td></tr>";    
+        } else {
         echo "<tr><td colspan=2>A.M.: </td><td colspan=5>".$am."</td></tr>";
+        }
         echo "<form id='src' name='src' action='admin.php' method='POST'>\n";
         // organ & synolikh yphresia can be changed
         if (!$av_canalter)
@@ -647,16 +652,39 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="import.php">Εισαγωγή δεδομένων</a>
+          <a class="dropdown-item" href="import_kena.php">Εισαγωγή κενών</a>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Εξαγωγή
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <?php if ($av_type == 1): ?>
           <a class="dropdown-item" href="admin.php?action=eidiki">Αιτήσεις στην Ειδική αγωγή (από τη Γενική αγωγή ή από την Ειδική αγωγή)</a>
+        <?php
+          endif;
+          if ($av_type == 1):
+        ?>
           <a class="dropdown-item" href="admin.php?action=export">Από τη Γενική στη Γενική (για πρόγραμμα PPYSDE)</a>
         </div>
+        <?php
+          elseif ($av_type == 2 || $av_type == 3): ?>
+          <a class="dropdown-item" href="admin.php?action=export">Αιτήσεων</a>
+          <?php endif; ?>
       </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Τοποθέτηση
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <?php if ($av_type == 3): ?>
+          <a class="dropdown-item" href="topothetish_anapl.php">Τοποθέτηση αναπληρωτών</a>
+          <a class="dropdown-item" href="topothetish_neod.php">Τοποθέτηση νεοδιόριστων</a>
+        <?php
+          endif;
+        ?>
+        </div>
+      </li> 
       <li class="nav-item">
         <a class="nav-link" href="params.php">Παράμετροι</a>
       </li>
@@ -718,7 +746,7 @@
             echo "<th>Επώνυμο</th>\n";
             echo "<th>Όνομα</th>\n";
             echo "<th>Ειδικότητα</th>\n";
-            echo $av_type == 3 ? "<th>A.Φ.M.</th>\n" : "<th>A.M.</th>\n";
+            echo $av_type == 3 ? "<th>A.Φ.M.</th>\n<th>Α.Δ.Α.</th>\n" : "<th>A.M.</th>\n";
             echo "<th>Υποβλήθηκε</th>\n";
             echo "<th>Ημ/νία - Ώρα</th>\n";
             if ($av_type == 1){
@@ -741,6 +769,7 @@
                 $klados = $row['klados'];
                 $submitted = $row['submitted'];
                 $am = $av_type == 3 ? filterAFM($row['afm']) : $row['am'];
+                $ada = $av_type == 3 ? '<td>'.$row['ada'].'</td>' : '';
                 $choices = $row['choices'];
                 if ($submitted==0)
                 {
@@ -761,7 +790,7 @@
                 }
                 echo "</td>";
                 echo "<td><span title='Προβολή'><a href='admin.php?id=$id&action=view'>$surname</a></span></td><td>$name</td>";
-                echo "<td><a href='admin.php?filter=$klados'>$klados</a></td><td>$am</td><td>$sub";
+                echo "<td><a href='admin.php?filter=$klados'>$klados</a></td><td>$am</td>$ada<td>$sub";
                 if ($submitted && $av_canundo)
                 {
                     echo "&nbsp;<span title=\"Αναίρεση Υποβολής\"><a href=\"admin.php?id=$id&action=undo\"><img style=\"border: 0pt none;\" src=\"images/undo.png\" onclick='return myaction_yp()'/></a></span>";
@@ -807,7 +836,7 @@
             echo "Έχουν υποβληθεί <strong>$sub_total</strong> αιτήσεις.<br>";
             if ($blanks)
                 echo "<strong>$blanks</strong> κενές (αρνητικές) αιτήσεις.<br>";
-            //echo "<br><a href='admin.php?action=nothing'>Εκπ/κοί που δεν έχουν κάνει καμία αποθήκευση ή υποβολή ($nothing)</a>";
+            echo "<br><a href='admin.php?action=nothing'>Εκπ/κοί που δεν έχουν κάνει καμία αποθήκευση ή υποβολή ($nothing)</a>";
             echo "<br><a href='admin.php?action=saved'>Εκπ/κοί που έχουν αποθηκεύσει αλλά δεν έχουν υποβάλει αίτηση ($saved)</a>";
         }       
         echo "</center>";

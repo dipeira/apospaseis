@@ -57,7 +57,7 @@ if (!isset($_REQUEST['action']))
     echo "<small>Για τη σωστή λειτουργία της εφαρμογής προτείνεται η χρήση<br>
         ενός σύγχρονου προγράμματος περιήγησης (browser),<br>π.χ. Mozilla Firefox, Google Chrome ή Internet Explorer (έκδοση 7 ή νεότερη).</small>";
 	echo "<br><br>";
-	echo "<strong><small>Ανάλυση / Σχεδίαση / Ανάπτυξη: <a href=\"mailto:it@dipe.ira.sch.gr?subject=Αποσπάσεις/Βελτιώσεις\">Ε.Ζαχαριουδάκης, ΠΕ20</a></small></strong>";
+	echo "<strong><small>Ανάλυση / Σχεδίαση / Ανάπτυξη: <a href=\"mailto:it@dipe.ira.sch.gr?subject=Αποσπάσεις/Βελτιώσεις\">Διεύθυνση Πρωτοβάθμιας Εκπαίδευσης Ηρακλείου - Τμήμα Δ' Νέων Τεχνολογιών & Πληροφορικής</a></small></strong>";
 }
 //if (!$_SESSION['timeout'])
 //    $_SESSION['timeout'] = time() + (30 * 60);

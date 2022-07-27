@@ -39,7 +39,7 @@ function getSchooledc ($id,$conn)
         $query = "SELECT name from $av_sch where kwdikos='".$id."'";
         $result = mysqli_query($conn, $query);
         if (mysqli_num_rows($result)==0) {
-            return "";
+            return "Κανένα σχολείο";
         }
         else {
           $row = mysqli_fetch_array($result);
@@ -84,6 +84,30 @@ function getSchoolcode ($id, $conn)
         return $row['kwdikos'];
     }
 }
+function getSchoolcodefromname ($name, $conn)
+{
+    global $av_sch;
+    $query = "SELECT kwdikos from $av_sch where name='".$name."'";
+    $result = mysqli_query($conn, $query);
+    if (mysqli_num_rows($result)==0) 
+        return 0;
+    else {
+        $row = mysqli_fetch_array($result);
+        return $row['kwdikos'];
+    }
+}
+function getSchoolfromcode ($code, $conn)
+{
+    global $av_sch;
+    $query = "SELECT name from $av_sch where kwdikos=".$code;
+    $result = mysqli_query($conn, $query);
+    if (mysqli_num_rows($result)==0) 
+        return 'Κανένα σχολείο';
+    else {
+        $row = mysqli_fetch_array($result);
+        return $row['name'];
+    }
+}
 
 // epil: epilogh 1-20 / dim: 2 dhmotiko,1 nip,0 ola / omada / sch: sxoleio (lektiko) / show_inactive
 function getSchools ($epil, $dim, $omada, $conn, $sch, $show_inactive = false)
@@ -112,6 +136,59 @@ function getSchools ($epil, $dim, $omada, $conn, $sch, $show_inactive = false)
     }
     $ret .= "</select>";
     return $ret;
+}
+
+function getKenaSchools ($epil, $klados, $ada, $conn, $sch)
+{
+    global $av_kena;
+    
+    // get kena
+    $query = "select kena from $av_kena WHERE klados='$klados' AND ada = '$ada'";
+    $result = mysqli_query($conn, $query);
+    $row = mysqli_fetch_assoc($result);
+    
+    $arr = array_keys(unserialize($row['kena']));
+
+    $ret = "<select class='form-control' name='p".$epil."' id='p".$epil."' style='width:100%;'>";
+    $ret .= "<option value=\"\"></option>";
+    foreach ($arr as $res)
+    {
+        $name = getSchoolfromcode($res,$conn);
+        //print_r($res);
+        if ($sch == $name)
+            $ret .= "<option value=\"$res\" selected>$name</option>";
+        else
+            $ret .= "<option value=\"$res\">$name</option>";
+    }
+    $ret .= "</select>";
+    return $ret;
+}
+
+function getKena($klados, $ada, $conn){
+    global $av_kena;
+    
+    // get kena
+    $query = "select kena from $av_kena WHERE klados='$klados' AND ada = '$ada'";
+    $result = mysqli_query($conn, $query);
+    $row = mysqli_fetch_assoc($result);
+    
+    $arr = array_keys(unserialize($row['kena']));
+    $ret = array();
+    foreach ($arr as $code) {
+        $ret[] = getSchoolfromcode($code, $conn);
+    }
+    return $ret;
+}
+
+function getKenaSchoolNumber($klados, $ada, $conn){
+    global $av_kena;
+    
+    // get kena
+    $query = "select kena from $av_kena WHERE klados='$klados' AND ada = '$ada'";
+    $result = mysqli_query($conn, $query);
+    $row = mysqli_fetch_assoc($result);
+    $arr = array_keys(unserialize($row['kena']));
+    return count($arr);    
 }
 
 function getGamos ($gamos)
@@ -510,4 +587,145 @@ function filterAFM($afm) {
     $afm = (string)$afm;
     return strlen($afm) == 8 ? '0'.$afm : $afm;
 }
+
+function uploaded_kena($conn) {
+  global $av_kena;
+  $qry = "select * from $av_kena";
+  $result = mysqli_query($conn, $qry);
+  if (mysqli_num_rows($result) > 0){
+    echo "<h4>Καταχωρημένα κενά</h4>";
+    echo "<table class='table table-striped table-hover table-sm' border='1'>";
+    echo "<thead><th>Κλάδος</th><th>ΑΔΑ</th><th>Ημερομηνία καταχώρησης</th></thead>";
+    while ($row = mysqli_fetch_assoc($result)){
+      echo "<tr><td><a href='import_kena.php?view=".$row['id']."'>".$row['klados']."</a></td><td>".$row['ada']."</td><td>".$row['updated']."</td></tr>";
+    } 
+    echo "</table>";
+  } else {
+    echo "<h4>Δεν έχουν καταχωρηθεί κενά σχολείων...</h4>";
+  }
+}
+
+function kena_tbl($kena, $conn) {
+    echo "<table class='table table-striped table-hover table-sm kenatable' border='1'>";
+    echo "<thead><th>Σχολεία</th><th>Κενά</th></thead>";
+    $i = $sum = 0;
+    foreach ($kena as $key=>$value){
+      $i++;
+      echo "<tr><td>".getschooledc($key,$conn)."</td><td>".$value."</td></tr>";
+      $sum += abs($value);
+    } 
+    echo "</table>";
+    echo "<p>$sum κενά σε $i σχολεία.</p>";
+}
+
+function getEmployee ($afm,$conn)
+{
+  global $av_emp;
+  $query = "SELECT * from $av_emp where afm='".$afm."'";
+  $result = mysqli_query($conn, $query);
+  if (mysqli_num_rows($result)==0) {
+      return "";
+  }
+  else {
+    $row = mysqli_fetch_array($result);
+    return $row;
+  }
+}
+
+function getAitisi ($emp_id,$conn)
+{
+  global $av_ait;
+  $query = "SELECT * from $av_ait where emp_id='".$emp_id."'";
+  $result = mysqli_query($conn, $query);
+  if (mysqli_num_rows($result)==0) {
+      return "";
+  }
+  else {
+    $row = mysqli_fetch_array($result);
+    return $row;
+  }
+}
+
+function placements_tbl($placements, $conn) {
+  echo "<table class='table table-striped table-hover table-sm toptable' border='1'>";
+  echo "<thead><th>Επώνυμο</th><th>Όνομα</th><th>Πατρώνυμο</th><th>Σειρά</th><th>Σχολείο τοποθέτησης</th></thead>";
+  foreach ($placements as $key=>$value){
+    $row = getEmployee($key,$conn);
+    $aitisi = getAitisi($row['id'], $conn);
+    $school = getschooledc($value,$conn);
+    $sch_td_class = strcmp($school,"Κανένα σχολείο") == 0 ? 'background: red' : '';
+    echo "<tr><td><a href='admin.php?id=".$aitisi['id']."&action=view' target='_blank'>".$row['surname']."</a></td><td>".$row['name']."</td><td>".$row['patrwnymo']."</td><td>".$row['seira']."</td><td style='$sch_td_class'>".$school."</td></tr>";
+  } 
+  echo "</table>";
+}
+
+function placements_neod_tbl($placements, $conn) {
+    echo "<table class='table table-striped table-hover table-sm toptable' border='1'>";
+    echo "<thead><th>A/A</th><th>Επώνυμο</th><th>Όνομα</th><th>Πατρώνυμο</th><th>Μόρια</th><th>Συνυπ</th><th>Εντοπ</th><th>Υπηρ</th><th>Σειρά</th><th>Σχολείο τοποθέτησης</th></thead>";
+    $aa = 1;
+    foreach ($placements as $key=>$value){
+      $row = getEmployee($key,$conn);
+      $aitisi = getAitisi($row['id'], $conn);
+      $school = getschooledc($value,$conn);
+      $sch_td_class = strcmp($school,"Κανένα σχολείο") == 0 ? 'background: red' : '';
+      echo "<tr><td>".$aa++."</td><td><a href='admin.php?id=".$aitisi['id']."&action=view' target='_blank'>".$row['surname']."</a></td><td>".$row['name']."</td><td>".$row['patrwnymo']."</td><td>".$row['moria']."</td><td>".$row['synyphrethsh']."</td><td>".$row['entopiothta']."</td><td>".$row['neod_yphr']."</td><td>".$row['seira']."</td><td style='$sch_td_class'>".$school."</td></tr>";
+    } 
+    echo "</table>";
+  }
+
+function kladoi_select($conn){
+    global $av_emp;
+    $qry = "SELECT DISTINCT(klados) FROM $av_emp WHERE 1 ORDER BY klados";
+    $result = mysqli_query($conn, $qry);
+    if (mysqli_num_rows($result) > 0){
+        echo "<select name='klados' id='klados' class='form-control'>";
+        echo "<option value=''>-- Επιλέξτε κλάδο --</option>";
+        while ($row = mysqli_fetch_assoc($result)){
+          echo "<option value='".$row['klados']."'>".$row['klados']."</option>";
+        } 
+        echo "</select>";
+      } else {
+        echo "<h4>Δε βρέθηκαν κλάδοι...</h4>";
+      }
+}
+
+function ada_select($conn){
+  global $av_emp;
+  $qry = "SELECT DISTINCT(ada) FROM $av_emp WHERE 1 ORDER BY ada";
+  $result = mysqli_query($conn, $qry);
+  if (mysqli_num_rows($result) > 0){
+      echo "<select name='ada' id='ada' class='form-control'>";
+      echo "<option value=''>-- Επιλέξτε ΑΔΑ --</option>";
+      while ($row = mysqli_fetch_assoc($result)){
+        echo "<option value='".$row['ada']."'>".$row['ada']."</option>";
+      } 
+      echo "</select>";
+    } else {
+      echo "<h4>Δε βρέθηκαν ΑΔΑ...</h4>";
+    }
+}
+
+function getKenaForList($klados, $ada, $conn) {
+    // get kena
+    global $av_kena, $av_sch;
+    $query = "select kena from $av_kena WHERE klados='$klados' AND ada='$ada'";
+
+    $result = mysqli_query($conn, $query);
+    $row = mysqli_fetch_assoc($result);
+
+    $kena = unserialize($row['kena']);
+    $ar_keys = array_keys($kena);
+    $ret = [];
+    
+    foreach ($ar_keys as $key) {
+        $query = "select name from $av_sch WHERE kwdikos='$key'";
+        $result = mysqli_query($conn, $query);
+        $row = mysqli_fetch_assoc($result);
+
+        array_push($ret, $row['name']);
+    }
+    
+    return $ret;
+}
+
 ?>
