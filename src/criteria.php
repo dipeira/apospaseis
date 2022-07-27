@@ -19,12 +19,51 @@
             html: data.message,
             icon: data.type,
             confirmButtonText: 'OK'
-          })
+          });
+          setTimeout(location.reload.bind(location), 3000);
         },
         dataType:'json'
       });
     });
-});
+    $('#upload-form').on('submit', function(e){
+        //Stop the form from submitting itself to the server.
+        e.preventDefault();
+        // empty previous messages from div
+        $('#result').empty();
+        $.ajax({
+            type: "POST",
+            url: 'upload.php',
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(data){
+                $('<p><strong>'+data+'</strong></p>').appendTo('#result');
+                setTimeout(() => {
+                    location.reload();
+                }, 4000);
+            }
+        });
+    });
+    // when file is selected for deletion
+    $('.delete-file').on('click', function (e) {
+        e.preventDefault();
+        const theFile = e.currentTarget.id;
+        if (confirm('Θέλετε σίγουρα να διαγράψετε το αρχείο: '+ theFile)) {
+            $.ajax({
+            type: "POST",
+            url: 'upload.php',
+            data: {delete: theFile},
+            success: function(data){
+                $('<p><strong>'+data+'</strong></p>').appendTo('#result-delete');
+                setTimeout(() => {
+                location.reload();
+                }, 3000);
+            }
+        });
+        }
+    })
+    });
 </script>
 <html>
   <body>
@@ -150,6 +189,53 @@
         $submitted = $row['submitted'];
     }
     
+    // // dikaiologhtika link
+    // $afm = strlen((string)$afm) == 9 ? $afm : '0'.(string)$afm;
+    // if (strlen($form_link) > 0) {
+    //     $dikaiol_link = $form_link . "?afm=$afm&lang=el&am=$am";
+    //     $doc_btn = "<tr><td colspan=7><a href='".$dikaiol_link."' class='btn btn-warning' target='_blank'>Υποβολή δικαιολογητικών</a></td></tr>";
+    // } else {
+    //     $doc_btn = '';
+    // }
+
+    if ($av_type == 1 && !$is_admin) {
+    $doc_btn = "<tr><td colspan=7><h3>Υποβολή δικαιολογητικών</h3>
+    <form id='upload-form' action='upload.php' class='form-horizontal' method='post' role='form' enctype='multipart/form-data'>
+        <input type='hidden' id='am' name='am' value='".$am."'>    
+        <p>Επιλέξτε αρχείο για υποβολή:</p>
+          <input type='file' name='fileToUpload' id='fileToUpload'>
+          <br><br>
+          <input type='submit' value='Υποβολή' name='submit' class='btn btn-sm btn-warning'>
+    </form><div id='result'></div></td></tr>";
+    } else {
+        $doc_btn = '';
+    }
+    
+    function show_uploaded_files($am){
+        $fileArr = scandir('../uploads');
+        if (!fileArr) {
+            return;
+        }
+        $myfiles = Array();
+        foreach ($fileArr as $line) {
+            if (substr($line,0,6) == $am) {
+                $myfiles[] = $line;
+            }
+        }
+        if (count($myfiles) == 0)
+            return;
+        echo "<tr><td colspan=7>";
+        echo "<h5>Αρχεία που έχουν υποβληθεί</h5>";
+        echo "<ul>";
+        foreach ($myfiles as $line) {
+            echo "<li><a href='../uploads/".$line."' target='_blank'>$line</a>";
+            echo "&nbsp;<span title='Διαγραφή αρχείου'><a href='#' class='delete-file' id='$line'><img src='images/delete.png'></a></span></li>";
+        }
+        echo "</ul>";
+        
+        echo "</td></tr>";
+    }
+
     // if user has already saved an application
     if ($has_aitisi)
     {
@@ -248,7 +334,7 @@
                 echo "δ) Πτυχίο παιδαγωγικών τμημάτων με αντικείμενο στην ειδική αγωγή<input type='checkbox' name='paidag' value='1' disabled><br>";
             echo "ε) Προϋπηρεσία στην Ειδ.Αγωγή: $ethea Έτη, $mhnesea Μήνες, $hmeresea Ημέρες<br>";
             echo "στ) Άλλο προσόν (π.χ. Braille, νοηματική): $allo";
-            echo "<tr><td colspan=7><small>Αν επιθυμείτε απόσπαση ΚΑΙ σε σχολεία της Γενικής εκπ/σης, συμπληρώστε τη <a href='aposp2013.doc'>φόρμα</a> και στείλτε την στο $av_foreas</small></td></tr>";
+            echo "<tr><td colspan=7><small>Αν επιθυμείτε απόσπαση ΚΑΙ σε σχολεία της Γενικής εκπ/σης, συμπληρώστε τη <a href='aposp.doc'>φόρμα</a> και στείλτε την στο $av_foreas</small></td></tr>";
             echo "</td></tr>";
             
             echo "</div>";
@@ -273,6 +359,7 @@
             echo "<tr><td colspan=7><small>Υποβλήθηκε στις: ".  date("d-m-Y, H:i:s", strtotime($row['submit_date']))."</small></td></tr>";
             echo "<input type='hidden' name = 'id' value='$id'>";
             echo "</form>";
+            echo $doc_btn;
             echo "<tr><td colspan=7><a href='choices.php' class='btn btn-info'>Συνέχεια στο Βήμα 2</a></td></tr>";
             //echo "<tr><td colspan=7><form action='choices.php' method='POST'><input type='submit' class='btn btn-info' value='Συνέχεια στο Βήμα 2'></form></td></tr>";
             echo "<tr><td colspan=7><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' class='btn btn-danger' value='Έξοδος'></form></td></tr>";
@@ -335,7 +422,7 @@
                 echo "δ) Πτυχίο παιδαγωγικών τμημάτων με αντικείμενο στην ειδική αγωγή<input type='checkbox' name='paidag' value='1'><br>";
             echo "ε) Προϋπηρεσία στην Ειδ.Αγωγή: <input size=2 name='eth' value=$ethea> Έτη,<input size=2 name='mhnes' value=$mhnesea> Μήνες,<input size=2 name='hmeres' value=$hmeresea> Ημέρες<br>";
             echo "στ) Άλλο προσόν (π.χ. Braille, νοηματική): <input size=25 name='allo' value=$allo>";
-            echo "<br><small>Αν επιθυμείτε απόσπαση ΚΑΙ σε σχολεία της Γενικής εκπ/σης, συμπληρώστε τη <a href='aposp2013.doc'>φόρμα</a> και στείλτε την στο $av_foreas </small></div></td></div></tr>";
+            echo "<br><small>Αν επιθυμείτε απόσπαση ΚΑΙ σε σχολεία της Γενικής εκπ/σης, συμπληρώστε τη <a href='aposp.doc'>φόρμα</a> και στείλτε την στο $av_foreas </small></div></td></div></tr>";
             //echo "</div>";
             
             echo "<tr><td colspan=7><b><center> Σοβαροί λόγοι υγείας</center></b></td></tr>";
@@ -367,7 +454,9 @@
             echo "<tr><td colspan=7><a href='choices.php' class='btn btn-info'>Συνέχεια στο Βήμα 2</a></td></tr>";
             echo "</form>";
             echo "</tr>\n";
-            echo "</form>";
+            echo $doc_btn;
+            show_uploaded_files($userid);
+            // echo "</form>";
             echo "<tr><td colspan=7><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' class='btn btn-danger' value='Έξοδος'></form></td></tr>";
         }
         echo "</table>";
@@ -415,7 +504,7 @@
             echo "δ) Πτυχίο παιδαγωγικών τμημάτων με αντικείμενο στην ειδική αγωγή<input type='checkbox' name='paidag' value='1'><br>";
             echo "ε) Προϋπηρεσία στην Ειδ.Αγωγή: <input size=2 name='eth'> Έτη,<input size=2 name='mhnes'> Μήνες,<input size=2 name='hmeres'> Ημέρες<br>";
             echo "στ) Άλλο προσόν (π.χ. Braille, νοηματική): <input size=25 name='allo' value=$allo>";
-            echo "<br><small>Αν επιθυμείτε απόσπαση ΚΑΙ σε σχολεία της Γενικής εκπ/σης, συμπληρώστε τη <a href='aposp2013.doc'>φόρμα</a> και στείλτε την στο $av_foreas </small></div></td></div></tr>";
+            echo "<br><small>Αν επιθυμείτε απόσπαση ΚΑΙ σε σχολεία της Γενικής εκπ/σης, συμπληρώστε τη <a href='aposp.doc'>φόρμα</a> και στείλτε την στο $av_foreas </small></div></td></div></tr>";
         
         echo "<tr><td colspan=7><b><center> Σοβαροί λόγοι υγείας</center></b></td></tr>";
         echo "<tr><td colspan=2>Ποσοστό αναπηρίας του ιδίου, παιδιών ή συζύγου</td><td colspan=5>";

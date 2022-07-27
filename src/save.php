@@ -76,6 +76,11 @@
         echo json_encode(Array('type'=>'error','title'=>'Σφάλμα','message'=>"Σφάλμα! Για να συνεχίσετε, πρέπει <strong>υποχρεωτικά</strong> να διαβάσετε και να τσεκάρετε την υπεύθυνη δήλωση στο τέλος της σελίδας."));
         exit;
       }
+      if ($gamos == 0 && $paidia > 0)
+      {
+        echo json_encode(Array('type'=>'error','title'=>'Σφάλμα','message'=>"Σφάλμα! Άγαμοι δεν μπορούν να δηλώνουν παιδιά."));
+        exit;
+      }
       
         $emp_id = $_POST['id'];
         
