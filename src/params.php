@@ -63,11 +63,11 @@
           } else if ($row['pkey'] == 'av_type') {
             echo '<td><select name="av_type" id="av_type">';
             if ($av_type == '1') { 
-              echo '<option value="1" selected="selected">Αποσπάσεις</option><option value="2">Βελτιώσεις</option><option value="3">Τοποθετήσεις αναπληρωτών</option>';
+              echo '<option value="1" selected="selected">Αποσπάσεις</option><option value="2">Βελτιώσεις</option><option value="3">Τοποθετήσεις αναπληρωτών / νεοδιόριστων</option>';
             } else if ($av_type == '2') {
-              echo '<option value="1">Αποσπάσεις</option><option value="2" selected="selected">Βελτιώσεις</option><option value="3">Τοποθετήσεις αναπληρωτών</option>';
+              echo '<option value="1">Αποσπάσεις</option><option value="2" selected="selected">Βελτιώσεις</option><option value="3">Τοποθετήσεις αναπληρωτών / νεοδιόριστων</option>';
             } else if ($av_type == '3') {
-              echo '<option value="1">Αποσπάσεις</option><option value="2">Βελτιώσεις</option><option value="3" selected="selected">Τοποθετήσεις αναπληρωτών</option>';
+              echo '<option value="1">Αποσπάσεις</option><option value="2">Βελτιώσεις</option><option value="3" selected="selected">Τοποθετήσεις αναπληρωτών / νεοδιόριστων</option>';
             }
             echo '</select></td>';
           } else

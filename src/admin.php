@@ -652,7 +652,9 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="import.php">Εισαγωγή δεδομένων</a>
+          <?php if ($av_type == 3): ?>
           <a class="dropdown-item" href="import_kena.php">Εισαγωγή κενών</a>
+          <?php endif; ?>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -672,19 +674,17 @@
           <a class="dropdown-item" href="admin.php?action=export">Αιτήσεων</a>
           <?php endif; ?>
       </li>
+      <?php if ($av_type == 3): ?>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Τοποθέτηση
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-        <?php if ($av_type == 3): ?>
           <a class="dropdown-item" href="topothetish_anapl.php">Τοποθέτηση αναπληρωτών</a>
           <a class="dropdown-item" href="topothetish_neod.php">Τοποθέτηση νεοδιόριστων</a>
-        <?php
-          endif;
-        ?>
         </div>
       </li> 
+      <?php endif; ?>
       <li class="nav-item">
         <a class="nav-link" href="params.php">Παράμετροι</a>
       </li>

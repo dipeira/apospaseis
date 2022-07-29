@@ -188,30 +188,26 @@
         $has_aitisi = 1;
         $submitted = $row['submitted'];
     }
-    
-    // // dikaiologhtika link
-    // $afm = strlen((string)$afm) == 9 ? $afm : '0'.(string)$afm;
-    // if (strlen($form_link) > 0) {
-    //     $dikaiol_link = $form_link . "?afm=$afm&lang=el&am=$am";
-    //     $doc_btn = "<tr><td colspan=7><a href='".$dikaiol_link."' class='btn btn-warning' target='_blank'>Υποβολή δικαιολογητικών</a></td></tr>";
-    // } else {
-    //     $doc_btn = '';
-    // }
 
     if ($av_type == 1 && !$is_admin) {
-    $doc_btn = "<tr><td colspan=7><h3>Υποβολή δικαιολογητικών</h3>
-    <form id='upload-form' action='upload.php' class='form-horizontal' method='post' role='form' enctype='multipart/form-data'>
-        <input type='hidden' id='am' name='am' value='".$am."'>    
-        <p>Επιλέξτε αρχείο για υποβολή:</p>
-          <input type='file' name='fileToUpload' id='fileToUpload'>
-          <br><br>
-          <input type='submit' value='Υποβολή' name='submit' class='btn btn-sm btn-warning'>
-    </form><div id='result'></div></td></tr>";
+        $doc_btn = "<tr><td colspan=7><h3>Υποβολή δικαιολογητικών</h3>
+        <form id='upload-form' action='upload.php' class='form-horizontal' method='post' role='form' enctype='multipart/form-data'>
+            <input type='hidden' id='am' name='am' value='".$am."'>    
+            <p>Επιλέξτε αρχείο για υποβολή:&nbsp;</p>
+            <p><small><i>(Επιτρέπονται μόνο αρχεία PDF, PNG, JPG, TIFF, DOCX έως 2MB το καθένα)</i></small></p>
+            <input type='file' name='fileToUpload' id='fileToUpload'>
+            <br><br>
+            <input type='submit' value='Υποβολή' name='submit' class='btn btn-sm btn-warning'>
+        </form><div id='result'></div></td></tr>";
     } else {
         $doc_btn = '';
     }
     
     function show_uploaded_files($am){
+        global $av_type, $is_admin;
+        if (!$av_type == 1) {
+            return '';
+        }
         $fileArr = scandir('../uploads');
         if (!fileArr) {
             return;
@@ -229,7 +225,10 @@
         echo "<ul>";
         foreach ($myfiles as $line) {
             echo "<li><a href='../uploads/".$line."' target='_blank'>$line</a>";
-            echo "&nbsp;<span title='Διαγραφή αρχείου'><a href='#' class='delete-file' id='$line'><img src='images/delete.png'></a></span></li>";
+            // only user can delete their files
+            if (!$is_admin) {
+                echo "&nbsp;<span title='Διαγραφή αρχείου'><a href='#' class='delete-file' id='$line'><img src='images/delete.png'></a></span></li>";
+            }
         }
         echo "</ul>";
         
@@ -360,6 +359,7 @@
             echo "<input type='hidden' name = 'id' value='$id'>";
             echo "</form>";
             echo $doc_btn;
+            show_uploaded_files($userid);
             echo "<tr><td colspan=7><a href='choices.php' class='btn btn-info'>Συνέχεια στο Βήμα 2</a></td></tr>";
             //echo "<tr><td colspan=7><form action='choices.php' method='POST'><input type='submit' class='btn btn-info' value='Συνέχεια στο Βήμα 2'></form></td></tr>";
             echo "<tr><td colspan=7><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' class='btn btn-danger' value='Έξοδος'></form></td></tr>";
