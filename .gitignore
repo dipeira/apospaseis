@@ -1,4 +1,4 @@
 config.php
 nbproject/
-uploads/
+uploads/*
 !uploads/index.html
