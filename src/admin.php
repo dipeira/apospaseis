@@ -333,9 +333,12 @@
                 "<input type='checkbox' name='checked' value='1'>";
             echo "</td></tr>";
             echo "<td>Σχόλια ελέγχου:</td><td><textarea rows=4 cols=60 name='check_comments' >".$row['check_comments']."</textarea></td></tr>";
+            show_uploaded_files($am);
             echo "<tr><td colspan=2><input type='submit' class='btn btn-success' value='Αποθήκευση' onclick='return myaction()'/></td></tr>";
             echo "<input type='hidden' name='id' value=$id>";
             echo "</form>";
+        } else {
+            show_uploaded_files($am, true);
         }
     }
     ///////////////////

@@ -728,4 +728,38 @@ function getKenaForList($klados, $ada, $conn) {
     return $ret;
 }
 
+function show_uploaded_files($am, $notable = false){
+    global $av_type, $is_admin;
+    if (!$av_type == 1) {
+        return '';
+    }
+    $fileArr = scandir('../uploads');
+    if (!fileArr) {
+        return;
+    }
+    $myfiles = Array();
+    foreach ($fileArr as $line) {
+        if (substr($line,0,6) == $am) {
+            $myfiles[] = $line;
+        }
+    }
+    if (count($myfiles) == 0)
+        return;
+    echo $notable ? "<table class='table table-striped table-sm' border=2>" : "";
+    echo "<tr><td colspan=7>";
+    echo "<h5>Αρχεία που έχουν υποβληθεί</h5>";
+    echo "<ul>";
+    foreach ($myfiles as $line) {
+        echo "<li><a href='../uploads/".$line."' target='_blank'>$line</a>";
+        // only user can delete their files
+        if (!$is_admin) {
+            echo "&nbsp;<span title='Διαγραφή αρχείου'><a href='#' class='delete-file' id='$line'><img src='images/delete.png'></a></span></li>";
+        }
+    }
+    echo "</ul>";
+    
+    echo "</td></tr>";
+    echo $notable ? "</table>" : "";
+}
+
 ?>

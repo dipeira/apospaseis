@@ -203,38 +203,6 @@
         $doc_btn = '';
     }
     
-    function show_uploaded_files($am){
-        global $av_type, $is_admin;
-        if (!$av_type == 1) {
-            return '';
-        }
-        $fileArr = scandir('../uploads');
-        if (!fileArr) {
-            return;
-        }
-        $myfiles = Array();
-        foreach ($fileArr as $line) {
-            if (substr($line,0,6) == $am) {
-                $myfiles[] = $line;
-            }
-        }
-        if (count($myfiles) == 0)
-            return;
-        echo "<tr><td colspan=7>";
-        echo "<h5>Αρχεία που έχουν υποβληθεί</h5>";
-        echo "<ul>";
-        foreach ($myfiles as $line) {
-            echo "<li><a href='../uploads/".$line."' target='_blank'>$line</a>";
-            // only user can delete their files
-            if (!$is_admin) {
-                echo "&nbsp;<span title='Διαγραφή αρχείου'><a href='#' class='delete-file' id='$line'><img src='images/delete.png'></a></span></li>";
-            }
-        }
-        echo "</ul>";
-        
-        echo "</td></tr>";
-    }
-
     // if user has already saved an application
     if ($has_aitisi)
     {

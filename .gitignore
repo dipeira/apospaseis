@@ -1,3 +1,4 @@
 config.php
 nbproject/
 uploads/
+!uploads/index.html
