@@ -354,6 +354,9 @@
   </div>
 </center>
 </div>
+<?php
+    require_once('footer.html');
+?>
   </body>
 </html>
 

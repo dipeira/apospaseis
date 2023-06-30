@@ -555,6 +555,7 @@
                 echo "<th>Όνομα</th>\n";
                 echo "<th>Ειδικότητα</th>\n";
                 echo $av_type == 3 ? "<th>A.Φ.M.</th>\n" : "<th>A.M.</th>\n";
+                echo "<th>Οργανική θέση</th>\n";
                 echo "</thead>";
                 echo "<tbody>";
                 while ($i < $num){
@@ -564,7 +565,9 @@
                     $klados = $row['klados'];
                     $am = $av_type == 3 ? filterAFM($row['afm']) : $row['am'];
                     echo $nothing ? "<tr><td>$surname</td>" : "<tr><td><a href='admin.php?id=".$row['ait_id']."&action=view'>$surname</a></td>";
-                    echo "<td>$name</td><td>$klados</td><td>$am</td></tr>";
+                    echo "<td>$name</td><td>$klados</td><td>$am</td>";
+                    echo "<td>". getSchoolfromcode($row['org'], $mysqlconnection) . "</td>";
+                    echo "</tr>";
 
                     $i++;
                 }
@@ -851,5 +854,8 @@
 ?>
 </center>
 </div>
+<?php
+    require_once('footer.html');
+?>
   </body>
 </html>
