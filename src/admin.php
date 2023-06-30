@@ -337,7 +337,7 @@
             echo "<tr><td colspan=2><input type='submit' class='btn btn-success' value='Αποθήκευση' onclick='return myaction()'/></td></tr>";
             echo "<input type='hidden' name='id' value=$id>";
             echo "</form>";
-        } else {
+        } else if ($av_type == 1){
             show_uploaded_files($am, true);
         }
     }
