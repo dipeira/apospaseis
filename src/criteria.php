@@ -197,7 +197,7 @@
             <p><small><i>(Επιτρέπονται μόνο αρχεία PDF, PNG, JPG, TIFF, DOCX έως 2MB το καθένα)</i></small></p>
             <input type='file' name='fileToUpload' id='fileToUpload'>
             <br><br>
-            <input type='submit' value='Υποβολή' name='submit' class='btn btn-sm btn-warning'>
+            <input type='submit' value='Υποβολή αρχείου' name='submit' class='btn btn-sm btn-warning'>
         </form><div id='result'></div></td></tr>";
     } else {
         $doc_btn = '';
@@ -326,8 +326,8 @@
             echo "<tr><td colspan=7><small>Υποβλήθηκε στις: ".  date("d-m-Y, H:i:s", strtotime($row['submit_date']))."</small></td></tr>";
             echo "<input type='hidden' name = 'id' value='$id'>";
             echo "</form>";
-            echo $doc_btn;
-            show_uploaded_files($userid);
+            // show uploaded files with delete disabled
+            show_uploaded_files($userid, false, false);
             echo "<tr><td colspan=7><a href='choices.php' class='btn btn-info'>Συνέχεια στο Βήμα 2</a></td></tr>";
             //echo "<tr><td colspan=7><form action='choices.php' method='POST'><input type='submit' class='btn btn-info' value='Συνέχεια στο Βήμα 2'></form></td></tr>";
             echo "<tr><td colspan=7><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' class='btn btn-danger' value='Έξοδος'></form></td></tr>";

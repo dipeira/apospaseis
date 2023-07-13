@@ -561,7 +561,7 @@ function moria_key2per($key){
         case 'synyphrethsh':
             return 'Συνυπηρέτησης';
         case 'synolo':
-            return 'Σύνολο';
+            return '<b>Σύνολο</b>';
     }
 }
 
@@ -728,13 +728,13 @@ function getKenaForList($klados, $ada, $conn) {
     return $ret;
 }
 
-function show_uploaded_files($am, $notable = false){
+function show_uploaded_files($am, $notable = false, $can_delete = true){
     global $av_type, $is_admin;
     if (!$av_type == 1) {
         return '';
     }
     $fileArr = scandir('../uploads');
-    if (!fileArr) {
+    if (!$fileArr) {
         return;
     }
     $myfiles = Array();
@@ -752,7 +752,7 @@ function show_uploaded_files($am, $notable = false){
     foreach ($myfiles as $line) {
         echo "<li><a href='../uploads/".$line."' target='_blank'>$line</a>";
         // only user can delete their files
-        if (!$is_admin) {
+        if (!$is_admin && $can_delete) {
             echo "&nbsp;<span title='Διαγραφή αρχείου'><a href='#' class='delete-file' id='$line'><img src='images/delete.png'></a></span></li>";
         }
     }

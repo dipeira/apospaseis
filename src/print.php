@@ -189,6 +189,7 @@
   }
   //if (!$sum)
   //    echo "<tr><td colspan=2><center>ΑΡΝΗΤΙΚΗ ΔΗΛΩΣΗ</center></td></tr>\n";
+  show_uploaded_files($am, false, false);
   echo "<tr><td colspan=7><small>Υποβλήθηκε στις: ".  date("d-m-Y, H:i:s", strtotime($row['submit_date']))."</small></td></tr>";
   echo "<tr style='height:30px'><td colspan=7>&nbsp;</td></tr>";
   echo "<tr><td colspan=4></td><td align='center'>Ο/Η εκπαιδευτικός</td></tr>";
