@@ -318,7 +318,7 @@
             echo "<tr><td colspan=4><center><a href='criteria.php?userid=$am'><button type='button' class='btn btn-success'>Επεξεργασία</button></a></center></td></tr>";
         }
         echo "</form>";
-        echo "<tr><td colspan=4><center><form action='admin.php'><input type='submit' class='btn btn-danger' value='Έπιστροφή'></form></center></td></tr>";
+        echo "<tr><td colspan=4><center><form action='admin.php'><input type='submit' class='btn btn-danger' value='Eπιστροφή'></form></center></td></tr>";
         echo "</table>";   
         if ($submitted && $av_type == 1){
             echo "<form action='admin.php' method='post'>";

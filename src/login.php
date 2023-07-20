@@ -46,7 +46,7 @@ if (!isset($_REQUEST['action']))
 
 <?php
     if (!$av_is_active)
-        echo "<h3>Η προθεσμία υποβολής αιτήσεων έχει παρέλθει.<br>Το σύστημα δεν είναι ενεργό αυτή τη στιγμή.</h3><br><br>";
+        echo "<br><h3>Το σύστημα δεν είναι ενεργό αυτή τη στιγμή.</h3><br><br>";
     if ($av_display_login){
         $username_text = $av_type == '3' ? 'Επώνυμο εκπ/κού' : 'Αριθμός Μητρώου Εκπ/κού';
         $log->loginform("login", "id", "", $username_text);
