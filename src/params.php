@@ -8,9 +8,12 @@
   $log = new logmein();
   if($_SESSION['loggedin'] == false)
     header("Location: login.php");
-  // check if admin 
-  if ($_SESSION['user']!=$av_admin && $_SESSION['user']!='admin')
-    die("Authentication error");
+  // check if admin (only admin can change params)
+  if (!is_admin()){
+    echo "<h3>ΣΦΑΛΜΑ: Η πρόσβαση επιτρέπεται μόνο στο διαχειριστή...</h3>";
+    echo "<a class='btn btn-info' href='admin.php'>Επιστροφή</a>";
+    die();
+  }
 
 ?>
 <style>

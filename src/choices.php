@@ -5,15 +5,14 @@
   require_once "functions.php";
   require_once('head.php');
 
-  // check if admin 
-    if ($_SESSION['user']==$av_admin || $_SESSION['user']=='admin')
-    {
-        //$isadmin = 1;
-        $page = 'admin.php';
-	echo '<script type="text/javascript">';
-	echo 'window.location.href="'.$page.'";';
-	echo '</script>';
-	}
+  // check if authorized
+  if (is_authorized())
+  {
+      $page = 'admin.php';
+      echo '<script type="text/javascript">';
+      echo 'window.location.href="'.$page.'";';
+      echo '</script>';
+  }
 ?>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 

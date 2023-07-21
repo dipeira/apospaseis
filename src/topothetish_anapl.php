@@ -6,15 +6,16 @@
   
   include("class.login.php");
   $log = new logmein();
-  // if not logged in or not admin
-  //if($log->logincheck($_SESSION['loggedin']) == false || $_SESSION['user'] != $av_admin)
+  // if not logged in
   if($_SESSION['loggedin'] == false)
   {   
       header("Location: login.php");
   }
   else
       $loggedin = 1;
-
+  if (!is_admin()){
+    die("<h3>Σφάλμα αυθεντικοποίησης: Δεν επιτρέπεται η πρόσβαση...</h3>");
+  }
   $mysqlconnection = mysqli_connect($db_host, $db_user, $db_password, $db_name);
   mysqli_set_charset($mysqlconnection,"utf8");
 ?>

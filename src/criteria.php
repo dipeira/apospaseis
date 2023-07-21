@@ -85,6 +85,14 @@
   else {
       $loggedin = 1;
   }
+  // check if authorized
+  if (is_authorized())
+  {
+      $page = 'admin.php';
+      echo '<script type="text/javascript">';
+      echo 'window.location.href="'.$page.'";';
+      echo '</script>';
+  }
   // if veltiwseis, goto choices.php
   if ($av_type == 2){
     //header("Location: choices.php");

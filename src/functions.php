@@ -762,4 +762,18 @@ function show_uploaded_files($am, $notable = false, $can_delete = true){
     echo $notable ? "</table>" : "";
 }
 
+// return true if staff
+function is_staff() {
+    global $av_staff;
+    return in_array((int)$_SESSION['user'], $av_staff);
+}
+// return true if admin
+function is_admin() {
+    global $av_admin;
+    return $_SESSION['user']==$av_admin || $_SESSION['user']=='admin';
+}
+function is_authorized() {
+    return is_staff() || is_admin();
+}
+
 ?>

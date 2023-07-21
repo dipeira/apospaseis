@@ -65,9 +65,9 @@
 <?php
   if ($loggedin)
   {
-    // check if admin 
-    if ($_SESSION['user']!=$av_admin && $_SESSION['user']!='admin')
-        die("Σφάλμα αυθεντικοποίησης...");
+    // check if authorized 
+    if (!is_authorized())
+        die("<h3>Σφάλμα αυθεντικοποίησης: Δεν επιτρέπεται η πρόσβαση...</h3>");
 
     $mysqlconnection = mysqli_connect($db_host, $db_user, $db_password, $db_name);
     mysqli_set_charset($mysqlconnection,"utf8");
