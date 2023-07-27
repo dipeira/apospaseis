@@ -439,9 +439,6 @@
                   $tmpdata = array_merge($tmpdata, $moria_array);
                 }
                 
-                // add choices
-                $tmpdata = array_merge($tmpdata, $choices);
-                
                 // add specific columns
                 if ($apospaseis){
                     // compute moria
@@ -461,6 +458,10 @@
                     $tmpdata[] = $row0['checked'] ? 'Ναι' : 'Όχι';
                     $tmpdata[] = $row0['check_comments'];
                 }
+
+                // finally, add choices for both veltiwseis & apospaseis
+                $tmpdata = array_merge($tmpdata, $choices);
+                
                 $data[] = $tmpdata;
             }
         }
@@ -477,6 +478,9 @@
           array_push($columns,'moria','entopiothta','synyphrethsh');
         }
 
+        if ($apospaseis){
+            $columns = array_merge($columns,Array('synolo','entopiothta','dimos_entopiothtas','synyphrethsh','dimos_synyphrethshs','checked','check_comments'));
+        }
         if ($av_dntes) {
             $columns[] = "choices";
         }
@@ -484,9 +488,6 @@
             for ($j=0; $j<$av_choices; $j++) {
                 $columns[] = "p".($j+1);
             }
-        }
-        if ($apospaseis){
-            $columns = array_merge($columns,Array('synolo','entopiothta','dimos_entopiothtas','synyphrethsh','dimos_synyphrethshs','checked','check_comments'));
         }
         
         ob_start();
