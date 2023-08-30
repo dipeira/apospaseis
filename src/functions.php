@@ -119,7 +119,7 @@ function getSchools ($epil, $dim, $omada, $conn, $sch, $show_inactive = false)
     if (!$omada && $dim)
         $query = "select DISTINCT name,id,kwdikos from $av_sch where dim=$dim $inactive order by name";
     if ($omada && $dim)
-        $query = "select DISTINCT name,id,kwdikos from $av_sch where dim IN (0,$dim) AND omada <> $omada $inactive order by name";
+        $query = "select DISTINCT name,id,kwdikos from $av_sch where dim=$dim AND omada <> $omada $inactive order by name";
     $arr = array();
     $result = mysqli_query($conn, $query);
     while ($ar = mysqli_fetch_array($result))
