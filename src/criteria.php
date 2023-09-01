@@ -86,7 +86,7 @@
       $loggedin = 1;
   }
   // check if authorized
-  if (is_authorized())
+  if (!is_authorized())
   {
       $page = 'admin.php';
       echo '<script type="text/javascript">';
