@@ -195,7 +195,7 @@ function getGamos ($gamos)
 {
     switch ($gamos)
     {
-        case 0:$ret = "Άγαμος";break;
+        case 0:$ret = "Άγαμος (ή διαζευγμένος χωρίς επιμέλεια παιδιού)";break;
         case 1:$ret = "Έγγαμος";break;
         case 2:$ret = "Διαζευγμένος/σε διάσταση με επιμέλεια παιδιού ανήλικου ή σπουδάζοντος";break;
         case 3:$ret = "Σε χηρεία χωρίς παιδιά ανήλικα ή σπουδάζοντα";break;
@@ -220,7 +220,7 @@ function cmbGamos ()
 {
     echo "<select class='form-control' name=\"gamos\">";
     echo "<option value=\"\" selected>(Παρακαλώ επιλέξτε:)</option>";
-    echo "<option value=\"0\">Άγαμος</option>";
+    echo "<option value=\"0\">Άγαμος (ή διαζευγμένος χωρίς επιμέλεια παιδιού)</option>";
     echo "<option value=\"1\">Έγγαμος</option>";
     echo "<option value=\"2\">Διαζευγμένος/σε διάσταση με επιμέλεια παιδιού ανήλικου ή σπουδάζοντος</option>";
     echo "<option value=\"3\">Σε χηρεία χωρίς παιδιά ανήλικα ή σπουδάζοντα</option>";
@@ -290,8 +290,8 @@ function cmbGamos_edit ($epil)
     echo "<select class='form-control' name=\"gamos\">";
     if ($epil=='') echo "<option value=\"\" selected>(Παρακαλώ επιλέξτε:)</option>";
     else echo "<option value=\"\">(Παρακαλώ επιλέξτε:)</option>";
-    if ($epil==0) echo "<option value=\"0\" selected>Άγαμος</option>";
-    else echo "<option value=\"0\">Άγαμος</option>";
+    if ($epil==0) echo "<option value=\"0\" selected>Άγαμος (ή διαζευγμένος χωρίς επιμέλεια παιδιού)</option>";
+    else echo "<option value=\"0\">Άγαμος (ή διαζευγμένος χωρίς επιμέλεια παιδιού)</option>";
     if ($epil==1) echo "<option value=\"1\" selected>Έγγαμος</option>";
     else echo "<option value=\"1\">Έγγαμος</option>";
     if ($epil==2) echo "<option value=\"2\" selected>Διαζευγμένος/σε διάσταση με επιμέλεια παιδιού ανήλικου ή σπουδάζοντος</option>";
