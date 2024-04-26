@@ -188,8 +188,6 @@
     if ($exists)
     {
         if ($submit){
-            $phpdate = date('Y-m-d H:i:s'); 
-            $mysqldate = date( 'Y-m-d H:i:s', $phpdate );
             $query = "UPDATE $av_ait SET submitted=1,submit_date=NOW(),choices='$ser_p' WHERE emp_id='$emp_id'";
         }
         else {
