@@ -199,10 +199,11 @@
 
     if ($av_type == 1 && !$is_admin) {
         $doc_btn = "<tr><td colspan=7><h3>Υποβολή δικαιολογητικών</h3>
+        <p>ΣΗΜ: Η πλατφόρμα δέχεται την υποβολή πολλών δικαιολογητικών. Διαγραφή δικαιολογητικών μπορεί να γίνει ΜΟΝΟ ΠΡΙΝ την οριστική υποβολή.</p>
         <form id='upload-form' action='upload.php' class='form-horizontal' method='post' role='form' enctype='multipart/form-data'>
             <input type='hidden' id='am' name='am' value='".$am."'>    
             <p>Επιλέξτε αρχείο για υποβολή:&nbsp;</p>
-            <p><small><i>(Επιτρέπονται μόνο αρχεία PDF, PNG, JPG, TIFF, DOCX έως 2MB το καθένα)</i></small></p>
+            <p><small><i>(Επιτρέπονται μόνο αρχεία PDF, PNG, JPG, TIFF, DOCX έως 4MB το καθένα)</i></small></p>
             <input type='file' name='fileToUpload' id='fileToUpload'>
             <br><br>
             <input type='submit' value='Υποβολή αρχείου' name='submit' class='btn btn-sm btn-warning'>
@@ -263,13 +264,13 @@
             echo "</td></tr>";
             echo "<form id='src' name='src' action='choices.php' method='POST'>\n";
             if ($org_eid)
-                echo "<tr><td colspan=7><input type='checkbox' name='org_eid' value='1' checked disabled>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
+                echo "<tr><td colspan=7><input type='checkbox' name='org_eid' value='1' checked disabled>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης) ή έχω αποσπαστεί μέσω Υ.ΠΑΙ.Θ.Α. στην ειδική αγωγή.</td></tr>";
             else
-                echo "<tr><td colspan=7><input type='checkbox' name='org_eid' value='1' disabled>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
-            if ($aitisi)
-                echo "<tr><td colspan=7><input type='checkbox' name='aitisi' value='1' disabled checked>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
-            else
-                echo "<tr><td colspan=7><input type='checkbox' name='aitisi' value='1' disabled>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
+                echo "<tr><td colspan=7><input type='checkbox' name='org_eid' value='1' disabled>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης) ή έχω αποσπαστεί μέσω Υ.ΠΑΙ.Θ.Α. στην ειδική αγωγή.</td></tr>";
+            // if ($aitisi)
+            //     echo "<tr><td colspan=7><input type='checkbox' name='aitisi' value='1' disabled checked>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
+            // else
+            //     echo "<tr><td colspan=7><input type='checkbox' name='aitisi' value='1' disabled>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
             echo "<tr><td colspan=7><center><b>Οικογενειακή Κατάσταση</b></center></td></tr>";
             echo "<tr><td>Γάμος</td><td>";
             echo getGamos($gamos);
@@ -286,31 +287,31 @@
                 echo "<tr><td colspan=2>Ειδική Κατηγορία (κατά προτεραιότητα)</td><td colspan=5><input type='checkbox' name='eidikh' value='1' disabled checked>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
             else
                 echo "<tr><td colspan=2>Ειδική Κατηγορία (κατά προτεραιότητα)</td><td colspan=5><input type='checkbox' name='eidikh' value='1' disabled>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
-            if ($apospash)
-                echo "<tr><td colspan=2>Επιθυμώ απόσπαση</td><td colspan=5><input type='checkbox' name='apospash' value='1' disabled checked>Απο τη Γενική στην Ειδική Αγωγή</td></tr>";
-            else
-                echo "<tr><td colspan=2>Επιθυμώ απόσπαση</td><td colspan=5><input type='checkbox' name='apospash' value='1' disabled>Απο τη Γενική στην Ειδική Αγωγή</td></tr>";
-            echo "<div id='ea'><tr><td colspan=2></td><td colspan=5>";
-            if ($didakt)
-                echo "α) Διδακτορικό Ειδ.Αγωγής<input type='checkbox' name='didakt' value='1' disabled checked><br>";
-            else
-                echo "α) Διδακτορικό Ειδ.Αγωγής<input type='checkbox' name='didakt' value='1' disabled><br>";
-            if ($metapt)
-                echo "β) Μεταπτυχιακό Ειδ.Αγωγής<input type='checkbox' name='metapt' value='1' disabled checked><br>";
-            else
-                echo "β) Μεταπτυχιακό Ειδ.Αγωγής<input type='checkbox' name='metapt' value='1' disabled><br>";
-            if ($didask)
-                echo "γ) Διδασκαλείο Ειδ.Αγωγής<input type='checkbox' name='didask' value='1' disabled checked><br>";
-            else
-                echo "γ) Διδασκαλείο Ειδ.Αγωγής<input type='checkbox' name='didask' value='1' disabled><br>";
-            if ($paidag)
-                echo "δ) Πτυχίο παιδαγωγικών τμημάτων με αντικείμενο στην ειδική αγωγή<input type='checkbox' name='paidag' value='1' disabled checked><br>";
-            else
-                echo "δ) Πτυχίο παιδαγωγικών τμημάτων με αντικείμενο στην ειδική αγωγή<input type='checkbox' name='paidag' value='1' disabled><br>";
-            echo "ε) Προϋπηρεσία στην Ειδ.Αγωγή: $ethea Έτη, $mhnesea Μήνες, $hmeresea Ημέρες<br>";
-            echo "στ) Άλλο προσόν (π.χ. Braille, νοηματική): $allo";
-            echo "<tr><td colspan=7><small>Αν επιθυμείτε απόσπαση ΚΑΙ σε σχολεία της Γενικής εκπ/σης, συμπληρώστε τη <a href='aposp.doc'>φόρμα</a> και στείλτε την στο $av_foreas</small></td></tr>";
-            echo "</td></tr>";
+            // if ($apospash)
+            //     echo "<tr><td colspan=2>Επιθυμώ απόσπαση</td><td colspan=5><input type='checkbox' name='apospash' value='1' disabled checked>Απο τη Γενική στην Ειδική Αγωγή</td></tr>";
+            // else
+            //     echo "<tr><td colspan=2>Επιθυμώ απόσπαση</td><td colspan=5><input type='checkbox' name='apospash' value='1' disabled>Απο τη Γενική στην Ειδική Αγωγή</td></tr>";
+            // echo "<div id='ea'><tr><td colspan=2></td><td colspan=5>";
+            // if ($didakt)
+            //     echo "α) Διδακτορικό Ειδ.Αγωγής<input type='checkbox' name='didakt' value='1' disabled checked><br>";
+            // else
+            //     echo "α) Διδακτορικό Ειδ.Αγωγής<input type='checkbox' name='didakt' value='1' disabled><br>";
+            // if ($metapt)
+            //     echo "β) Μεταπτυχιακό Ειδ.Αγωγής<input type='checkbox' name='metapt' value='1' disabled checked><br>";
+            // else
+            //     echo "β) Μεταπτυχιακό Ειδ.Αγωγής<input type='checkbox' name='metapt' value='1' disabled><br>";
+            // if ($didask)
+            //     echo "γ) Διδασκαλείο Ειδ.Αγωγής<input type='checkbox' name='didask' value='1' disabled checked><br>";
+            // else
+            //     echo "γ) Διδασκαλείο Ειδ.Αγωγής<input type='checkbox' name='didask' value='1' disabled><br>";
+            // if ($paidag)
+            //     echo "δ) Πτυχίο παιδαγωγικών τμημάτων με αντικείμενο στην ειδική αγωγή<input type='checkbox' name='paidag' value='1' disabled checked><br>";
+            // else
+            //     echo "δ) Πτυχίο παιδαγωγικών τμημάτων με αντικείμενο στην ειδική αγωγή<input type='checkbox' name='paidag' value='1' disabled><br>";
+            // echo "ε) Προϋπηρεσία στην Ειδ.Αγωγή: $ethea Έτη, $mhnesea Μήνες, $hmeresea Ημέρες<br>";
+            // echo "στ) Άλλο προσόν (π.χ. Braille, νοηματική): $allo";
+            // echo "<tr><td colspan=7><small>Αν επιθυμείτε απόσπαση ΚΑΙ σε σχολεία της Γενικής εκπ/σης, συμπληρώστε τη <a href='aposp.doc'>φόρμα</a> και στείλτε την στο $av_foreas</small></td></tr>";
+            // echo "</td></tr>";
             
             echo "</div>";
             
@@ -346,13 +347,13 @@
             //form
             echo "<form id='src' name='src' action='save.php' method='POST'>\n";
             if ($org_eid)
-                echo "<tr><td colspan=7><input type='checkbox' name='org_eid' value='1' checked>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
+                echo "<tr><td colspan=7><input type='checkbox' name='org_eid' value='1' checked>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης) ή έχω αποσπαστεί μέσω Υ.ΠΑΙ.Θ.Α. στην ειδική αγωγή.</td></tr>";
             else
-                echo "<tr><td colspan=7><input type='checkbox' name='org_eid' value='1'>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
-            if ($aitisi)
-                echo "<tr><td colspan=7><input type='checkbox' name='aitisi' value='1' checked>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
-            else
-                echo "<tr><td colspan=7><input type='checkbox' name='aitisi' value='1'>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
+                echo "<tr><td colspan=7><input type='checkbox' name='org_eid' value='1'>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης) ή έχω αποσπαστεί μέσω Υ.ΠΑΙ.Θ.Α. στην ειδική αγωγή.</td></tr>";
+            // if ($aitisi)
+            //     echo "<tr><td colspan=7><input type='checkbox' name='aitisi' value='1' checked>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
+            // else
+            //     echo "<tr><td colspan=7><input type='checkbox' name='aitisi' value='1'>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
             echo "<tr><td colspan=7><b><center>Οικογενειακή Κατάσταση</center></b></td></tr>";
             echo "<tr><td>Γάμος</td><td>";
             cmbGamos_edit($gamos);
@@ -375,30 +376,30 @@
             else
                 echo "<tr><td colspan=2>Ειδική Κατηγορία (κατά προτεραιότητα)</td><td colspan=5><input type='checkbox' name='eidikh' value='1'>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
 
-            if ($apospash)
-                echo "<tr><td colspan=2>Επιθυμώ απόσπαση</td><td colspan=5><div name='main'><input type='checkbox' id='apospash' name='apospash' value='1' checked='1'>Απο τη Γενική στην Ειδική Αγωγή</div></td></tr>";
-            else
-                echo "<tr><td colspan=2>Επιθυμώ απόσπαση</td><td colspan=5><div name='main'><input type='checkbox' id='apospash' name='apospash' value='1'>Απο τη Γενική στην Ειδική Αγωγή</div></td></tr>";
-            echo "<tr><td colspan=2></td><td colspan=5><div class='other' name='other' id='other'>";
-            if ($didakt)
-                echo "α) Διδακτορικό Ειδ.Αγωγής<input type='checkbox' name='didakt' value='1' checked><br>";
-            else
-                echo "α) Διδακτορικό Ειδ.Αγωγής<input type='checkbox' name='didakt' value='1'><br>";
-            if ($metapt)
-                echo "β) Μεταπτυχιακό Ειδ.Αγωγής<input type='checkbox' name='metapt' value='1' checked><br>";
-            else
-                echo "β) Μεταπτυχιακό Ειδ.Αγωγής<input type='checkbox' name='metapt' value='1'><br>";
-            if ($didask)
-                echo "γ) Διδασκαλείο Ειδ.Αγωγής<input type='checkbox' name='didask' value='1' checked><br>";
-            else
-                echo "γ) Διδασκαλείο Ειδ.Αγωγής<input type='checkbox' name='didask' value='1'><br>";
-            if ($paidag)
-                echo "δ) Πτυχίο παιδαγωγικών τμημάτων με αντικείμενο στην ειδική αγωγή<input type='checkbox' name='paidag' value='1' checked><br>";
-            else
-                echo "δ) Πτυχίο παιδαγωγικών τμημάτων με αντικείμενο στην ειδική αγωγή<input type='checkbox' name='paidag' value='1'><br>";
-            echo "ε) Προϋπηρεσία στην Ειδ.Αγωγή: <input size=2 name='eth' value=$ethea> Έτη,<input size=2 name='mhnes' value=$mhnesea> Μήνες,<input size=2 name='hmeres' value=$hmeresea> Ημέρες<br>";
-            echo "στ) Άλλο προσόν (π.χ. Braille, νοηματική): <input size=25 name='allo' value=$allo>";
-            echo "<br><small>Αν επιθυμείτε απόσπαση ΚΑΙ σε σχολεία της Γενικής εκπ/σης, συμπληρώστε τη <a href='aposp.doc'>φόρμα</a> και στείλτε την στο $av_foreas </small></div></td></div></tr>";
+            // if ($apospash)
+            //     echo "<tr><td colspan=2>Επιθυμώ απόσπαση</td><td colspan=5><div name='main'><input type='checkbox' id='apospash' name='apospash' value='1' checked='1'>Απο τη Γενική στην Ειδική Αγωγή</div></td></tr>";
+            // else
+            //     echo "<tr><td colspan=2>Επιθυμώ απόσπαση</td><td colspan=5><div name='main'><input type='checkbox' id='apospash' name='apospash' value='1'>Απο τη Γενική στην Ειδική Αγωγή</div></td></tr>";
+            // echo "<tr><td colspan=2></td><td colspan=5><div class='other' name='other' id='other'>";
+            // if ($didakt)
+            //     echo "α) Διδακτορικό Ειδ.Αγωγής<input type='checkbox' name='didakt' value='1' checked><br>";
+            // else
+            //     echo "α) Διδακτορικό Ειδ.Αγωγής<input type='checkbox' name='didakt' value='1'><br>";
+            // if ($metapt)
+            //     echo "β) Μεταπτυχιακό Ειδ.Αγωγής<input type='checkbox' name='metapt' value='1' checked><br>";
+            // else
+            //     echo "β) Μεταπτυχιακό Ειδ.Αγωγής<input type='checkbox' name='metapt' value='1'><br>";
+            // if ($didask)
+            //     echo "γ) Διδασκαλείο Ειδ.Αγωγής<input type='checkbox' name='didask' value='1' checked><br>";
+            // else
+            //     echo "γ) Διδασκαλείο Ειδ.Αγωγής<input type='checkbox' name='didask' value='1'><br>";
+            // if ($paidag)
+            //     echo "δ) Πτυχίο παιδαγωγικών τμημάτων με αντικείμενο στην ειδική αγωγή<input type='checkbox' name='paidag' value='1' checked><br>";
+            // else
+            //     echo "δ) Πτυχίο παιδαγωγικών τμημάτων με αντικείμενο στην ειδική αγωγή<input type='checkbox' name='paidag' value='1'><br>";
+            // echo "ε) Προϋπηρεσία στην Ειδ.Αγωγή: <input size=2 name='eth' value=$ethea> Έτη,<input size=2 name='mhnes' value=$mhnesea> Μήνες,<input size=2 name='hmeres' value=$hmeresea> Ημέρες<br>";
+            // echo "στ) Άλλο προσόν (π.χ. Braille, νοηματική): <input size=25 name='allo' value=$allo>";
+            // echo "<br><small>Αν επιθυμείτε απόσπαση ΚΑΙ σε σχολεία της Γενικής εκπ/σης, συμπληρώστε τη <a href='aposp.doc'>φόρμα</a> και στείλτε την στο $av_foreas </small></div></td></div></tr>";
             //echo "</div>";
             
             echo "<tr><td colspan=7><b><center> Σοβαροί λόγοι υγείας</center></b></td></tr>";
@@ -452,8 +453,8 @@
         echo "<tr><td colspan=2>Συνολική υπηρεσία: <small>(Έως $av_endofyear)</small></td><td colspan=5>$eth Έτη, $mhnes Μήνες, $hmeres Ημέρες</td></tr>";
         
         echo "<form id='src' name='src' action='save.php' method='POST'>\n";
-        echo "<tr><td colspan=7><input type='checkbox' name='org_eid' value='1'>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
-        echo "<tr><td colspan=7><input type='checkbox' name='aitisi' value='1'>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
+        echo "<tr><td colspan=7><input type='checkbox' name='org_eid' value='1'>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης) ή έχω αποσπαστεί μέσω Υ.ΠΑΙ.Θ.Α. στην ειδική αγωγή.</td></tr>";
+        // echo "<tr><td colspan=7><input type='checkbox' name='aitisi' value='1'>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
         echo "<tr><td colspan=7><b><center>Οικογενειακή Κατάσταση</center></b</td></tr>";
         echo "<tr><td>Γάμος</td><td>";
         cmbGamos();
@@ -472,15 +473,15 @@
         echo "</td></tr>";
         echo "<tr><td colspan=2>Ειδική Κατηγορία (κατά προτεραιότητα)</td><td colspan=5><input type='checkbox' name='eidikh' value='1'>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
 
-            echo "<tr><td colspan=2>Επιθυμώ απόσπαση</td><td colspan=5><div name='main'><input type='checkbox' id='apospash' name='apospash' value='1'>Απο τη Γενική στην Ειδική Αγωγή</div></td></tr>";
-            echo "<tr><td colspan=2></td><td colspan=5><div class='other' name='other' id='other'>";
-            echo "α) Διδακτορικό Ειδ.Αγωγής<input type='checkbox' name='didakt' value='1'><br>";
-            echo "β) Μεταπτυχιακό Ειδ.Αγωγής<input type='checkbox' name='metapt' value='1'><br>";
-            echo "γ) Διδασκαλείο Ειδ.Αγωγής<input type='checkbox' name='didask' value='1'><br>";
-            echo "δ) Πτυχίο παιδαγωγικών τμημάτων με αντικείμενο στην ειδική αγωγή<input type='checkbox' name='paidag' value='1'><br>";
-            echo "ε) Προϋπηρεσία στην Ειδ.Αγωγή: <input size=2 name='eth'> Έτη,<input size=2 name='mhnes'> Μήνες,<input size=2 name='hmeres'> Ημέρες<br>";
-            echo "στ) Άλλο προσόν (π.χ. Braille, νοηματική): <input size=25 name='allo' value=$allo>";
-            echo "<br><small>Αν επιθυμείτε απόσπαση ΚΑΙ σε σχολεία της Γενικής εκπ/σης, συμπληρώστε τη <a href='aposp.doc'>φόρμα</a> και στείλτε την στο $av_foreas </small></div></td></div></tr>";
+            // echo "<tr><td colspan=2>Επιθυμώ απόσπαση</td><td colspan=5><div name='main'><input type='checkbox' id='apospash' name='apospash' value='1'>Απο τη Γενική στην Ειδική Αγωγή</div></td></tr>";
+            // echo "<tr><td colspan=2></td><td colspan=5><div class='other' name='other' id='other'>";
+            // echo "α) Διδακτορικό Ειδ.Αγωγής<input type='checkbox' name='didakt' value='1'><br>";
+            // echo "β) Μεταπτυχιακό Ειδ.Αγωγής<input type='checkbox' name='metapt' value='1'><br>";
+            // echo "γ) Διδασκαλείο Ειδ.Αγωγής<input type='checkbox' name='didask' value='1'><br>";
+            // echo "δ) Πτυχίο παιδαγωγικών τμημάτων με αντικείμενο στην ειδική αγωγή<input type='checkbox' name='paidag' value='1'><br>";
+            // echo "ε) Προϋπηρεσία στην Ειδ.Αγωγή: <input size=2 name='eth'> Έτη,<input size=2 name='mhnes'> Μήνες,<input size=2 name='hmeres'> Ημέρες<br>";
+            // echo "στ) Άλλο προσόν (π.χ. Braille, νοηματική): <input size=25 name='allo' value=$allo>";
+            // echo "<br><small>Αν επιθυμείτε απόσπαση ΚΑΙ σε σχολεία της Γενικής εκπ/σης, συμπληρώστε τη <a href='aposp.doc'>φόρμα</a> και στείλτε την στο $av_foreas </small></div></td></div></tr>";
         
         echo "<tr><td colspan=7><b><center> Σοβαροί λόγοι υγείας</center></b></td></tr>";
         echo "<tr><td colspan=2>Ποσοστό αναπηρίας του ιδίου, παιδιών ή συζύγου</td><td colspan=5>";

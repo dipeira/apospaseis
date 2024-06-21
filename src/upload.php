@@ -25,8 +25,8 @@ if ($uploadOk && file_exists($target_file)) {
     $uploadOk = 0;
 }
 // Check file size
-if ($uploadOk && $_FILES["fileToUpload"]["size"] > 2097152) {
-    echo "Σφάλμα: Το αρχείο είναι πολύ μεγάλο (>2 ΜΒ).";
+if ($uploadOk && $_FILES["fileToUpload"]["size"] > 4194304) {
+    echo "Σφάλμα: Το αρχείο είναι πολύ μεγάλο (>4 ΜΒ).";
     $uploadOk = 0;
 }
 // Allow certain file formats
