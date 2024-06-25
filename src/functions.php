@@ -30,7 +30,7 @@ else {
 // Report all errors except E_NOTICE
 // This is the default value set in php.ini  
 // to avoid notices on some configurations
-error_reporting(E_ALL ^ E_NOTICE);
+error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ^ E_DEPRECATED);
 
 
 function getSchooledc ($id,$conn)
@@ -206,6 +206,9 @@ function getGamos ($gamos)
 }
 function getDimos ($dimos_code, $conn)
 {
+    if (!$dimos_code){
+        return '';
+    }        
     global $av_dimos;
     $query = "SELECT name from $av_dimos where id=$dimos_code";
         $result = mysqli_query($conn, $query);

@@ -21,7 +21,7 @@
           if (strlen($arr[$i])>0 && (strlen($arr[$i-1])==0))
               $err[] = $i-1;
       }
-      if ($err)
+      if (isset($err))
         return array_reverse($err);
   }
   // check for doubles
@@ -55,9 +55,9 @@
       $metapt = (!isset($_POST['metapt'])) ? 0 : $_POST['metapt'];
       $didask = (!isset($_POST['didask'])) ? 0 : $_POST['didask'];
       $paidag = (!isset($_POST['paidag'])) ? 0 : $_POST['paidag'];
-      $eth = ($_POST['eth']=='') ? 0 : $_POST['eth'];
-      $mhnes = ($_POST['mhnes']=='') ? 0 : $_POST['mhnes'];
-      $hmeres = ($_POST['hmeres']=='') ? 0 : $_POST['hmeres'];
+      $eth = !isset($_POST['eth']) || $_POST['eth'] =='' ? 0 : $_POST['eth'];
+      $mhnes = !isset($_POST['mhnes']) || $_POST['mhnes']=='' ? 0 : $_POST['mhnes'];
+      $hmeres = !isset($_POST['hmeres']) || $_POST['hmeres']=='' ? 0 : $_POST['hmeres'];
       $ygeia = $_POST['ygeia'];
       $ygeia_g = $_POST['ygeia_g'];
       $ygeia_a = $_POST['ygeia_a'];
@@ -66,7 +66,7 @@
       $comments = str_replace('"', "", $comments);
       $comments = str_replace("'", "", $comments);
       $org_eid = (!isset($_POST['org_eid'])) ? 0 : $_POST['org_eid'];
-      $allo = $_POST['allo'];
+      $allo = isset($_POST['allo']) ? $_POST['allo']: null;
         // Oxi synhphrethsh gia osoys den einai eggamoi
 		if ($gamos<>1)
           $dhmos_syn = 0;
@@ -106,7 +106,7 @@
   else
   // if page 2
   {
-    if ($_POST['duallist']){
+    if (isset($_POST['duallist'])){
         $sch_arr = $_POST['choices'];
     } else {
         $sch_arr = array();
@@ -117,7 +117,7 @@
     
     // check if all schools blank
     // only for apospaseis (επιτρέπει αρνητική δήλωση (χωρίς καμία επιλογή) μόνο στις βελτιώσεις, στις αποσπάσεις βγάζει μήνυμα λάθους)
-    if ($_POST['duallist']){
+    if (isset($_POST['duallist'])){
         if ($av_type != 1 && !is_array($sch_arr)){
             echo json_encode(Array('type'=>'error', 'title'=>'Σφάλμα!', 'message'=>"Πρέπει να εισάγετε τουλάχιστον μία επιλογή"));
             die();
@@ -161,7 +161,7 @@
         echo json_encode(Array('type'=>'error', 'title'=>'Σφάλμα!', 'message'=>$msg));
         die();
     }
-    if ($_POST['duallist']) {
+    if (isset($_POST['duallist'])) {
         $school_codes = [];
         if (count($sch_arr) > 0){
             foreach ($sch_arr as $sch) {
@@ -173,9 +173,9 @@
     }
 
 
-    $emp_id = $_POST['duallist'] ? $_POST['empid'] : $_POST['id'];
+    $emp_id = isset($_POST['duallist']) ? $_POST['empid'] : $_POST['id'];
 
-    if ($_POST['submitbtn'])
+    if (isset($_POST['submitbtn']))
         $submit=1;
 
     $query = "SELECT * from $av_ait WHERE emp_id = $emp_id";
@@ -187,7 +187,7 @@
 
     if ($exists)
     {
-        if ($submit){
+        if (isset($submit)){
             $query = "UPDATE $av_ait SET submitted=1,submit_date=NOW(),choices='$ser_p' WHERE emp_id='$emp_id'";
         }
         else {
@@ -197,7 +197,7 @@
     }
     else
     {
-        if ($submit)
+        if (isset($submit))
         {
             $query = "INSERT INTO $av_ait (emp_id,choices,submit_date,submitted) values ($emp_id,'$ser_p',".date("Y-m-d H:i:s").",1)";
         }
@@ -209,7 +209,7 @@
     }
     mysqli_close($mysqlconnection);
 
-    if ($submit){
+    if (isset($submit)){
         echo json_encode(Array('type'=>'success', 'title'=>'Επιτυχία!', 'message'=>"Επιτυχής υποβολή!"));    
     } else {
         echo json_encode(Array('type'=>'success', 'title'=>'Επιτυχία!', 'message'=>"Επιτυχής αποθήκευση!"));
