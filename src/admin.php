@@ -346,6 +346,11 @@
     ///////////////////
     elseif ($_GET['action']=="export" || $_GET['action']=="export_eid")
     {
+        if (is_staff() && $av_is_active){
+            echo "<h3>ΣΦΑΛΜΑ: Η εξαγωγή από διαπιστευμένο χρήστη επιτρέπεται μόνο όταν το σύστημα απενεργοποιηθεί...</h3>";
+            echo "<a class='btn btn-info' href='admin.php'>Επιστροφή</a>";
+            die();
+        }
         $apospaseis = $av_type == 1 ? 1 : 0;
         $i=0;
         $data = array();
@@ -583,6 +588,11 @@
     /////////////////////////////////////
     elseif ($_GET['action'] == 'eidiki')
     {
+        if (is_staff() && $av_is_active){
+            echo "<h3>ΣΦΑΛΜΑ: Η εξαγωγή από διαπιστευμένο χρήστη επιτρέπεται μόνο όταν το σύστημα απενεργοποιηθεί...</h3>";
+            echo "<a class='btn btn-info' href='admin.php'>Επιστροφή</a>";
+            die();
+        }
         $i = 0;
         $query = "SELECT *,a.id as ait_id from $av_ait a JOIN $av_emp e ON a.emp_id=e.id WHERE a.apospash = 1 or a.org_eid = 1";
         echo "<h3>Εκπ/κοί που έχουν αιτηθεί απόσπαση α) από Γενική σε Ειδική Αγωγή, β) από Ειδική σε Ειδική αγωγή</h3>";
@@ -699,6 +709,7 @@
     <form class="form-inline my-2 my-lg-0" action='login.php'>
       <input type='hidden' name = 'logout' value=1>
       <!-- <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"> -->
+      <small>Ενεργός χρήστης: <br><?php echo $_SESSION['user']; ?></small>&nbsp;
       <button class="btn btn-danger my-2 my-sm-0" type="submit">Έξοδος</button>
     </form>
   </div>
@@ -733,6 +744,12 @@
       if ($num == 0){
         echo "<h3>Δεν έχουν υποβληθεί αιτήσεις...</h3>";
         } else {
+            if (!$av_is_active):
+                ?>
+            <div class="alert alert-info" role="alert">
+                Η υποβολή αιτήσεων έχει απενεργοποιηθεί...
+            </div>
+            <?php endif;
             echo "<h3>Λίστα αιτήσεων</h3>";
             
             // submitted only checkbox

@@ -74,7 +74,7 @@ if($_REQUEST['action'] == "login"){
         session_start();
         $_SESSION['timeout'] = time() + (60 * 60);
 		// if system inactive, allow only administrator
-		if (!$av_is_active && $_REQUEST['username'] != $av_admin)
+		if (!$av_is_active && !is_authorized())
 		{
 			echo "<h3>H είσοδος απέτυχε διότι το σύστημα δεν είναι ενεργό...</h3>";
 			echo "<FORM><INPUT Type='button' VALUE='Επιστροφή' onClick='history.go(-1);return true;'></FORM>";
