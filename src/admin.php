@@ -169,8 +169,21 @@
         // if choices are made, prepare...
         if (strlen($row['choices']) > 0) {
             $sch_arr = unserialize($row['choices']);
-            for ($i = 0; $i < $av_choices; $i++) {
-                ${'s'.$i} = strlen($sch_arr[$i]) > 0 ? getSchooledc($sch_arr[$i],$mysqlconnection) : null;
+            // For staff members, only show count of schools
+            if (is_staff() && !is_admin()) {
+                $choice_count = count(array_filter($sch_arr));
+                $choice_output = "<tr><td colspan=7><center><strong>Αριθμός επιλογών σχολείων: $choice_count</strong></center></td></tr>";
+            } else {
+                // For admin and authorized staff, show full school details
+                for ($i = 0; $i < $av_choices; $i++) {
+                    ${'s'.$i} = strlen($sch_arr[$i]) > 0 ? getSchooledc($sch_arr[$i],$mysqlconnection) : null;
+                }
+                
+                $choice_output = "<tr><td colspan=4><center><strong>Προτιμήσεις</strong></center></td></tr>";
+                for ($i = 0; $i < $av_choices; $i++) {
+                    if (strlen(${'s'.$i}) == 0) continue;
+                    $choice_output .= "<tr><td>".($i+1)."η προτίμηση</td><td>".${'s'.$i}."</td></tr>\n";
+                }
             }
         }
 
@@ -302,10 +315,8 @@
         echo "<table id=\"mytbl\" class=\"table table-striped table-bordered table-responsive\" border=\"2\">\n";
         echo "<tr><td colspan=4><center><strong>Προτιμήσεις</strong></center></td></tr>";
         
-        for ($i = 0; $i < $av_choices; $i++) {
-          if (strlen(${'s'.$i}) == 0) continue;
-          echo "<tr><td>".($i+1)."η προτίμηση</td><td>".${'s'.$i}."</td></tr>\n";
-        }
+        // Display number of choices if staff member, otherwise display choices
+        echo $choice_output;
         
         if ($submitted)
             echo "<tr><td colspan=4><small>Υποβλήθηκε στις: ".  date("d-m-Y, H:i:s", strtotime($row['updated']))."</small></td></tr>";
