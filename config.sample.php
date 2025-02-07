@@ -34,4 +34,12 @@
   // Κωδικός ασφαλείας για το αρχικοποίηση βάσης (init.php)
   $av_init_pass = "ΧΧΧΧΧΧ";
 
+  // Ρυθμίσεις CAS Authentication
+  $av_use_cas = false;                    // Ενεργοποίηση CAS authentication
+  $av_cas_host = 'sso.sch.gr';       // CAS server hostname
+  $av_cas_port = 443;                     // CAS server port
+  $av_cas_context = '';               // CAS server context
+  $av_cas_server_ca_cert_path = '';       // Path to CA certificate (optional)
+  $av_cas_local_server = "";
+
 ?>
