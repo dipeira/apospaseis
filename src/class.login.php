@@ -168,7 +168,7 @@ class logmein {
     }
  
     //login form
-    function loginform($formname, $formclass, $formaction, $username_text){
+    function loginform($formname, $formclass, $formaction, $username_text, $password_text = 'Α.Φ.Μ. Εκπ/κού'){
         global $av_extra, $av_extra_name, $av_extra_label;
         //connect to DB
         $this->dbconnect();
@@ -179,7 +179,7 @@ class logmein {
     <input type="text" class="form-control" id="username" name="username">
   </div>
   <div class="form-group">
-    <label for="password">Α.Φ.Μ. Εκπ/κού</label>
+    <label for="password">'.$password_text.'</label>
     <input type="password" class="form-control" name="password" id="password">
   </div>';
 if ($av_extra) {

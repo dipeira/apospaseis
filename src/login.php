@@ -157,8 +157,7 @@ if ($_REQUEST['action'] == "login") {
                             </div>
                             <div class="card-body">
                                 <?php
-                                $username_text = $av_type == '3' ? 'Επώνυμο εκπ/κού' : 'Αριθμός Μητρώου Εκπ/κού';
-                                $log->loginform("login", "id", "", $username_text);
+                                $log->loginform("login", "id", "", 'Όνομα χρήστη', 'Κωδικός');
                                 ?>
                             </div>
                         </div>
