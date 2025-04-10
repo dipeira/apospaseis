@@ -360,9 +360,88 @@
 </html>
 
 <script type="text/javascript">
+  // Explicitly set placeholder attribute to help select2 show clear button
+  $('select').attr('placeholder', 'Επιλογή σχολείου');
+
+  // Add data-allow-clear attribute to enable clear button
+  $('select').attr('data-allow-clear', '1');
+
   $('select').select2({
       placeholder: 'Επιλογή σχολείου',
       allowClear: true,
       theme: 'bootstrap4'
   });
+
+  // Add a class to all select2 dropdowns for easier targeting
+  $('select').addClass('school-select');
+
+  // Ensure all selects have an empty option for clear button
+  $('.school-select').each(function() {
+    var $select = $(this);
+    if ($select.find('option[value=""]').length === 0) {
+      $select.prepend('<option value=""></option>');
+    }
+  });
+
+  // Store original options for each select (including empty option)
+  $('.school-select').each(function() {
+    var $select = $(this);
+    var originalOptions = $select.html();
+    $select.data('original-options', originalOptions);
+  });
+
+  function updateSchoolOptions() {
+    // Collect all selected values
+    var selectedValues = [];
+    $('.school-select').each(function() {
+      var val = $(this).val();
+      if(val) {
+        selectedValues.push(val);
+      }
+    });
+
+    $('.school-select').each(function() {
+      var $select = $(this);
+      var currentVal = $select.val();
+
+      // Restore original options
+      $select.html($select.data('original-options'));
+
+      // Re-set the current value to preserve selection
+      $select.val(currentVal);
+
+      // Remove options that are selected in other selects (except current value)
+      $select.find('option').each(function() {
+        var $option = $(this);
+        var optionVal = $option.attr('value');
+
+        if(optionVal === "" || optionVal === null) {
+          // skip placeholder/empty options
+          return;
+        }
+
+        if(optionVal === currentVal) {
+          // always keep the currently selected option
+          return;
+        }
+
+        if(selectedValues.includes(optionVal)) {
+          // remove options selected in other selects
+          $option.remove();
+        }
+      });
+
+      // Refresh select2 to reflect updated options and selection
+      $select.trigger('change.select2');
+    });
+  }
+
+  // Initial update on page load
+  updateSchoolOptions();
+
+  // Update options whenever a selection changes
+  $('.school-select').on('change', function() {
+    updateSchoolOptions();
+  });
+
 </script>
