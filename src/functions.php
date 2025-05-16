@@ -35,19 +35,21 @@ error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ^ E_DEPRECATED);
 
 function getSchooledc ($id,$conn)
 {
-        global $av_sch;
-        $query = "SELECT name from $av_sch where kwdikos='".$id."'";
-        $result = mysqli_query($conn, $query);
-        if (mysqli_num_rows($result)==0) {
-            return "Κανένα σχολείο";
-        }
-        else {
-          $row = mysqli_fetch_array($result);
-          return $row['name'];
-        }
+    if (!$id) return;
+    global $av_sch;
+    $query = "SELECT name from $av_sch where kwdikos='".$id."'";
+    $result = mysqli_query($conn, $query);
+    if (mysqli_num_rows($result)==0) {
+        return "Κανένα σχολείο";
+    }
+    else {
+        $row = mysqli_fetch_array($result);
+        return $row['name'];
+    }
 }
 function getSchool ($id,$conn)
 {
+    if (!$id) return;
     global $av_sch;
     if (!$id)
         return "";
@@ -62,6 +64,7 @@ function getSchool ($id,$conn)
 }
 function getSchoolID ($name,$conn)
 {
+    if (!$name) return;
     global $av_sch;
     $query = "SELECT id from $av_sch where name='".$name."'";
     $result = mysqli_query($conn, $query);
@@ -74,6 +77,7 @@ function getSchoolID ($name,$conn)
 }
 function getSchoolcode ($id, $conn)
 {
+    if (!$id) return;
     global $av_sch;
     $query = "SELECT kwdikos from $av_sch where id=".$id;
     $result = mysqli_query($conn, $query);
@@ -86,6 +90,7 @@ function getSchoolcode ($id, $conn)
 }
 function getSchoolcodefromname ($name, $conn)
 {
+    if (!$name) return;
     global $av_sch;
     $query = "SELECT kwdikos from $av_sch where name='".$name."'";
     $result = mysqli_query($conn, $query);
@@ -98,6 +103,7 @@ function getSchoolcodefromname ($name, $conn)
 }
 function getSchoolfromcode ($code, $conn)
 {
+    if (!$code) return;
     global $av_sch;
     $query = "SELECT name from $av_sch where kwdikos=".$code;
     $result = mysqli_query($conn, $query);
