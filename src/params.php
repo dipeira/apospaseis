@@ -2,6 +2,7 @@
   session_start();
   require_once "../config.php";
   require_once 'functions.php';
+  require_once 'head.php';
   
   // check if logged in
   include_once("class.login.php");
@@ -21,6 +22,11 @@
     width: 100%
   }
 </style>
+<script>
+  $(document).ready(function() {
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+</script>
 <html>
   <?php require_once('head.php'); ?>
   <body>
@@ -80,10 +86,19 @@
       ?>
       </tbody>
     </table>
+    <a href="#" id="srv-info" data-toggle="tooltip" data-placement="right" data-html="true" title="
+      Πίνακες σε χρήση:
+      Υπάλληλοι: <b><?= $av_emp ?></b><br>
+      Αιτήσεις: <b><?= $av_ait ?></b><br>
+      Σχολεία: <b><?= $av_sch ?></b><br>
+      Παράμετροι: <b><?= $av_params ?></b>">
+      Βάση δεδομένων σε χρήση: <b><?= $db_name ?></b>&nbsp;<i class="fas fa-info-circle"></i>
+    </a>
     <br>
     <input type="submit" name="submit" class='btn btn-success' value="Υποβολή">
     </form>
     <input type="button" class='btn btn-info' onclick="location.href='admin.php';" value="Επιστροφή" /> 
+    <br><br>
     </div>
   </body>
 </html>
