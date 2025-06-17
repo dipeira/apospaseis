@@ -575,7 +575,10 @@ function moria_key2per($key){
 }
 
 function count_rows($conn){
-  global $av_sch, $av_dimos, $av_emp;
+  global $av_sch, $av_dimos, $av_emp, $av_staff;
+  // compute staff length to remove from employee count
+  $staff = array_merge($av_staff, array('121212'));
+  $staff_len = count($staff);
   
   $query = "SELECT id from $av_sch";
   $result = mysqli_query($conn, $query);
@@ -587,7 +590,7 @@ function count_rows($conn){
 
   $query = "SELECT id from $av_emp";
   $result = mysqli_query($conn, $query);
-  $emp = mysqli_num_rows($result) - 1;
+  $emp = mysqli_num_rows($result) - $staff_len;
 
   return array('emp' => $emp, 'sch' => $sch, 'dimos' => $dimos);
 }

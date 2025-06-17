@@ -86,11 +86,14 @@
       ?>
       </tbody>
     </table>
+    <?php
+      $counts = count_rows($conn);
+      ?>
     <a href="#" id="srv-info" data-toggle="tooltip" data-placement="right" data-html="true" title="
       Πίνακες σε χρήση:
-      Υπάλληλοι: <b><?= $av_emp ?></b><br>
+      Υπάλληλοι: <b><?= $av_emp ?></b> (<?= $counts['emp'] ?>)<br>
       Αιτήσεις: <b><?= $av_ait ?></b><br>
-      Σχολεία: <b><?= $av_sch ?></b><br>
+      Σχολεία: <b><?= $av_sch ?></b> (<?= $counts['sch'] ?>)<br>
       Παράμετροι: <b><?= $av_params ?></b>">
       Βάση δεδομένων σε χρήση: <b><?= $db_name ?></b>&nbsp;<i class="fas fa-info-circle"></i>
     </a>
