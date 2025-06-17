@@ -319,8 +319,8 @@ function cmbYgeia_edit ($epil)
     echo "<select class='form-control' name=\"ygeia\">";
     if ($epil==0) echo "<option value=\"0\" selected>(Παρακαλώ επιλέξτε:)</option>";
         else echo "<option value=\"0\">(Παρακαλώ επιλέξτε:)</option>";
-    if ($epil==1) echo "<option value=\"1\" selected>50-60%</option>";
-        else echo "<option value=\"1\">50-60%</option>";
+    if ($epil==1) echo "<option value=\"1\" selected>50-66%</option>";
+        else echo "<option value=\"1\">50-66%</option>";
     if ($epil==2) echo "<option value=\"2\" selected>67-79%</option>";
         else echo "<option value=\"2\">67-79%</option>";
     if ($epil==3) echo "<option value=\"3\" selected>80% και άνω</option>";
@@ -355,7 +355,7 @@ function getYgeia ($y)
             $ret = "Όχι";
             break;
         case 1:
-            $ret = "50-60%";
+            $ret = "50-66%";
             break;
         case 2:
             $ret = "67-79%";
@@ -498,7 +498,7 @@ function compute_moria($emp_id, $conn, $eidiki = 0) {
             break;
     }
     // ygeias
-    // 1: 50-60, 2: 67-79, 3: >=80
+    // 1: 50-66, 2: 67-79, 3: >=80
     switch ($row['ygeia']) {
         case 1:
             $moria['ygeias'] = 5;
