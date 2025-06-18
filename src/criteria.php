@@ -10,7 +10,7 @@
     header("Location: login.php");
 
   // check if criteria are locked and user is not admin
-  $is_readonly = (getParam('criteria_lock', $conn) == '1' && !is_admin());
+  $is_readonly = (getParam('criteria_lock', $conn) == '1' && !is_authorized());
 ?>
   <?php require_once('head.php'); ?>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
@@ -110,7 +110,7 @@
     echo '</script>';
   }
 
-    $is_admin = $_SESSION['user']=="$av_admin" ? true : false;
+    //$is_admin = $_SESSION['user']=="$av_admin" ? true : false;
     // if admin redirect to admin page
     if ($_SESSION['user']=="$av_admin" && !isset($_GET['userid']))
         echo "  <meta http-equiv=\"refresh\" content=\"0; URL=admin.php\">";
@@ -191,7 +191,7 @@
         $submitted = $row['submitted'];
     }
 
-    if ($av_type == 1 && !$is_admin) {
+    if ($av_type == 1 && !is_authorized()) {
         $doc_btn = "<tr><td colspan=7><h3>Υποβολή δικαιολογητικών</h3>
         <p>ΣΗΜ: Η πλατφόρμα δέχεται την υποβολή πολλών δικαιολογητικών. Διαγραφή δικαιολογητικών μπορεί να γίνει ΜΟΝΟ ΠΡΙΝ την οριστική υποβολή.</p>
         <form id='upload-form' action='upload.php' class='form-horizontal' method='post' role='form' enctype='multipart/form-data'>
@@ -235,7 +235,7 @@
         $allo = $row['allo'];
         $allo = str_replace(" ", "&nbsp;", $allo);
         
-        if ($submitted && !$is_admin)
+        if ($submitted && !is_authorized())
             echo "<h3>Η αίτηση έχει υποβληθεί και δεν μπορείτε να την επεξεργαστείτε.</h3>";
         echo "";
         echo "<table id=\"mytbl\" class=\"table table-striped table-bordered table-responsive\" border=\"2\">\n";
@@ -248,7 +248,7 @@
         echo "<tr><td colspan=2>Συνολική υπηρεσία: <small>(Έως $av_endofyear)</small></td><td colspan=5>$eth Έτη, $mhnes Μήνες, $hmeres Ημέρες</td></tr>";
         echo $is_readonly ? "<tr><td colspan=7><h3>Τα παρακάτω στοιχεία έχουν κλειδωθεί και δεν μπορούν να επεξεργαστούν.</h3></td></tr>" : "";
         // if user has submitted
-        if ($submitted && !$is_admin)
+        if ($submitted && !is_authorized())
         {
             echo "<tr><td colspan=2>Ανάλυση μορίων: </td><td colspan=5>";
             $moria = compute_moria($id, $mysqlconnection);
