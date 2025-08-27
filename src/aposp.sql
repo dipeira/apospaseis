@@ -89,6 +89,7 @@ DROP TABLE IF EXISTS `apo_kena`;
 CREATE TABLE `apo_kena` (
   `id` int(11) NOT NULL,
   `klados` varchar(10) NOT NULL,
+  `ada` varchar(20) NULL DEFAULT NULL,
   `kena` text NOT NULL,
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;

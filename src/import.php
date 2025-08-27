@@ -39,9 +39,13 @@ if (!isset($_POST['submit']))
     echo "Όνομα αρχείου προς εισαγωγή:<br />\n";
     echo "<input size='50' type='file' name='filename'><br />\n";
     echo "<br>Τύπος (πίνακας) δεδομένων:<br>";
-    echo $av_type == 1 ?  "<input type='radio' name='type' value='1' $apo_disabled>Υπάλληλοι για απόσπαση&nbsp;<a href='../files/apo_employee.csv'>(δείγμα)</a><br>" :
-      "<input type='radio' name='type' value='4' $velt_disabled>Υπάλληλοι για βελτίωση&nbsp;<a href='../files/apo_employee_velt.csv'>(δείγμα)</a><br>";
-    // echo "<input type='radio' name='type' value='5'>Αναπληρωτές&nbsp;<a href='../files/apo_anapl.csv'>(δείγμα)</a><br>";
+    if ($av_type == 1){
+      echo "<input type='radio' name='type' value='1'>Υπάλληλοι για απόσπαση&nbsp;<a href='../files/apo_employee.csv'>(δείγμα)</a><br>";
+    } else if ($av_type == 2) {
+      echo "<input type='radio' name='type' value='4>Υπάλληλοι για βελτίωση&nbsp;<a href='../files/apo_employee_velt.csv'>(δείγμα)</a><br>";
+    } else {
+      echo "<input type='radio' name='type' value='5'>Υπάλληλοι για τοποθέτηση&nbsp;<a href='../files/apo_topo.csv'>(δείγμα)</a><br>";
+    }
     echo "<input type='radio' name='type' value='2'>Σχολεία&nbsp;<a href='../files/apo_school.csv'>(δείγμα)</a><br>";
     echo "<input type='radio' name='type' value='3' >Δήμοι&nbsp;<a href='../files/apo_dimos.csv'>(δείγμα)</a><br>";
     print "<input type='submit' name='submit' class='btn btn-success' value='Μεταφόρτωση'></form>";
@@ -143,7 +147,12 @@ if (!isset($_POST['submit']))
             }
             // set max execution time (for large files)
             set_time_limit (480);
-                $ret = mysqli_query($mysqlconnection, $import);
+            try {
+              $ret = mysqli_query($mysqlconnection, $import);
+            } catch (Exception $e) {
+              echo '<h3>Σφάλμα: '.$e->getMessage().'</h3>';
+              die("<br><a href='import.php'>Επιστροφή</a>");
+            }
             $num++;
         }
 

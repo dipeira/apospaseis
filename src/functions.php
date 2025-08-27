@@ -193,8 +193,10 @@ function getKenaSchoolNumber($klados, $ada, $conn){
     $query = "select kena from $av_kena WHERE klados='$klados' AND ada = '$ada'";
     $result = mysqli_query($conn, $query);
     $row = mysqli_fetch_assoc($result);
-    $arr = array_keys(unserialize($row['kena']));
-    return count($arr);    
+    if (mysqli_num_rows($result)==0) 
+        return 0;
+    else
+        return count(unserialize($row['kena']));
 }
 
 function getGamos ($gamos)

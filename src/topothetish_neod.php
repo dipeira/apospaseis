@@ -17,11 +17,12 @@
   if (!is_admin()){
     die("<h3>Σφάλμα αυθεντικοποίησης: Δεν επιτρέπεται η πρόσβαση...</h3>");
   }
+  
   $mysqlconnection = mysqli_connect($db_host, $db_user, $db_password, $db_name);
   mysqli_set_charset($mysqlconnection,"utf8");
 
-  define(MORIA_SYNYP, 4);
-  define(MORIA_ENTOP, 4);
+  define('MORIA_SYNYP', 4);
+  define('MORIA_ENTOP', 4);
 ?>
 
 <html>
