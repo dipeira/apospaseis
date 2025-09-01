@@ -154,17 +154,17 @@ function getKenaSchools ($epil, $klados, $ada, $conn, $sch)
     $row = mysqli_fetch_assoc($result);
     
     $arr = array_keys(unserialize($row['kena']));
+    $kena = unserialize($row['kena']);
 
     $ret = "<select class='form-control' name='p".$epil."' id='p".$epil."' style='width:100%;'>";
     $ret .= "<option value=\"\"></option>";
     foreach ($arr as $res)
     {
         $name = getSchoolfromcode($res,$conn);
-        //print_r($res);
         if ($sch == $name)
-            $ret .= "<option value=\"$res\" selected>$name</option>";
+            $ret .= "<option value=\"$res\" selected>$name (".$kena[$res].")</option>";
         else
-            $ret .= "<option value=\"$res\">$name</option>";
+            $ret .= "<option value=\"$res\">$name (".$kena[$res].")</option>";
     }
     $ret .= "</select>";
     return $ret;
