@@ -160,11 +160,12 @@ function getKenaSchools ($epil, $klados, $ada, $conn, $sch)
     $ret .= "<option value=\"\"></option>";
     foreach ($arr as $res)
     {
+        $kena_str = $kena[$res] == -1 ? ' (1 κενό)' : ' ('.-$kena[$res].' κενά)';
         $name = getSchoolfromcode($res,$conn);
         if ($sch == $name)
-            $ret .= "<option value=\"$res\" selected>$name (".$kena[$res].")</option>";
+            $ret .= "<option value=\"$res\" selected>$name $kena_str</option";
         else
-            $ret .= "<option value=\"$res\">$name (".$kena[$res].")</option>";
+            $ret .= "<option value=\"$res\">$name $kena_str</option>";
     }
     $ret .= "</select>";
     return $ret;
