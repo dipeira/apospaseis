@@ -163,7 +163,7 @@ function getKenaSchools ($epil, $klados, $ada, $conn, $sch)
         $kena_str = $kena[$res] == -1 ? ' (1 κενό)' : ' ('.-$kena[$res].' κενά)';
         $name = getSchoolfromcode($res,$conn);
         if ($sch == $name)
-            $ret .= "<option value=\"$res\" selected>$name $kena_str</option";
+            $ret .= "<option value=\"$res\" selected='selected'>$name $kena_str</option>";
         else
             $ret .= "<option value=\"$res\">$name $kena_str</option>";
     }

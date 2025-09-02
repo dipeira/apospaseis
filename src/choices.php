@@ -320,12 +320,12 @@
                 echo "<tr><td colspan=2><h3>Δεν έχουν καταχωρηθεί κενά για την ειδικότητά σας. Παρακαλώ προσπαθήστε αργότερα ή επικοινωνήστε με τη Δ/νση.</h3></td></tr>";
               } else {
                 for ($i=0; $i<$av_choices; $i++)
-                  echo "<tr><td>".($i+1)."η Προτίμηση</td><td>".getKenaSchools($i+1, $klados, $ada, $mysqlconnection, ${"s".$i});              
+                  echo "<tr><td>".($i+1)."η Προτίμηση</td><td>".getKenaSchools($i+1, $klados, $ada, $mysqlconnection, ${"s".$i})."</td></tr>";              
               }
             } else
             {
                 for ($i=0; $i<$av_choices; $i++)
-                  echo "<tr><td>".($i+1)."η Προτίμηση</td><td>".getSchools($i+1, $dim, 0, $mysqlconnection, ${"s".$i});
+                  echo "<tr><td>".($i+1)."η Προτίμηση</td><td>".getSchools($i+1, $dim, 0, $mysqlconnection, ${"s".$i}).'</td></tr>';
             }
             if ($has_aitisi)
                   echo "<tr><td colspan=2><small>Τελευταία ενημέρωση: ". date("d-m-Y, H:i:s", strtotime($row['updated']))."</small></td></tr>";
