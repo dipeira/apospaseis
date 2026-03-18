@@ -327,94 +327,101 @@ if (!isset($_POST['submit']))
     //Upload File
     elseif (is_uploaded_file($_FILES['filename']['tmp_name'])) {
         echo "<h3>" . "To αρχείο ". $_FILES['filename']['name'] ." ανέβηκε με επιτυχία." . "</h3>";
-
-        //Import uploaded file to Database
-        $handle = fopen($_FILES['filename']['tmp_name'], "r");
-        switch ($_POST['type'])
-        {
-            case 1:
-            case 4:
-            case 5:
-                mysqli_query($mysqlconnection, "DELETE FROM $av_emp WHERE am <> '$av_admin'");
-                $tbl = $av_emp;
-                mysqli_query($mysqlconnection, "TRUNCATE $av_ait");
-                break;
-            case 2:
-                mysqli_query($mysqlconnection, "TRUNCATE $av_sch");
-                $tbl = $av_sch;
-                break;
-            case 3:
-                mysqli_query($mysqlconnection, "TRUNCATE $av_dimos");
-                $tbl = $av_dimos;
-                break;
-        }
-        $num = 0;
-        $checked = 0;
-        $headers = 1;
-        
-        while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
-            // convert to utf8 using mb_helper
-            $data = array_map('mb_helper', $data);
-            // skip header line
-            if ($headers){
-                $headers = 0;
-                continue;
-            }
-            // check if csv & table columns are equal
-            if (!$checked)
+        try {
+            //Import uploaded file to Database
+            $handle = fopen($_FILES['filename']['tmp_name'], "r");
+            switch ($_POST['type'])
             {
-                $csvcols = count($data);
-                
-                switch ($_POST['type']) {
-                  case 1:
-                  case 4:
-                    $tblcols = 10;
-                    break;
-                  case 5:
-                    $tblcols = 7;
-                    break;
-                  case 2:
-                    $tblcols = 5;
-                    break;
-                  case 3:
-                    $tblcols = 1;
-                    break;
-                }
-
-                if ($csvcols <> $tblcols)
-                {
-                    echo "<h3>Σφάλμα: Λάθος αρχείο (Στήλες αρχείου: $csvcols <> στήλες πίνακα: $tblcols)</h3>";
-                    $ret = 0;
-                    break;
-                }
-                else
-                    $checked = 1;
-            }
-
-            switch ($_POST['type']){
-                // employees
                 case 1:
-                  $import="INSERT into $av_emp(name,surname,patrwnymo,klados,am,afm,org,eth,mhnes,hmeres) values('$data[0]','$data[1]','$data[2]','$data[3]','$data[4]','$data[5]','$data[6]','$data[7]','$data[8]','$data[9]')";
-                  break;
                 case 4:
-                  $import="INSERT into $av_emp(name,surname,patrwnymo,klados,am,afm,org,moria,entopiothta,synyphrethsh) values('$data[0]','$data[1]','$data[2]','$data[3]','$data[4]','$data[5]','$data[6]',$data[7],'$data[8]','$data[9]')";
-                  break;
                 case 5:
-                  $import="INSERT into $av_emp(name,surname,patrwnymo,klados,afm,seira,ada) values('$data[0]','$data[1]','$data[2]','$data[3]','$data[4]','$data[5]','$data[6]')";
-                  break;
-                // schools
+                    mysqli_query($mysqlconnection, "DELETE FROM $av_emp WHERE am <> '$av_admin'");
+                    $tbl = $av_emp;
+                    mysqli_query($mysqlconnection, "TRUNCATE $av_ait");
+                    break;
                 case 2:
-                  $import="INSERT into $av_sch(name,kwdikos,dim,omada,inactive) values('$data[0]','$data[1]','$data[2]','$data[3]','$data[4]')";
-                  break;
-                // dimoi
+                    mysqli_query($mysqlconnection, "TRUNCATE $av_sch");
+                    $tbl = $av_sch;
+                    break;
                 case 3:
-                  $import="INSERT into $av_dimos(name) values('$data[0]')";
-                  break;
+                    mysqli_query($mysqlconnection, "TRUNCATE $av_dimos");
+                    $tbl = $av_dimos;
+                    break;
             }
-            // set max execution time (for large files)
-            set_time_limit (480);
-                $ret = mysqli_query($mysqlconnection, $import);
-            $num++;
+            $num = 0;
+            $checked = 0;
+            $headers = 1;
+            
+                
+                while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
+                    // convert to utf8 using mb_helper
+                    $data = array_map('mb_helper', $data);
+                    // skip header line
+                    if ($headers){
+                        $headers = 0;
+                        continue;
+                    }
+                    // check if csv & table columns are equal
+                    if (!$checked)
+                    {
+                        $csvcols = count($data);
+                        
+                        switch ($_POST['type']) {
+                        case 1:
+                        case 4:
+                            $tblcols = 10;
+                            break;
+                        case 5:
+                            $tblcols = 7;
+                            break;
+                        case 2:
+                            $tblcols = 5;
+                            break;
+                        case 3:
+                            $tblcols = 1;
+                            break;
+                        }
+
+                        if ($csvcols <> $tblcols)
+                        {
+                            echo "<h3>Σφάλμα: Λάθος αρχείο (Στήλες αρχείου: $csvcols <> στήλες πίνακα: $tblcols)</h3>";
+                            $ret = 0;
+                            break;
+                        }
+                        else
+                            $checked = 1;
+                    }
+
+                    switch ($_POST['type']){
+                        // employees
+                        case 1:
+                        $import="INSERT into $av_emp(name,surname,patrwnymo,klados,am,afm,org,eth,mhnes,hmeres) values('$data[0]','$data[1]','$data[2]','$data[3]','$data[4]','$data[5]','$data[6]','$data[7]','$data[8]','$data[9]')";
+                        break;
+                        case 4:
+                        $import="INSERT into $av_emp(name,surname,patrwnymo,klados,am,afm,org,moria,entopiothta,synyphrethsh) values('$data[0]','$data[1]','$data[2]','$data[3]','$data[4]','$data[5]','$data[6]',$data[7],'$data[8]','$data[9]')";
+                        break;
+                        case 5:
+                        $import="INSERT into $av_emp(name,surname,patrwnymo,klados,afm,seira,ada) values('$data[0]','$data[1]','$data[2]','$data[3]','$data[4]','$data[5]','$data[6]')";
+                        break;
+                        // schools
+                        case 2:
+                        $import="INSERT into $av_sch(name,kwdikos,dim,omada,inactive) values('$data[0]','$data[1]','$data[2]','$data[3]','$data[4]')";
+                        break;
+                        // dimoi
+                        case 3:
+                        $import="INSERT into $av_dimos(name) values('$data[0]')";
+                        break;
+                    }
+                    // set max execution time (for large files)
+                    set_time_limit (480);
+                    $ret = mysqli_query($mysqlconnection, $import);
+                    $num++;
+                }
+        }
+        catch (Exception $e) {
+            echo "<h3>Παρουσιάστηκε σφάλμα κατά την εισαγωγή</h3>";
+            echo "Ελέγξτε το αρχείο ή επικοινωνήστε με το διαχειριστή.<br>";
+            echo "Μήνυμα λάθους: " . $e->getMessage() . "<br>";
         }
 
         fclose($handle);
