@@ -683,7 +683,19 @@
           <?php if ($av_type == 3): ?>
           <a class="dropdown-item" href="import_kena.php">Εισαγωγή κενών</a>
           <?php endif; ?>
+        </div>
       </li>
+      <?php if (is_admin()): ?>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownAdmin" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Διαχείριση
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownAdmin">
+          <a class="dropdown-item" href="manage_employees.php">Εκπαιδευτικοί</a>
+          <a class="dropdown-item" href="manage_schools.php">Σχολεία</a>
+        </div>
+      </li>
+      <?php endif; ?>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Εξαγωγή
