@@ -75,7 +75,7 @@ if ($action == 'delete' && isset($_GET['id'])) {
         <a class="navbar-brand" href="admin.php">Διαχείριση</a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item"><a class="nav-link" href="admin.php">Αρχική</a></li>
+                <li class="nav-item"><a class="nav-link" href="admin.php">Επιστροφή</a></li>
                 <li class="nav-item"><a class="nav-link" href="manage_employees.php">Εκπαιδευτικοί</a></li>
                 <li class="nav-item active"><a class="nav-link" href="manage_schools.php">Σχολεία</a></li>
             </ul>

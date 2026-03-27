@@ -28,9 +28,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $eth = (int)$_POST['eth'];
         $mhnes = (int)$_POST['mhnes'];
         $hmeres = (int)$_POST['hmeres'];
+        $moria = isset($_POST['moria']) ? (float)$_POST['moria'] : null;
+        $entopiothta = mysqli_real_escape_string($mysqlconnection, $_POST['entopiothta']);
+        $synyphrethsh = mysqli_real_escape_string($mysqlconnection, $_POST['synyphrethsh']);
         
-        $query = "INSERT INTO $av_emp (name, surname, patrwnymo, klados, am, afm, org, eth, mhnes, hmeres) 
-                  VALUES ('$name', '$surname', '$patrwnymo', '$klados', $am, $afm, $org, $eth, $mhnes, $hmeres)";
+        $query = "INSERT INTO $av_emp (name, surname, patrwnymo, klados, am, afm, org, eth, mhnes, hmeres, moria, entopiothta, synyphrethsh)
+                  VALUES ('$name', '$surname', '$patrwnymo', '$klados', $am, $afm, $org, $eth, $mhnes, $hmeres, " . ($moria !== null ? $moria : 'NULL') . ", '$entopiothta', '$synyphrethsh')";
         if (mysqli_query($mysqlconnection, $query)) {
             $message = "<div class='alert alert-success'>Ο υπάλληλος προστέθηκε με επιτυχία.</div>";
         } else {
@@ -48,9 +51,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $eth = (int)$_POST['eth'];
         $mhnes = (int)$_POST['mhnes'];
         $hmeres = (int)$_POST['hmeres'];
+        $moria = isset($_POST['moria']) ? (float)$_POST['moria'] : null;
+        $entopiothta = mysqli_real_escape_string($mysqlconnection, $_POST['entopiothta']);
+        $synyphrethsh = mysqli_real_escape_string($mysqlconnection, $_POST['synyphrethsh']);
 
-        $query = "UPDATE $av_emp SET name='$name', surname='$surname', patrwnymo='$patrwnymo', klados='$klados', 
-                  am=$am, afm=$afm, org=$org, eth=$eth, mhnes=$mhnes, hmeres=$hmeres WHERE id=$id";
+        $query = "UPDATE $av_emp SET name='$name', surname='$surname', patrwnymo='$patrwnymo', klados='$klados',
+                  am=$am, afm=$afm, org=$org, eth=$eth, mhnes=$mhnes, hmeres=$hmeres, moria=" . ($moria !== null ? $moria : 'NULL') . ", entopiothta='$entopiothta', synyphrethsh='$synyphrethsh' WHERE id=$id";
         if (mysqli_query($mysqlconnection, $query)) {
             $message = "<div class='alert alert-success'>Τα στοιχεία του υπαλλήλου ενημερώθηκαν.</div>";
         } else {
@@ -65,7 +71,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
                 $data = array_map('mb_helper', $data);
                 if ($headers) { $headers = 0; continue; }
-                if (count($data) < 10) continue;
+                
+                // Minimum required fields: 7 common + at least 2 more based on av_type
+                $min_fields = ($av_type == 2) ? 9 : 10;
+                if (count($data) < $min_fields) continue;
 
                 $name = mysqli_real_escape_string($mysqlconnection, $data[0]);
                 $surname = mysqli_real_escape_string($mysqlconnection, $data[1]);
@@ -74,12 +83,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $am = (int)$data[4];
                 $afm = (int)$data[5];
                 $org = (int)$data[6];
-                $eth = (int)$data[7];
-                $mhnes = (int)$data[8];
-                $hmeres = (int)$data[9];
+                
+                // Parse fields based on av_type
+                $eth = 0;
+                $mhnes = 0;
+                $hmeres = 0;
+                $moria = null;
+                $entopiothta = '';
+                $synyphrethsh = '';
+                
+                if ($av_type == 1) {
+                    // av_type 1: eth, mhnes, hmeres, entopiothta, synyphrethsh
+                    $eth = (int)$data[7];
+                    $mhnes = (int)$data[8];
+                    $hmeres = (int)$data[9];
+                    $entopiothta = isset($data[10]) ? mysqli_real_escape_string($mysqlconnection, $data[10]) : '';
+                    $synyphrethsh = isset($data[11]) ? mysqli_real_escape_string($mysqlconnection, $data[11]) : '';
+                } elseif ($av_type == 2) {
+                    // av_type 2: moria, entopiothta, synyphrethsh
+                    $moria = (float)$data[7];
+                    $entopiothta = isset($data[8]) ? mysqli_real_escape_string($mysqlconnection, $data[8]) : '';
+                    $synyphrethsh = isset($data[9]) ? mysqli_real_escape_string($mysqlconnection, $data[9]) : '';
+                }
 
-                $import = "INSERT INTO $av_emp (name, surname, patrwnymo, klados, am, afm, org, eth, mhnes, hmeres) 
-                           VALUES ('$name', '$surname', '$patrwnymo', '$klados', $am, $afm, $org, $eth, $mhnes, $hmeres)";
+                $import = "INSERT INTO $av_emp (name, surname, patrwnymo, klados, am, afm, org, eth, mhnes, hmeres, moria, entopiothta, synyphrethsh)
+                           VALUES ('$name', '$surname', '$patrwnymo', '$klados', $am, $afm, $org, $eth, $mhnes, $hmeres, " . ($moria !== null ? $moria : 'NULL') . ", '$entopiothta', '$synyphrethsh')";
                 if (mysqli_query($mysqlconnection, $import)) {
                     $num++;
                 } else {
@@ -122,7 +150,7 @@ if ($action == 'delete' && isset($_GET['id'])) {
         <a class="navbar-brand" href="admin.php">Διαχείριση</a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item"><a class="nav-link" href="admin.php">Αρχική</a></li>
+                <li class="nav-item"><a class="nav-link" href="admin.php">Επιστροφή</a></li>
                 <li class="nav-item active"><a class="nav-link" href="manage_employees.php">Εκπαιδευτικοί</a></li>
                 <li class="nav-item"><a class="nav-link" href="manage_schools.php">Σχολεία</a></li>
             </ul>
@@ -189,7 +217,7 @@ if ($action == 'delete' && isset($_GET['id'])) {
                             </div>
                             <div class="modal-body">
                                 <p>Επιλέξτε αρχείο CSV (διαχωριστικό ερωτηματικό ';').<br>
-                                Σειρά πεδίων: Όνομα;Επώνυμο;Πατρώνυμο;Κλάδος;ΑΜ;ΑΦΜ;Οργανική;Έτη;Μήνες;Ημέρες</p>
+                                Σειρά πεδίων: Όνομα;Επώνυμο;Πατρώνυμο;Κλάδος;ΑΜ;ΑΦΜ;Οργανική;<br><?php echo ($av_type == 1) ? 'Έτη;Μήνες;Ημέρες;Εντοπιότητα;Συνυπηρέτηση' : 'Μόρια;Εντοπιότητα;Συνυπηρέτηση'; ?></p>
                                 <input type="file" name="csv_file" required class="form-control-file">
                                 <input type="hidden" name="import_csv" value="1">
                             </div>
@@ -212,8 +240,8 @@ if ($action == 'delete' && isset($_GET['id'])) {
                 });
             </script>
 
-        <?php elseif ($action == 'add' || $action == 'edit'): 
-            $row = ['name'=>'','surname'=>'','patrwnymo'=>'','klados'=>'','am'=>'','afm'=>'','org'=>'','eth'=>0,'mhnes'=>0,'hmeres'=>0];
+        <?php elseif ($action == 'add' || $action == 'edit'):
+            $row = ['name'=>'','surname'=>'','patrwnymo'=>'','klados'=>'','am'=>'','afm'=>'','org'=>'','eth'=>0,'mhnes'=>0,'hmeres'=>0,'moria'=>null,'entopiothta'=>'','synyphrethsh'=>''];
             if ($action == 'edit' && isset($_GET['id'])) {
                 $id = (int)$_GET['id'];
                 $result = mysqli_query($mysqlconnection, "SELECT * FROM $av_emp WHERE id=$id");
@@ -266,6 +294,7 @@ if ($action == 'delete' && isset($_GET['id'])) {
                     </div>
                 </div>
 
+                <?php if ($av_type == 1): ?>
                 <h5>Προϋπηρεσία</h5>
                 <div class="form-row">
                     <div class="form-group col-md-2">
@@ -279,6 +308,29 @@ if ($action == 'delete' && isset($_GET['id'])) {
                     <div class="form-group col-md-2">
                         <label>Ημέρες</label>
                         <input type="number" name="hmeres" class="form-control" value="<?php echo $row['hmeres']; ?>">
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <?php if ($av_type == 2): ?>
+                <h5>Μόρια</h5>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label>Μόρια</label>
+                        <input type="number" step="0.01" name="moria" class="form-control" value="<?php echo $row['moria']; ?>">
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <h5>Στοιχεία</h5>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Εντοπιότητα</label>
+                        <textarea name="entopiothta" class="form-control" rows="3"><?php echo $row['entopiothta']; ?></textarea>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Συνυπηρέτηση</label>
+                        <textarea name="synyphrethsh" class="form-control" rows="3"><?php echo $row['synyphrethsh']; ?></textarea>
                     </div>
                 </div>
 
