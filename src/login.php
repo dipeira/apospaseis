@@ -1,35 +1,57 @@
 <?php
 if (isset($_SESSION))
-	session_destroy();
+    session_destroy();
 
 include_once '../config.php';
 include_once 'functions.php';
 //session_start();
 ?>
 <html>
-    <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title><?php echo $av_title." ".$av_foreas; ?></title></head>
+    <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title><?php echo $av_title . " " . $av_foreas; ?></title></head>
     <?php include_once('head.php'); ?>
 <body>
 <!-- <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed&subset=greek,latin' rel='stylesheet' type='text/css'>
 <LINK href="style.css" rel="stylesheet" type="text/css"> -->
 <?php
-include_once ("class.login.php");   
-    $log = new logmein();     //Instentiate the class
-    $log->dbconnect();        //Connect to the database
-   // $log->logout();
-    
-if ($_REQUEST['logout']==1)
-{
-    $_SESSION['loggedin'] = false;
-    $page = 'login.php';
-	echo '<script type="text/javascript">';
-	echo 'window.location.href="'.$page.'";';
-	echo '</script>';
+include_once("class.login.php");
+$log = new logmein(); //Instentiate the class
+$log->dbconnect(); //Connect to the database
+// $log->logout();
+
+$time_rem_str = "";
+preg_match("/[0-9]{1,2}[\/\-\.][0-9]{1,2}[\/\-\.][0-9]{4}/", $av_active_to, $matches);
+if (!empty($matches)) {
+    $av_date = $matches[0];
+    $av_datetime_str = str_replace('/', '-', $av_date) . ' ' . $av_active_to_time;
+    $active_until = strtotime($av_datetime_str);
+
+    $time_remaining = $active_until - time();
+    if ($time_remaining > 0 && $av_is_active == '1') {
+        $days_rem = floor($time_remaining / 86400);
+        $hours_rem = floor(($time_remaining % 86400) / 3600);
+        $minutes_rem = floor(($time_remaining % 3600) / 60);
+        $time_rem_str = "<br><small><i>(Υπολείπονται: $days_rem ημέρες, $hours_rem ώρες, $minutes_rem λεπτά)</i></small><br>";
+    }
+
+    if (isset($av_auto_disable) && $av_auto_disable == '1' && $av_is_active == '1') {
+        if ($active_until !== false && time() > $active_until) {
+            $av_is_active = false;
+            $query = "UPDATE $av_params SET pvalue='0' WHERE pkey='av_is_active'";
+            mysqli_query($conn, $query);
+        }
+    }
 }
 
-if (!isset($_REQUEST['action']))
-{
-    ?>
+if ($_REQUEST['logout'] == 1) {
+    $_SESSION['loggedin'] = false;
+    $page = 'login.php';
+    echo '<script type="text/javascript">';
+    echo 'window.location.href="' . $page . '";';
+    echo '</script>';
+}
+
+if (!isset($_REQUEST['action'])) {
+?>
     <div class="container">
         <div class="jumbotron">
             <h1 class="display-4"><?= $av_title; ?></h1>
@@ -39,7 +61,7 @@ if (!isset($_REQUEST['action']))
         </div>
 <div class="row">
     <div class="col-md-12">
-<?="<h4>Διάστημα υποβολής αιτήσεων: από $av_active_from έως $av_active_to και ώρα $av_active_to_time.</h4>";?>
+<?="<h4>Διάστημα υποβολής αιτήσεων: από $av_active_from έως $av_active_to και ώρα $av_active_to_time.$time_rem_str</h4>"; ?>
 </div>
 </div>
     
@@ -47,17 +69,17 @@ if (!isset($_REQUEST['action']))
 <?php
     if (!$av_is_active)
         echo "<br><h3>Το σύστημα δεν είναι ενεργό αυτή τη στιγμή.</h3><br><br>";
-    if ($av_display_login){
+    if ($av_display_login) {
         $username_text = $av_type == '3' ? 'Επώνυμο εκπ/κού' : 'Αριθμός Μητρώου Εκπ/κού';
         $log->loginform("login", "id", "", $username_text);
     }
-    
-	echo "<br><br><small>$av_custom</small><br><br>";
-		
+
+    echo "<br><br><small>$av_custom</small><br><br>";
+
     echo "<small>Για τη σωστή λειτουργία της εφαρμογής προτείνεται η χρήση<br>
         ενός σύγχρονου προγράμματος περιήγησης (browser),<br>π.χ. Mozilla Firefox, Google Chrome ή Internet Explorer (έκδοση 7 ή νεότερη).</small>";
-	echo "<br><br>";
-	
+    echo "<br><br>";
+
 }
 //if (!$_SESSION['timeout'])
 //    $_SESSION['timeout'] = time() + (30 * 60);
@@ -68,41 +90,40 @@ if (!isset($_REQUEST['action']))
 //    exit;
 //}
 //if($_REQUEST['action'] == "login" && !$timeout){
-if($_REQUEST['action'] == "login"){
-    if($log->login("logon", $_REQUEST['username'], $_REQUEST['password'], $_REQUEST[$av_extra_name]) == true)
-    {
+if ($_REQUEST['action'] == "login") {
+    if ($log->login("logon", $_REQUEST['username'], $_REQUEST['password'], $_REQUEST[$av_extra_name]) == true) {
         session_start();
         $_SESSION['timeout'] = time() + (60 * 60);
-		// if system inactive, allow only administrator
-		if (!$av_is_active && !is_authorized())
-		{
-			echo "<h3>H είσοδος απέτυχε διότι το σύστημα δεν είναι ενεργό...</h3>";
-			echo "<FORM><INPUT Type='button' VALUE='Επιστροφή' onClick='history.go(-1);return true;'></FORM>";
-			die();
-		}
+        // if system inactive, allow only administrator
+        if (!$av_is_active && !is_authorized()) {
+            echo "<h3>H είσοδος απέτυχε διότι το σύστημα δεν είναι ενεργό...</h3>";
+            echo "<FORM><INPUT Type='button' VALUE='Επιστροφή' onClick='history.go(-1);return true;'></FORM>";
+            die();
+        }
         if (is_authorized()) {
             $page = 'admin.php';
-        } else {
-            $page = ($av_type == 1) ? 'criteria.php' : 'choices.php';    
+        }
+        else {
+            $page = ($av_type == 1) ? 'criteria.php' : 'choices.php';
         }
         echo '<script type="text/javascript">';
-        echo 'window.location.href="'.$page.'";';
+        echo 'window.location.href="' . $page . '";';
         echo '</script>';
     }
-else {
-    echo "<div class='container'>";
-    echo "<h3>H είσοδος απέτυχε...</h3>";
-    $extra_col = $av_extra ? " - ".$av_extra_label : '';
-    echo $av_type == 3 ? "<br><p>Δοκιμάστε ξανά με έναν έγκυρο συνδυασμό Επωνύμου - Α.Φ.Μ.$extra_col</p>" :
-        "<br><p>Δοκιμάστε ξανά με έναν έγκυρο συνδυασμό Α.Μ. - Α.Φ.Μ.$extra_col</p>";
-    echo "<FORM><INPUT Type='button' class='btn btn-info' VALUE='Επιστροφή' onClick='history.go(-1);return true;'></FORM>";
-    echo "</div>";
-}
+    else {
+        echo "<div class='container'>";
+        echo "<h3>H είσοδος απέτυχε...</h3>";
+        $extra_col = $av_extra ? " - " . $av_extra_label : '';
+        echo $av_type == 3 ? "<br><p>Δοκιμάστε ξανά με έναν έγκυρο συνδυασμό Επωνύμου - Α.Φ.Μ.$extra_col</p>" :
+            "<br><p>Δοκιμάστε ξανά με έναν έγκυρο συνδυασμό Α.Μ. - Α.Φ.Μ.$extra_col</p>";
+        echo "<FORM><INPUT Type='button' class='btn btn-info' VALUE='Επιστροφή' onClick='history.go(-1);return true;'></FORM>";
+        echo "</div>";
+    }
 }
 ?>
 </div>
 <?php
-    require_once('footer.html');
+require_once('footer.html');
 ?>
 </body>
 </html>

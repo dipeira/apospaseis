@@ -34,4 +34,9 @@
   // Κωδικός ασφαλείας για το αρχικοποίηση βάσης (init.php)
   $av_init_pass = "ΧΧΧΧΧΧ";
 
+  // Προεπιλεγμένη ζώνη ώρας (Timezone)
+  $av_timezone = "Europe/Athens";
+
+  date_default_timezone_set($av_timezone);
+
 ?>
