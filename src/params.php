@@ -79,6 +79,10 @@
               echo '<option value="1">Αποσπάσεις</option><option value="2">Βελτιώσεις</option><option value="3" selected="selected">Τοποθετήσεις αναπληρωτών / νεοδιόριστων</option>';
             }
             echo '</select></td>';
+          } else if ($row['pkey'] == 'av_active_from') {
+            echo "<td><input type='date' class='form-control param-input' name='".$row['pkey']."' value='".$row['pvalue']."'></td>";
+          } else if ($row['pkey'] == 'av_active_to') {
+            echo "<td><input type='datetime-local' class='form-control param-input' name='".$row['pkey']."' value='".$row['pvalue']."'></td>";
           } else
             echo "<td><textarea class='param-input' rows='2' cols='40' name='".$row['pkey']."'>".$row['pvalue']."</textarea></td>";
           echo "</tr>";
