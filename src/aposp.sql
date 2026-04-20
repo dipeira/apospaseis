@@ -68,6 +68,7 @@ DROP TABLE IF EXISTS `apo_school`;
 CREATE TABLE IF NOT EXISTS `apo_school` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
+  `ppysde_name` varchar(100) NOT NULL,
   `kwdikos` varchar(10) NOT NULL COMMENT '7ψήφιος κωδικός ΥΠΑΙΘ',
   `dim` tinyint(4) NOT NULL COMMENT 'dimotiko=2, nip=1',
   `omada` tinyint(4) NOT NULL COMMENT 'Ομάδα σχολείου (για περιορισμό αποσπάσεων)',
