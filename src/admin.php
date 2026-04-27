@@ -360,32 +360,63 @@ if ($_SESSION['loggedin'] == false) {
                     die();
                 }
                 $apospaseis = $av_type == 1 ? 1 : 0;
+                $andClause = '';
+                if ($apospaseis) {
+                    if ($_GET['action'] == "export_eid") {
+                        $andClause = ' AND (a.apospash = 1 or a.org_eid = 1)';
+                    } else {
+                        $andClause = ' AND NOT (a.apospash = 1 or a.org_eid = 1)';
+                    }
+                }
+
+                // Count submitted in $av_ait for comparison
+                $q_count = "SELECT count(*) as cnt FROM $av_ait a WHERE a.submitted=1 $andClause";
+                $res_count = mysqli_query($mysqlconnection, $q_count);
+                $row_count = mysqli_fetch_assoc($res_count);
+                $count_ait = $row_count['cnt'];
                 $i = 0;
                 $data = array();
                 if ($apospaseis) {
-                    $andClause = $_GET['action'] == "export_eid" ? ' AND (a.apospash = 1 or a.org_eid = 1)' : '';
                     $query = "SELECT e.id,e.am,e.name,e.surname,e.patrwnymo,s.ppysde_name as sch_name,e.org,e.klados,a.choices,a.dhmos_ent,a.dhmos_syn,a.apospash,a.checked,a.check_comments,a.org_eid,a.eid_kat
-            FROM $av_ait a 
-            JOIN $av_emp e ON a.emp_id=e.id 
-            JOIN $av_sch s ON s.kwdikos = e.org 
-            WHERE submitted=1 $andClause";
+                    FROM $av_ait a 
+                    JOIN $av_emp e ON a.emp_id=e.id 
+                    JOIN $av_sch s ON s.kwdikos = e.org 
+                    WHERE submitted=1 $andClause";
                 } elseif ($av_type == 3) {
                     $query = "SELECT e.id,LPAD(e.afm,9,0),e.name,e.surname,e.patrwnymo,e.klados,a.choices
-            FROM $av_ait a 
-            JOIN $av_emp e ON a.emp_id=e.id 
-            WHERE submitted=1";
+                    FROM $av_ait a 
+                    JOIN $av_emp e ON a.emp_id=e.id 
+                    WHERE submitted=1";
                 } else {
                     $query = "SELECT e.id,e.am,e.name,e.surname,e.patrwnymo,s.ppysde_name as sch_name,e.moria,e.entopiothta,e.synyphrethsh,e.org,e.klados,a.choices
-            FROM $av_ait a 
-            JOIN $av_emp e ON a.emp_id=e.id 
-            JOIN $av_sch s ON s.kwdikos = e.org 
-            WHERE submitted=1";
+                    FROM $av_ait a 
+                    JOIN $av_emp e ON a.emp_id=e.id 
+                    JOIN $av_sch s ON s.kwdikos = e.org 
+                    WHERE submitted=1";
                 }
+
                 $result = mysqli_query($mysqlconnection, $query);
                 $num = mysqli_num_rows($result);
                 if ($num == 0) {
-                    echo "Δεν υπάρχουν δεδομένα για εξαγωγή!<br><br>";
-                    echo "<form action='admin.php'><input type='submit' value='Επιστροφή'></form>";
+                    if ($count_ait > 0) {
+                        echo "<div class='alert alert-danger'>Δεν βρέθηκαν δεδομένα για εξαγωγή, παρόλο που υπάρχουν $count_ait υποβληθείσες αιτήσεις!<br>Ελέγξτε αν οι εκπαιδευτικοί και τα σχολεία έχουν εισαχθεί σωστά στο σύστημα (πιθανή αποτυχία JOIN).";
+                        $missing_teachers = [];
+                        $q_m = ($av_type == 3) ? 
+                            "SELECT a.id as ait_id, e.surname, e.name, a.emp_id FROM $av_ait a LEFT JOIN $av_emp e ON a.emp_id=e.id WHERE a.submitted=1 $andClause AND e.id IS NULL" :
+                            "SELECT a.id as ait_id, e.surname, e.name, e.am, a.emp_id, e.org, s.id as sid FROM $av_ait a LEFT JOIN $av_emp e ON a.emp_id=e.id LEFT JOIN $av_sch s ON s.kwdikos = e.org WHERE a.submitted=1 $andClause AND (e.id IS NULL OR s.id IS NULL)";
+                        $res_m = mysqli_query($mysqlconnection, $q_m);
+                        while($row_m = mysqli_fetch_assoc($res_m)){
+                            if (!$row_m['surname']) $missing_teachers[] = "Αίτηση Α/Α ".$row_m['ait_id']." (Ο εκπ/κός με ID ".$row_m['emp_id']." δεν βρέθηκε)";
+                            else $missing_teachers[] = $row_m['surname']." ".$row_m['name']." (Α.Μ. ".$row_m['am'].") - Πρόβλημα με τον κωδικό οργανικής (".$row_m['org'].")";
+                        }
+                        if (count($missing_teachers)) {
+                            echo "<br><b>Εκπαιδευτικοί που λείπουν:</b><br><ul><li>".implode("</li><li>", $missing_teachers)."</li></ul>";
+                        }
+                        echo "</div>";
+                    } else {
+                        echo "<div class='alert alert-info'>Δεν υπάρχουν δεδομένα για εξαγωγή!</div>";
+                    }
+                    echo "<form action='admin.php'><input type='submit' class='btn btn-info' value='Επιστροφή'></form>";
                     die();
                 }
                 // fetch data
@@ -427,9 +458,7 @@ if ($_SESSION['loggedin'] == false) {
                         $data = $tmpdata;
                     } else {
                         // if geniki to eidiki OR eidiki to eidiki, skip
-                        if ($_GET['action'] == "export" && ($row0['apospash'] || $row0['org_eid'])) {
-                            continue;
-                        }
+                        // Note: Filtered at query level now
                         // if schools is enabled, show school names
                         if ($_GET['schools'] == 1) {
                             $tmpArr = array();
@@ -521,6 +550,23 @@ if ($_SESSION['loggedin'] == false) {
 
                 echo "</tbody></table>";
                 echo "<br>";
+
+                if ($count_ait != $num) {
+                    echo "<div class='alert alert-warning'>Προσοχή: Ο αριθμός των υποβληθέντων αιτήσεων ($count_ait) διαφέρει από τον αριθμό των αιτήσεων που εξάγονται ($num). <br>Αυτό μπορεί να οφείλεται σε ελλιπή στοιχεία εκπαιδευτικών ή σχολείων στις αντίστοιχες βάσεις δεδομένων (αποτυχία JOIN).";
+                    $missing_teachers = [];
+                    $q_m = ($av_type == 3) ? 
+                        "SELECT a.id as ait_id, e.surname, e.name, a.emp_id FROM $av_ait a LEFT JOIN $av_emp e ON a.emp_id=e.id WHERE a.submitted=1 $andClause AND e.id IS NULL" :
+                        "SELECT a.id as ait_id, e.surname, e.name, e.am, a.emp_id, e.org, s.id as sid FROM $av_ait a LEFT JOIN $av_emp e ON a.emp_id=e.id LEFT JOIN $av_sch s ON s.kwdikos = e.org WHERE a.submitted=1 $andClause AND (e.id IS NULL OR s.id IS NULL)";
+                    $res_m = mysqli_query($mysqlconnection, $q_m);
+                    while($row_m = mysqli_fetch_assoc($res_m)){
+                        if (!$row_m['surname']) $missing_teachers[] = "Αίτηση Α/Α ".$row_m['ait_id']." (Ο εκπ/κός με ID ".$row_m['emp_id']." δεν βρέθηκε)";
+                        else $missing_teachers[] = $row_m['surname']." ".$row_m['name']." (Α.Μ. ".$row_m['am'].") - Πρόβλημα με τον κωδικό οργανικής (".$row_m['org'].")";
+                    }
+                    if (count($missing_teachers)) {
+                        echo "<br><b>Εκπαιδευτικοί που λείπουν:</b><br><ul><li>".implode("</li><li>", $missing_teachers)."</li></ul>";
+                    }
+                    echo "</div>";
+                }
                 $page = ob_get_contents();
                 ob_end_flush();
 
