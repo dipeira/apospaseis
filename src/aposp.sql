@@ -95,6 +95,16 @@ CREATE TABLE `apo_kena` (
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `role` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
 --
 -- Αρχικά δεδομένα του πίνακα `apo_params`
 --
@@ -123,4 +133,7 @@ INSERT INTO `apo_params` (`id`, `pkey`, `pvalue`, `pdescr`, `pcheck`) VALUES
 (22, 'av_link_vel', '  ', 'Σύνδεσμος εγκυκλίου βελτιώσεων (εμφανίζεται στη βοήθεια της εφαρμογής)', 0),
 (23, 'av_canundo', '1', 'Ο διαχειριστής μπορεί να αναιρέσει την υποβολή', 1),
 (24, 'av_canalter', '1', 'Ο διαχειριστής μπορεί να αλλάξει την οργανική και τη συνολική υπηρεσία του εκπ/κού', 1),
-(25, 'criteria_lock', '0', 'Κλείδωμα κριτηρίων απόσπασης', 1);
+(25, 'criteria_lock', '0', 'Κλείδωμα κριτηρίων απόσπασης', 1),
+(26, 'av_emp', 'apo_employee', 'Πίνακας υπαλλήλων', 0),
+(27, 'av_ait', 'apo_aitisi', 'Πίνακας αιτήσεων', 0),
+(28, 'av_sch', 'apo_school', 'Πίνακας σχολείων', 0);

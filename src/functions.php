@@ -779,13 +779,25 @@ function show_uploaded_files($am, $notable = false, $can_delete = true){
 
 // return true if staff
 function is_staff() {
-    global $av_staff;
-    return in_array((int)$_SESSION['user'], $av_staff);
+    global $conn;
+    if (!isset($_SESSION['user'])) return false;
+    $user = mysqli_real_escape_string($conn, $_SESSION['user']);
+    $res = mysqli_query($conn, "SELECT role FROM users WHERE username='$user'");
+    if ($res && $row = mysqli_fetch_assoc($res)) {
+        return $row['role'] == 'user' || $row['role'] == 'admin';
+    }
+    return false;
 }
 // return true if admin
 function is_admin() {
-    global $av_admin;
-    return $_SESSION['user']==$av_admin || $_SESSION['user']=='admin';
+    global $conn;
+    if (!isset($_SESSION['user'])) return false;
+    $user = mysqli_real_escape_string($conn, $_SESSION['user']);
+    $res = mysqli_query($conn, "SELECT role FROM users WHERE username='$user'");
+    if ($res && $row = mysqli_fetch_assoc($res)) {
+        return $row['role'] == 'admin';
+    }
+    return false;
 }
 function is_authorized() {
     return is_staff() || is_admin();

@@ -64,7 +64,8 @@ if ($_SESSION['auth'])
     mysqli_set_charset($mysqlconnection,"utf8");    
 
     // insert admin user
-    $query = "INSERT INTO $av_emp(name, surname, patrwnymo, klados, am, afm, org, eth, mhnes, hmeres, lastlogin) VALUES ('admin', '', '', '', '$av_admin', '$av_admin_pass', '0', '0', '0', '0', CURRENT_TIMESTAMP)";
+    $hashed_password = password_hash('password', PASSWORD_DEFAULT);
+    $query = "INSERT INTO users (username, password, role) VALUES ('admin', '$hashed_password', 'admin')";
     $result = mysqli_query($mysqlconnection, $query);
     if ($result) {
       echo "<h3>Έγινε επιτυχής εισαγωγή διαχειριστή στη βάση δεδομένων!</h3>";

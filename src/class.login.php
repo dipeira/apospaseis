@@ -40,6 +40,13 @@ class logmein {
         $this->get_vars();
         $this->theConnection = mysqli_connect($this->hostname_logon, $this->username_logon, $this->password_logon, $this->database_logon) or die ('Unable to connect to the database');
         $this->theConnection->set_charset('utf8');
+        
+        // Load active av_emp from parameters
+        $res = mysqli_query($this->theConnection, "SELECT pvalue FROM apo_params WHERE pkey='av_emp'");
+        if ($res && $row = mysqli_fetch_assoc($res)) {
+            $this->user_table = $row['pvalue'];
+        }
+        
         return;
     }
  

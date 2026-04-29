@@ -145,6 +145,7 @@ include_once 'functions.php';
         }
     }
     ?>
+        <div class="text-right mt-4"><a href="admin_login.php" class="text-muted"><small>Είσοδος Διαχειριστή</small></a></div>
     </div>
     <?php
     require_once('footer.html');
