@@ -732,6 +732,7 @@ if ($_SESSION['loggedin'] == false) {
                                         <a class="dropdown-item" href="manage_employees.php">Εκπαιδευτικοί</a>
                                         <a class="dropdown-item" href="manage_schools.php">Σχολεία</a>
                                         <a class="dropdown-item" href="manage_dimos.php">Δήμοι</a>
+                                        <a class="dropdown-item" href="manage_users.php">Χρήστες</a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" href="year_setup.php">Ρύθμιση Έτους (Πίνακες)</a>
                                     </div>
