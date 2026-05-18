@@ -44,10 +44,12 @@ include_once 'functions.php';
 
     // Check if system is globally active within dates
     $system_active = ($av_is_active == '1');
-    if ($active_from && time() < $active_from)
-        $system_active = false;
-    if ($active_until && time() > $active_until)
-        $system_active = false;
+    if ($av_auto_disable == 1) {
+        if ($active_from && time() < $active_from)
+            $system_active = false;
+        if ($active_until && time() > $active_until)
+            $system_active = false;
+    }
 
 
     if ($_REQUEST['logout'] == 1) {
@@ -145,7 +147,8 @@ include_once 'functions.php';
         }
     }
     ?>
-        <div class="text-right mt-4"><a href="admin_login.php" class="text-muted"><small>Είσοδος Διαχειριστή</small></a></div>
+        <div class="text-right mt-4"><a href="admin_login.php" class="text-muted"><small>Είσοδος Διαχειριστή</small></a>
+        </div>
     </div>
     <?php
     require_once('footer.html');
