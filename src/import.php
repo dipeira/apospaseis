@@ -86,34 +86,44 @@ function compute_service_time($hm_dior, $proyp, $av_endofyear)
 <?php require_once('head.php'); ?>
 
 <body>
-    <div class="container">
+    <div class="container container-wide mt-5">
+        <div class="card card-custom shadow-sm mb-4">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">Εισαγωγή Δεδομένων στη Βάση</h4>
+            </div>
+            <div class="card-body">
         <?php
         if (!isset($_POST['submit'])) {
-            echo "<h2> Εισαγωγή δεδομένων στη βάση δεδομένων </h2>";
-            echo "ΠΡΟΣΟΧΗ: Η δυνατότητα αυτή διαγράφει όλα τα δεδομένα απο τον πίνακα που θα επιλεγεί, πριν εισάγει σε αυτόν τα νέα.<br><br>";
+            echo "<div class='alert alert-warning shadow-sm'><strong>ΠΡΟΣΟΧΗ:</strong> Η δυνατότητα αυτή διαγράφει όλα τα δεδομένα από τον πίνακα που θα επιλεγεί, πριν εισάγει σε αυτόν τα νέα.</div>";
             $rows = count_rows($mysqlconnection);
-            echo "(Αριθμός εγγραφών που υπάρχουν στη Β.Δ.: Υπάλληλοι: " . $rows['emp'] . ', Σχολεία: ' . $rows['sch'] . ', Δήμοι: ' . $rows['dimos'] . ')<br>';
-            echo "<br><strong>ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Η ενέργεια αυτή δεν είναι αναστρέψιμη...</strong><br><br>";
-            echo "<form enctype='multipart/form-data' action='import.php' method='post'>";
-            echo "Όνομα αρχείου προς εισαγωγή:<br />\n";
-            echo "<input size='50' type='file' name='filename'><br />\n";
-            echo "<br>Τύπος (πίνακας) δεδομένων:<br>";
-            // echo "<input type='radio' name='type' value='5'>Αναπληρωτές&nbsp;<a href='../files/apo_anapl.csv'>(δείγμα)</a><br>";
+            echo "<p class='text-muted'>(Αριθμός εγγραφών που υπάρχουν στη Β.Δ.: Υπάλληλοι: <strong>" . $rows['emp'] . "</strong>, Σχολεία: <strong>" . $rows['sch'] . "</strong>, Δήμοι: <strong>" . $rows['dimos'] . "</strong>)</p>";
+            echo "<div class='alert alert-danger shadow-sm'><strong>ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Η ενέργεια αυτή δεν είναι αναστρέψιμη!</strong></div>";
+            
+            echo "<form enctype='multipart/form-data' action='import.php' method='post' class='mt-4'>";
+            echo "<div class='form-group mb-4'>";
+            echo "<label class='font-weight-bold'>Όνομα αρχείου προς εισαγωγή:</label>";
+            echo "<input type='file' name='filename' class='form-control-file'>";
+            echo "</div>";
+
+            echo "<div class='form-group mb-4'>";
+            echo "<label class='font-weight-bold'>Τύπος (πίνακας) δεδομένων:</label><br>";
             if ($av_type == 1) {
-                echo "<input type='radio' name='type' value='1'>Υπάλληλοι για απόσπαση (από αρχείο)&nbsp;<a href='../files/apo_employee.csv'>(δείγμα)</a><br>";
-                echo "<input type='radio' name='type' value='6'>Υπάλληλοι για απόσπαση (από API Πρωτέα)&nbsp;<a href='#'>(οδηγίες)</a><br>";
+                echo "<div class='custom-control custom-radio mb-2'><input type='radio' id='type1' name='type' value='1' class='custom-control-input' required><label class='custom-control-label' for='type1'>Υπάλληλοι για απόσπαση (από αρχείο) <a href='../files/apo_employee.csv' class='text-muted'>(δείγμα)</a></label></div>";
+                echo "<div class='custom-control custom-radio mb-2'><input type='radio' id='type6' name='type' value='6' class='custom-control-input' required><label class='custom-control-label' for='type6'>Υπάλληλοι για απόσπαση (από API Πρωτέα) <a href='#' class='text-muted'>(οδηγίες)</a></label></div>";
             } else if ($av_type == 2) {
-                echo "<input type='radio' name='type' value='4'>Υπάλληλοι για βελτίωση&nbsp;<a href='../files/apo_employee_velt.csv'>(δείγμα)</a><br>";
+                echo "<div class='custom-control custom-radio mb-2'><input type='radio' id='type4' name='type' value='4' class='custom-control-input' required><label class='custom-control-label' for='type4'>Υπάλληλοι για βελτίωση <a href='../files/apo_employee_velt.csv' class='text-muted'>(δείγμα)</a></label></div>";
             } else if ($av_type == 3) {
-                echo "<input type='radio' name='type' value='5'>Αναπληρωτές&nbsp;<a href='../files/apo_anapl.csv'>(δείγμα)</a><br>";
+                echo "<div class='custom-control custom-radio mb-2'><input type='radio' id='type5' name='type' value='5' class='custom-control-input' required><label class='custom-control-label' for='type5'>Αναπληρωτές <a href='../files/apo_anapl.csv' class='text-muted'>(δείγμα)</a></label></div>";
             }
-            echo "<input type='radio' name='type' value='2'>Σχολεία&nbsp;<a href='../files/apo_school.csv'>(δείγμα)</a><br>";
-            echo "<input type='radio' name='type' value='3' >Δήμοι&nbsp;<a href='../files/apo_dimos.csv'>(δείγμα)</a><br>";
-            print "<input type='submit' name='submit' class='btn btn-success' value='Μεταφόρτωση'></form>";
-            echo "<small>ΣΗΜ.: Η εισαγωγή ενδέχεται να διαρκέσει μερικά λεπτά, ειδικά για μεγάλα αρχεία.<br>Μη φύγετε από τη σελίδα αν δεν πάρετε κάποιο μήνυμα.</small>";
+            echo "<div class='custom-control custom-radio mb-2'><input type='radio' id='type2' name='type' value='2' class='custom-control-input' required><label class='custom-control-label' for='type2'>Σχολεία <a href='../files/apo_school.csv' class='text-muted'>(δείγμα)</a></label></div>";
+            echo "<div class='custom-control custom-radio mb-4'><input type='radio' id='type3' name='type' value='3' class='custom-control-input' required><label class='custom-control-label' for='type3'>Δήμοι <a href='../files/apo_dimos.csv' class='text-muted'>(δείγμα)</a></label></div>";
+            echo "</div>";
+
+            print "<button type='submit' name='submit' class='btn btn-custom btn-success mr-3'>Μεταφόρτωση</button>";
+            echo "<a href='admin.php' class='btn btn-custom btn-info'>Επιστροφή</a>";
+            echo "<div class='mt-3'><small class='text-muted'>ΣΗΜ.: Η εισαγωγή ενδέχεται να διαρκέσει μερικά λεπτά, ειδικά για μεγάλα αρχεία. Μη φύγετε από τη σελίδα αν δεν πάρετε κάποιο μήνυμα.</small></div>";
             echo "</form>";
-            echo "<br><br>";
-            echo "<a href='admin.php' class='btn btn-info'>Επιστροφή</a>";
+            echo "</div></div></div></body></html>";
             exit;
         }
 
@@ -122,12 +132,12 @@ function compute_service_time($hm_dior, $proyp, $av_endofyear)
         // Check if it's an API import (type 6)
         if ($_POST['type'] == 6) {
             // API Import for employees
-            echo "<h3>Εισαγωγή υπαλλήλων από API Πρωτέα</h3>";
+            echo "<h4 class='mb-4'>Εισαγωγή υπαλλήλων από API Πρωτέα</h4>";
 
             // Check if cURL is available
             if (!function_exists('curl_version')) {
-                echo "<h3>Σφάλμα: Η επέκταση cURL δεν είναι διαθέσιμη. Ενεργοποιήστε την στο php.ini</h3>";
-                echo "<a href='import.php'>Επιστροφή</a><br>";
+                echo "<div class='alert alert-danger'><strong>Σφάλμα:</strong> Η επέκταση cURL δεν είναι διαθέσιμη. Ενεργοποιήστε την στο php.ini</div>";
+                echo "<a href='import.php' class='btn btn-custom btn-info'>Επιστροφή</a><br>";
                 die();
             }
 
@@ -436,11 +446,13 @@ function compute_service_time($hm_dior, $proyp, $av_endofyear)
                 echo $num ? "Έγινε εισαγωγή $num εγγραφών στον πίνακα $tbl.<br>" : '';
             }
         } else {
-            echo "Δεν επιλέξατε αρχείο ή χρησιμοποιήσατε λάθος τύπο εισαγωγής<br><br>";
+            echo "<div class='alert alert-warning'>Δεν επιλέξατε αρχείο ή χρησιμοποιήσατε λάθος τύπο εισαγωγής.</div>";
         }
 
-        echo "<a href='import.php'>Επιστροφή</a>";
+        echo "<br><a href='import.php' class='btn btn-custom btn-info mt-3'>Επιστροφή</a>";
         ?>
+            </div>
+        </div>
     </div>
 </body>
 

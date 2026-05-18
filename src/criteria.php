@@ -195,9 +195,9 @@ $is_readonly = (getParam('criteria_lock', $conn) == '1' && !is_authorized());
             <input type='hidden' id='am' name='am' value='" . $am . "'>    
             <p>Επιλέξτε αρχείο για υποβολή:&nbsp;</p>
             <p><small><i>(Επιτρέπονται μόνο αρχεία PDF, PNG, JPG, TIFF, DOCX έως 4MB το καθένα)</i></small></p>
-            <input type='file' name='fileToUpload' id='fileToUpload'>
+            <input type='file' name='fileToUpload' id='fileToUpload' class='form-control-file'>
             <br><br>
-            <input type='submit' value='Υποβολή αρχείου' name='submit' class='btn btn-sm btn-warning'>
+            <input type='submit' value='Υποβολή αρχείου' name='submit' class='btn btn-custom btn-sm btn-warning'>
         </form><div id='result'></div></td></tr>";
         } else {
             $doc_btn = '';
@@ -233,8 +233,8 @@ $is_readonly = (getParam('criteria_lock', $conn) == '1' && !is_authorized());
 
             if ($submitted && !is_authorized())
                 echo "<h3>Η αίτηση έχει υποβληθεί και δεν μπορείτε να την επεξεργαστείτε.</h3>";
-            echo "";
-            echo "<table id=\"mytbl\" class=\"table table-striped table-bordered table-responsive\" border=\"2\">\n";
+            echo "<div class='card card-custom shadow-sm mb-4'><div class='card-body table-responsive'>\n";
+            echo "<table id=\"mytbl\" class=\"table table-striped table-bordered\" border=\"2\">\n";
             echo "<thead class='thead-light'><th colspan=7>Βήμα 1: Υποβολή στοιχείων</th></thead>";
             echo "<tr><td colspan=2>Ονοματεπώνυμο Εκπ/κού:</td><td colspan=5>" . $name . " " . $surname . "</td></tr>";
             echo "<tr><td colspan=2>Πατρώνυμο: </td><td colspan=5>" . $patrwnymo . "</td></tr>";
@@ -297,9 +297,9 @@ $is_readonly = (getParam('criteria_lock', $conn) == '1' && !is_authorized());
                 echo "</form>";
                 // show uploaded files with delete disabled
                 show_uploaded_files($userid, false, false);
-                echo "<tr><td colspan=7><a href='choices.php' class='btn btn-info'>Συνέχεια στο Βήμα 2</a></td></tr>";
+                echo "<tr><td colspan=7><a href='choices.php' class='btn btn-custom btn-info'>Συνέχεια στο Βήμα 2</a></td></tr>";
                 if (!isset($_GET['userid']))
-                    echo "<tr><td colspan=7><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' class='btn btn-danger' value='Έξοδος'></form></td></tr>";
+                    echo "<tr><td colspan=7><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' class='btn btn-custom btn-danger' value='Έξοδος'></form></td></tr>";
             }
             // if not submitted
             else {
@@ -355,9 +355,9 @@ $is_readonly = (getParam('criteria_lock', $conn) == '1' && !is_authorized());
                 echo "<input type='hidden' name = 'id' value='$id'>";
                 echo "<input type='hidden' name = 'part' value='1'>";
                 if (!$is_readonly) {
-                    echo "<tr><td colspan=7><INPUT TYPE='submit' name='save' class='btn btn-success' VALUE='Αποθήκευση'></td></tr>";
+                    echo "<tr><td colspan=7><INPUT TYPE='submit' name='save' class='btn btn-custom btn-success' VALUE='Αποθήκευση'></td></tr>";
                 }
-                echo "<tr><td colspan=7><a href='choices.php' class='btn btn-info'>Συνέχεια στο Βήμα 2</a></td></tr>";
+                echo "<tr><td colspan=7><a href='choices.php' class='btn btn-custom btn-info'>Συνέχεια στο Βήμα 2</a></td></tr>";
                 echo "</form>";
                 echo "</tr>\n";
                 if (!$is_readonly) {
@@ -365,17 +365,17 @@ $is_readonly = (getParam('criteria_lock', $conn) == '1' && !is_authorized());
                 }
                 show_uploaded_files($userid, !$is_readonly);
                 if (!isset($_GET['userid'])) {
-                    echo "<tr><td colspan=7><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' class='btn btn-danger' value='Έξοδος'></form></td></tr>";
+                    echo "<tr><td colspan=7><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' class='btn btn-custom btn-danger' value='Έξοδος'></form></td></tr>";
                 } else {
-                    echo "<tr><td colspan=7><form action='admin.php'><input type='hidden' name = 'check' value=1><input type='submit' class='btn btn-danger' value='Επιστροφή'></form></td></tr>";
+                    echo "<tr><td colspan=7><form action='admin.php'><input type='hidden' name = 'check' value=1><input type='submit' class='btn btn-custom btn-danger' value='Επιστροφή'></form></td></tr>";
                 }
             }
             echo "</table>";
-            echo "";
+            echo "</div></div>";
         }
         // if user has NOT saved an application
         else {
-            echo "";
+            echo "<div class='card card-custom shadow-sm mb-4'><div class='card-body table-responsive'>\n";
             echo "<table id=\"mytbl\" class=\"table table-striped table-bordered\" border=\"2\">\n";
             echo "<thead><th colspan=7>Φόρμα υποβολής στοιχείων</th></thead>";
             echo "<tr><td colspan=2>Ονοματεπώνυμο Εκπ/κού:</td><td colspan=5>" . $name . " " . $surname . "</td></tr>";
@@ -423,14 +423,14 @@ $is_readonly = (getParam('criteria_lock', $conn) == '1' && !is_authorized());
             echo "<input type='hidden' name = 'id' value='$id'>";
             echo "<input type='hidden' name = 'part' value='1'>";
             if (!$is_readonly) {
-                echo "<tr><td colspan=7><INPUT TYPE='submit' class='btn btn-success' name='save' VALUE='Αποθήκευση'></td></tr>";
+                echo "<tr><td colspan=7><INPUT TYPE='submit' class='btn btn-custom btn-success' name='save' VALUE='Αποθήκευση'></td></tr>";
             }
-            echo "<tr><td colspan=7><a href='choices.php' class='btn btn-info'>Συνέχεια στο Βήμα 2</a></td></tr>";
+            echo "<tr><td colspan=7><a href='choices.php' class='btn btn-custom btn-info'>Συνέχεια στο Βήμα 2</a></td></tr>";
             echo "</form>";
             if (!isset($_GET['userid']))
-                echo "<tr><td colspan=7><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' class='btn btn-danger' value='Έξοδος'></form></td></tr>";
+                echo "<tr><td colspan=7><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' class='btn btn-custom btn-danger' value='Έξοδος'></form></td></tr>";
             echo "</table>";
-            echo "";
+            echo "</div></div>";
         }
         mysqli_close($mysqlconnection);
         ?>

@@ -47,7 +47,7 @@ if ($_SESSION['loggedin'] == false) {
                 "language": {
                     "url": "https://cdn.datatables.net/plug-ins/1.10.21/i18n/Greek.json"
                 },
-                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Όλα"]]
+                "lengthMenu": [[15, 25, 50, -1], [15, 25, 50, "Όλα"]]
             });
         });
     </script>
@@ -201,7 +201,8 @@ if ($_SESSION['loggedin'] == false) {
                     $dim = 0;
                 echo "<center>";
                 echo "<h2>Αίτηση εκπαιδευτικού</h2>";
-                echo "<table id=\"mytbl\" class=\"table table-striped table-hover table-sm\" border=\"1\">\n";
+                echo "<div class='card card-custom shadow-sm mb-4'><div class='card-body table-responsive'>\n";
+                echo "<table id=\"mytbl\" class=\"table table-custom table-striped table-hover table-sm\" border=\"0\">\n";
                 // echo "<thead><th colspan=7>Αίτηση εκπαιδευτικού</th></thead>";
                 echo "<tr><td colspan=2>Ονοματεπώνυμο Εκπ/κού:</td><td colspan=5>" . $name . " " . $surname . "</td></tr>";
                 echo "<tr><td colspan=2>Πατρώνυμο: </td><td colspan=5>" . $patrwnymo . "</td></tr>";
@@ -232,7 +233,7 @@ if ($_SESSION['loggedin'] == false) {
                         echo "<tr><td colspan=2>Συνολική υπηρεσία: </td><td colspan=5><input size=2 name='ethy' value=$ethy> Έτη,<input size=2 name='mhnesy' value=$mhnesy> Μήνες,<input size=2 name='hmeresy' value=$hmeresy> Ημέρες</td></tr>";
                     }
                     if ($av_canalter)
-                        echo "<tr><td colspan=2></td><td colspan=4><input type='submit' class='btn btn-info' onclick='return myaction()' value='Αποθήκευση'></td></tr>";
+                        echo "<tr><td colspan=2></td><td colspan=4><input type='submit' class='btn btn-custom btn-info' onclick='return myaction()' value='Αποθήκευση'></td></tr>";
                     // end of changeable elements
                     // print moria analysis
                     echo "<tr><td colspan=2>Ανάλυση μορίων: </td><td colspan=5>";
@@ -307,10 +308,11 @@ if ($_SESSION['loggedin'] == false) {
                     echo "<tr><td colspan=2>Σχόλια - Παρατηρήσεις</td><td colspan=5>$comments</td></tr>";
                     $blabla = "Δηλώνω υπεύθυνα ότι δεν έχω οριστεί στέλεχος εκπαίδευσης (λ.χ. προϊστάμενος/μένη ολιγοθέσιας σχολικής μονάδας, διευθυντής/ντρια σχολ. μονάδας)<br> και ότι δεν υπηρετώ σε θέση με θητεία που λήγει μετά τις 31-08-$av_etos.";
                     echo "<tr><td colspan=7><input type='checkbox' name='ypdil' value='1' checked disabled>$blabla</td></tr>";
-                    echo "</table>";
                 }
+                echo "</table></div></div>";
                 echo "<br>";
-                echo "<table id=\"mytbl\" class=\"table table-striped table-bordered table-responsive\" border=\"2\">\n";
+                echo "<div class='card card-custom shadow-sm mb-4'><div class='card-body table-responsive'>\n";
+                echo "<table id=\"mytbl2\" class=\"table table-custom table-striped table-bordered\" border=\"0\">\n";
                 echo "<tr><td colspan=4><center><strong>Προτιμήσεις</strong></center></td></tr>";
 
                 // Display number of choices if staff member, otherwise display choices
@@ -324,28 +326,34 @@ if ($_SESSION['loggedin'] == false) {
                 echo "<tr><td colspan=4><center><input type='hidden' name='emp_id' value=$emp_id></td></tr>";
                 // change employee elements
                 if ($av_type == 1) {
-                    echo "<tr><td colspan=4><center><a href='criteria.php?userid=$am'><button type='button' class='btn btn-success'>Επεξεργασία</button></a></center></td></tr>";
+                    echo "<tr><td colspan=4><center><a href='criteria.php?userid=$am'><button type='button' class='btn btn-custom btn-success'>Επεξεργασία</button></a></center></td></tr>";
                 }
                 echo "</form>";
-                echo "<tr><td colspan=4><center><form action='admin.php'><input type='submit' class='btn btn-danger' value='Eπιστροφή'></form></center></td></tr>";
-                echo "</table>";
+                echo "<tr><td colspan=4><center><form action='admin.php'><input type='submit' class='btn btn-custom btn-danger' value='Eπιστροφή'></form></center></td></tr>";
+                echo "</table></div></div>";
                 if ($submitted && $av_type == 1) {
                     echo "<form action='admin.php' method='post'>";
-                    echo "<br><table class='table table-striped table-sm' border=2><th colspan=2>Έλεγχος αίτησης</th>";
-                    echo "<tr><td>Ειδική κατηγορία:</td><td>";
+                    echo "<div class='fixed-bottom bg-white border-top shadow-lg p-2' style='z-index: 1030; max-height: 40vh; overflow-y: auto;'>";
+                    echo "<div class='container container-wide'>";
+                    echo "<table class='table table-sm table-bordered mb-0'>";
+                    echo "<thead class='thead-light'><th colspan=2>Έλεγχος αίτησης</th></thead>";
+                    echo "<tr><td style='width: 20%;'>Ειδική κατηγορία:</td><td>";
                     $chkd = $row['eid_kat'] ? 'checked' : '';
                     echo "<input type='checkbox' name='eid_kat' value='1' $chkd>";
                     echo "</td></tr>";
                     echo "<tr><td>Έλεγχθηκε:</td><td>";
                     echo $row['checked'] ?
-                        "<input type='checkbox' name='checked' value='1' checked> <small>(Στις " . date("d-m-Y, H:i:s", strtotime($row['check_date'])) . ")</small>" :
+                        "<input type='checkbox' name='checked' value='1' checked> <small class='text-muted'>(Στις " . date("d-m-Y, H:i", strtotime($row['check_date'])) . ")</small>" :
                         "<input type='checkbox' name='checked' value='1'>";
                     echo "</td></tr>";
-                    echo "<td>Σχόλια ελέγχου:</td><td><textarea rows=4 cols=60 name='check_comments' >" . $row['check_comments'] . "</textarea></td></tr>";
+                    echo "<tr><td>Σχόλια ελέγχου:</td><td><textarea rows=2 cols=60 name='check_comments' class='form-control form-control-sm' >" . $row['check_comments'] . "</textarea></td></tr>";
                     show_uploaded_files($am);
-                    echo "<tr><td colspan=2><input type='submit' class='btn btn-success' value='Αποθήκευση' onclick='return myaction()'/></td></tr>";
+                    echo "<tr><td colspan=2><input type='submit' class='btn btn-custom btn-success btn-sm float-right' value='Αποθήκευση' onclick='return myaction()'/></td></tr>";
                     echo "<input type='hidden' name='id' value=$id>";
+                    echo "</table>";
+                    echo "</div></div>";
                     echo "</form>";
+                    echo "<style>body { padding-bottom: 250px; }</style>";
                 } else if ($av_type == 1) {
                     show_uploaded_files($am, true);
                 }
@@ -583,9 +591,9 @@ if ($_SESSION['loggedin'] == false) {
                     "<a href='admin.php?action=$expLink'>Απόκρυψη σχολείων</a>" :
                     "<a href='admin.php?action=$expLink&schools=1'>Εμφάνιση σχολείων";
                 echo $getSchoolLink . "<br><br>";
-                echo "<BUTTON TYPE='submit' class='btn btn-success'>Εξαγωγή στο excel</BUTTON><br><br>";
+                echo "<BUTTON TYPE='submit' class='btn btn-custom btn-success'>Εξαγωγή στο excel</BUTTON><br><br>";
                 echo "</form>";
-                echo "<form action='admin.php'><input type='submit' class='btn btn-info' value='Επιστροφή'></form>";
+                echo "<form action='admin.php'><input type='submit' class='btn btn-custom btn-info' value='Επιστροφή'></form>";
                 //ob_end_clean();
             }
             /////////////////
@@ -607,7 +615,8 @@ if ($_SESSION['loggedin'] == false) {
                 $result = mysqli_query($mysqlconnection, $query);
                 $num = mysqli_num_rows($result);
                 if ($num > 0) {
-                    echo "<table id=\"mytbl\" class=\"table table-striped table-bordered table-responsive\" border=\"2\">\n";
+                    echo "<div class='card card-custom shadow-sm mb-4'><div class='card-body table-responsive'>\n";
+                    echo "<table id=\"mytbl\" class=\"table table-custom table-striped table-bordered\" border=\"0\">\n";
                     echo "<thead>";
                     echo "<th>Επώνυμο</th>\n";
                     echo "<th>Όνομα</th>\n";
@@ -630,10 +639,10 @@ if ($_SESSION['loggedin'] == false) {
                         $i++;
                     }
                     echo "</tbody>";
-                    echo "</table>";
+                    echo "</table></div></div>";
                 }
                 echo "Σύνολο: $num";
-                echo "<form action='admin.php'><input type='submit' class='btn btn-info' value='Επιστροφή'></form>";
+                echo "<form action='admin.php'><input type='submit' class='btn btn-custom btn-info' value='Επιστροφή'></form>";
             }
             /////////////////////////////////////
             // applications ONLY in eidiki agogi
@@ -650,7 +659,8 @@ if ($_SESSION['loggedin'] == false) {
                 $result = mysqli_query($mysqlconnection, $query);
                 $num = mysqli_num_rows($result);
                 if ($num > 0) {
-                    echo "<table id=\"mytbl\" class=\"table table-striped table-bordered table-responsive\" border=\"2\">\n";
+                    echo "<div class='card card-custom shadow-sm mb-4'><div class='card-body table-responsive'>\n";
+                    echo "<table id=\"mytbl\" class=\"table table-custom table-striped table-bordered\" border=\"0\">\n";
                     echo "<thead>";
                     echo "<th>Α/Α</th>\n";
                     echo "<th>Επώνυμο</th>\n";
@@ -672,13 +682,13 @@ if ($_SESSION['loggedin'] == false) {
                         echo "</tr>";
                         $i++;
                     }
-                    echo "</table>";
+                    echo "</table></div></div>";
                     echo "Σύνολο: $num";
-                    echo "<br><a href='admin.php?action=export_eid' class='btn btn-success'>Εξαγωγή</a><br><br>";
+                    echo "<br><a href='admin.php?action=export_eid' class='btn btn-custom btn-success'>Εξαγωγή</a><br><br>";
                 } else {
                     echo "<h3>Δεν υπάρχουν αιτήσεις...</h3>";
                 }
-                echo "<form action='admin.php'><input type='submit' class='btn btn-info' value='Επιστροφή'></form>";
+                echo "<form action='admin.php'><input type='submit' class='btn btn-custom btn-info' value='Επιστροφή'></form>";
             }
             // of nothing or not submitted
             ///////////////////
@@ -840,8 +850,8 @@ if ($_SESSION['loggedin'] == false) {
                         echo "&nbsp;&nbsp;<input type=\"button\" class='btn btn-info' onclick=\"location.href='admin.php';\" value=\"Επαναφορά\" /> ";
                         echo "<br><br>";
                     }
-                    echo "<div class='table-responsive'>";
-                    echo "<table id=\"mytbl\" class=\"table table-striped table-hover table-sm\" border=\"2\">\n";
+                    echo "<div class='card card-custom shadow-sm mb-4'><div class='card-body table-responsive'>";
+                    echo "<table id=\"mytbl\" class=\"table table-custom table-striped table-hover table-sm\" border=\"0\">\n";
                     echo "<thead class='thead-light'>";
                     echo "<tr><th>Α/Α</th>\n";
                     echo "<th>Επώνυμο</th>\n";
@@ -920,7 +930,7 @@ if ($_SESSION['loggedin'] == false) {
                         $i++;
                         $aa++;
                     }
-                    echo "</tbody></table></div>";
+                    echo "</tbody></table></div></div>";
                     $query = "select count(*) as plithos from $av_emp";
                     $result = mysqli_query($mysqlconnection, $query);
                     $row = mysqli_fetch_assoc($result);

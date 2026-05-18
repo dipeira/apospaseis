@@ -1,6 +1,12 @@
 <head>
 	<?php require_once('../config.php'); ?>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+	
 	<!-- <LINK href="style.css" rel="stylesheet" type="text/css"> -->
+	<link rel="stylesheet" href="custom.css">
+	
 	<!-- CSS only -->
 	<!-- Required meta tags -->
 	<meta charset="utf-8">
@@ -14,8 +20,6 @@
     
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
   <title><?= $av_title." ($av_foreas)"; ?></title>
-	
-	<!-- <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic&subset=greek,latin' rel='stylesheet' type='text/css'> -->
  </head>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />

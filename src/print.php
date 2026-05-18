@@ -1,62 +1,104 @@
 <?php
-	header('Content-type: text/html; charset=utf-8'); 
-        require_once "../config.php";
-        require_once "functions.php";
-        session_start();
+header('Content-type: text/html; charset=utf-8');
+require_once "../config.php";
+require_once "functions.php";
+session_start();
 ?>
 <html>
-  <head>
+
+<head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title>Εκτύπωση αίτησης</title>
-    <LINK href="style.css" rel="stylesheet" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link href="custom.css" rel="stylesheet" type="text/css">
     <style type="text/css">
         @media print {
-        .noprint {display:none;}
-        }
-        @media screen {
+            .noprint {
+                display: none;
+            }
+
+            body {
+                background-color: #fff;
+            }
+
+            /* Override Bootstrap flex and blocks for print pagination */
+            .card,
+            .card-custom,
+            .card-body,
+            .print,
+            .container,
+            .container-wide {
+                display: block !important;
+                border: none !important;
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
+            .table-responsive {
+                overflow: visible !important;
+                display: table !important;
+                width: 100% !important;
+            }
+
+            table {
+                page-break-inside: auto !important;
+            }
+
+            tr {
+                page-break-inside: avoid !important;
+                page-break-after: auto !important;
+            }
         }
     </style>
-  </head>
-  <body> 
-<?php
-    echo "<div class=\"print\">";
-    echo "<center><h3>$av_title ($av_foreas)</h3></center>";
+</head>
+
+<body>
+    <?php
+    echo "<div class=\"print container container-wide mt-4\">";
+    echo "<center><h3 class='mb-4'>$av_title ($av_foreas)</h3></center>";
     $serial = $_POST['sch_arr'];
     $ser_cred = $_POST['cred_arr'];
     $scharr = unserialize(stripslashes($serial));
-    
-    $mysqlconnection = mysqli_connect($db_host, $db_user, $db_password,$db_name);
-    mysqli_set_charset($mysqlconnection,"utf8");
+
+    $mysqlconnection = mysqli_connect($db_host, $db_user, $db_password, $db_name);
+    mysqli_set_charset($mysqlconnection, "utf8");
     //user 
     if ($av_type == 3) {
-        $query = "SELECT * from $av_emp WHERE surname = '".$_SESSION['user']."'";    
+        $query = "SELECT * from $av_emp WHERE surname = '" . $_SESSION['user'] . "'";
     } else {
-        $query = "SELECT * from $av_emp WHERE am = ".$_SESSION['user'];
+        $query = "SELECT * from $av_emp WHERE am = " . $_SESSION['user'];
     }
     $result = mysqli_query($mysqlconnection, $query);
     $row = mysqli_fetch_assoc($result);
-    
+
     $name = $row['name'];
     $surname = $row['surname'];
     $patrwnymo = $row['patrwnymo'];
     $klados = $row['klados'];
     $id = $row['id'];
-    if ($av_type == 3){
+    if ($av_type == 3) {
         $afm = $_SESSION['loggedin'];
-      } else {
+    } else {
         $am = $_SESSION['user'];
-      }
+    }
     $organ = $row['org'];
     $organ = getSchooledc($organ, $mysqlconnection);
     $ethy = $row['eth'];
     $mhnesy = $row['mhnes'];
     $hmeresy = $row['hmeres'];
-    
+
     // aithsh
     $query = "SELECT * from $av_ait WHERE emp_id=$id";
     $result = mysqli_query($mysqlconnection, $query);
     $row = mysqli_fetch_assoc($result);
-    
+
     $emp_id = $row['emp_id'];
     $gamos = $row['gamos'];
     $paidia = $row['paidia'];
@@ -82,23 +124,22 @@
     $ypdil = $row['ypdil'];
     $org_eid = $row['org_eid'];
     $allo = $row['allo'];
-   
-    
-    echo "<center>";
-    echo "<table id=\"mytbl\" class=\"\" border=\"2\">\n";
+
+
+    echo "<div class='card card-custom shadow-sm mb-4'><div class='card-body table-responsive'>\n";
+    echo "<table id=\"mytbl\" class=\"table table-striped table-bordered\" border=\"2\">\n";
     echo "<thead><th colspan=7>Φόρμα υποβολής στοιχείων</th></thead>";
-    echo "<tr><td colspan=2>Ονοματεπώνυμο Εκπ/κού:</td><td colspan=5>".$name." ".$surname."</td></tr>";
-    echo "<tr><td colspan=2>Πατρώνυμο: </td><td colspan=5>".$patrwnymo."</td></tr>";
-    echo "<tr><td colspan=2>Κλάδος: </td><td colspan=5>".$klados."</td></tr>";
-    if ($av_type != 3){
-        echo "<tr><td colspan=2>A.M.: </td><td colspan=5>".$am."</td></tr>";
-        echo "<tr><td colspan=2>Οργανική θέση: </td><td colspan=5>$organ</td></tr>";    
+    echo "<tr><td colspan=2>Ονοματεπώνυμο Εκπ/κού:</td><td colspan=5>" . $name . " " . $surname . "</td></tr>";
+    echo "<tr><td colspan=2>Πατρώνυμο: </td><td colspan=5>" . $patrwnymo . "</td></tr>";
+    echo "<tr><td colspan=2>Κλάδος: </td><td colspan=5>" . $klados . "</td></tr>";
+    if ($av_type != 3) {
+        echo "<tr><td colspan=2>A.M.: </td><td colspan=5>" . $am . "</td></tr>";
+        echo "<tr><td colspan=2>Οργανική θέση: </td><td colspan=5>$organ</td></tr>";
     } else {
-        echo "<tr><td colspan=2>A.M.: </td><td colspan=5>".$afm."</td></tr>";
+        echo "<tr><td colspan=2>A.M.: </td><td colspan=5>" . $afm . "</td></tr>";
     }
-    if ($av_type == 1)
-    {
-		echo "<tr><td colspan=2>Συνολική υπηρεσία: </td><td colspan=5>$ethy Έτη, $mhnesy Μήνες, $hmeresy Ημέρες</td></tr>";
+    if ($av_type == 1) {
+        echo "<tr><td colspan=2>Συνολική υπηρεσία: </td><td colspan=5>$ethy Έτη, $mhnesy Μήνες, $hmeresy Ημέρες</td></tr>";
         if ($org_eid)
             echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='org_eid' value='1' checked disabled>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
         else
@@ -113,11 +154,11 @@
         echo "</td><td>Παιδιά</td><td>$paidia</td><td>Δήμος</td><td>$dhmos_anhk</td></tr>";
         echo "<tr height=20></tr><tr><td colspan=7><center>Εντοπιότητα</center></td></tr>";
         echo "<tr><td colspan=2>Δήμος της Περιφερειακής Ενότητας Ηρακλείου που έχω εντοπιότητα</td><td colspan=5>";
-        echo getDimos($dhmos_ent,$mysqlconnection);
+        echo getDimos($dhmos_ent, $mysqlconnection);
         echo "</td></tr>";
         echo "<tr height=20></tr><tr><td colspan=7><center>Συνυπηρέτηση</center></td></tr>";
         echo "<tr><td colspan=2>Δήμος της Περιφερειακής Ενότητας Ηρακλείου που έχω συνυπηρέτηση</td><td colspan=5>";
-        echo getDimos($dhmos_syn,$mysqlconnection);
+        echo getDimos($dhmos_syn, $mysqlconnection);
         echo "</td></tr>";
         if ($eidikh)
             echo "<tr height=20></tr><tr><td colspan=2><center>Ειδική Κατηγορία</center></td><td colspan=5><input type='checkbox' name='eidikh' value='1' disabled checked>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
@@ -162,54 +203,54 @@
             echo "<tr><td colspan=2><center>Θεραπεία για εξωσωματική γονιμοποίηση</center></td><td colspan=5><input type='checkbox' name='eksw' value='1' checked disabled></td></tr>";
         else
             echo "<tr><td colspan=2><center>Θεραπεία για εξωσωματική γονιμοποίηση</center></td><td colspan=5><input type='checkbox' name='eksw' value='1' disabled></td></tr>";
-        echo "<tr height=20></tr><tr><td colspan=2>Σχόλια - Παρατηρήσεις</td><td colspan=5>$comments</td></tr>";    
+        echo "<tr height=20></tr><tr><td colspan=2>Σχόλια - Παρατηρήσεις</td><td colspan=5>$comments</td></tr>";
         $blabla = "Δηλώνω υπεύθυνα ότι δεν έχω οριστεί στέλεχος εκπαίδευσης (λ.χ. προϊστάμενος/μένη ολιγοθέσιας σχολικής μονάδας, διευθυντής/ντρια σχολ. μονάδας)<br> και ότι δεν υπηρετώ σε θέση με θητεία που λήγει μετά το τέλος του τρέχοντος σχολικού έτους.";
         echo "<tr height=20></tr><tr><td colspan=7><input type='checkbox' name='ypdil' value='1' checked disabled>$blabla</td></tr>";
         echo "<tr><td colspan=2>Ανάλυση μορίων: </td><td colspan=5>";
-            $moria = compute_moria($emp_id, $mysqlconnection);
-            foreach ($moria as $key => $value) {
-                echo moria_key2per($key).": $value<br>";
-            }
-            echo "</td></tr>";
+        $moria = compute_moria($emp_id, $mysqlconnection);
+        foreach ($moria as $key => $value) {
+            echo moria_key2per($key) . ": $value<br>";
+        }
+        echo "</td></tr>";
 
         echo "<input type='hidden' name = 'id' value='$id'>";
     }
-    
-  echo "<tr><td colspan=7><center><strong>Προτιμήσεις</strong></center></td></tr>";
-  $i=1;
-  $sum=0;
-  foreach ($scharr as $arr)
-  {
-      if ($arr)
-        echo "<tr><td>".$i."η προτίμηση</td><td colspan=6>$arr</td></tr>\n";
+
+    echo "<tr><td colspan=7><center><strong>Προτιμήσεις</strong></center></td></tr>";
+    $i = 1;
+    $sum = 0;
+    foreach ($scharr as $arr) {
+        if ($arr)
+            echo "<tr><td>" . $i . "η προτίμηση</td><td colspan=6>$arr</td></tr>\n";
         //echo $i." epilogh: ".$arr."<br>";
-      $i++;
-	  //$sum+=$arr;
+        $i++;
+        //$sum+=$arr;
 //	  $sum.=$arr;
-  }
-  //if (!$sum)
-  //    echo "<tr><td colspan=2><center>ΑΡΝΗΤΙΚΗ ΔΗΛΩΣΗ</center></td></tr>\n";
-  show_uploaded_files($am, false, false);
-  echo "<tr><td colspan=7><small>Υποβλήθηκε στις: ".  date("d-m-Y, H:i:s", strtotime($row['submit_date']))."</small></td></tr>";
-  echo "<tr style='height:30px'><td colspan=7>&nbsp;</td></tr>";
-  echo "<tr><td colspan=4></td><td align='center'>Ο/Η εκπαιδευτικός</td></tr>";
-  echo "<tr style='height:60px'><td colspan=7>&nbsp;</td></tr>";
-  echo "<tr><td colspan=4></td><td align='center'>$name $surname</td></tr>";
-  echo "</table>";
-  echo "</center>";
-  echo "</div>";
-  
-  echo "<div class=\"noprint\">";
-  echo "<center>";
-  echo "<br>";
-  
-  echo "<table><center>";
-  echo "<tr><td><input type='button' value='Εκτύπωση' onclick='javascript:window.print()' /></td></tr>";
-  echo "<tr><td><form action='choices.php'><input type='submit' value='Επιστροφή'></form></center></td></tr></table>";
-  echo "</div>";
+    }
+    //if (!$sum)
+    //    echo "<tr><td colspan=2><center>ΑΡΝΗΤΙΚΗ ΔΗΛΩΣΗ</center></td></tr>\n";
+    show_uploaded_files($am, false, false);
+    echo "<tr><td colspan=7><small>Υποβλήθηκε στις: " . date("d-m-Y, H:i:s", strtotime($row['submit_date'])) . "</small></td></tr>";
+    echo "<tr style='height:30px'><td colspan=7>&nbsp;</td></tr>";
+    echo "<tr><td colspan=4></td><td align='center'>Ο/Η εκπαιδευτικός</td></tr>";
+    echo "<tr style='height:60px'><td colspan=7>&nbsp;</td></tr>";
+    echo "<tr><td colspan=4></td><td align='center'>$name $surname</td></tr>";
+    echo "</table>";
+    echo "</div></div>";
+    echo "</div>";
+
+    echo "<div class=\"noprint\">";
+    echo "<center>";
+    echo "<br>";
+
+    echo "<div class='d-flex justify-content-center mb-4'>";
+    echo "<input type='button' class='btn btn-custom btn-success mr-2' value='Εκτυπωση' onclick='javascript:window.print()' />";
+    echo "<form action='choices.php' class='m-0'><input type='submit' class='btn btn-custom btn-info' value='Επιστροφη'></form>";
+    echo "</div>";
+    echo "</div>";
 
 
-echo "</body>";
-echo "</html>";
+    echo "</body>";
+    echo "</html>";
 
-?>
+    ?>

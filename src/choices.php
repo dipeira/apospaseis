@@ -81,7 +81,7 @@
       <!-- <?php include('help2.php'); ?> -->
   <!-- </div> -->
   <!-- <div id="right1"> -->
-  <div class="container">
+  <div class="container container-wide mt-4">
     
   
 <?php
@@ -223,7 +223,7 @@
         }
         // if anaplirotes, suggest dual list
         if ($av_type == 3 && $has_aitisi) {
-          echo "<tr><td colspan=2><a href='choices_anapl.php' class='btn btn-info'>Μετάβαση σε προβολή διπλής λίστας</a></td></tr>";  
+          echo "<tr><td colspan=2><a href='choices_anapl.php' class='btn btn-custom btn-info'>Μετάβαση σε προβολή διπλής λίστας</a></td></tr>";  
         }
         echo "<tr><td colspan=2><center><strong>Προτιμήσεις</strong></center></td></tr>";
         
@@ -245,14 +245,14 @@
               echo "<form action='print.php' method='POST'>";
               echo "<input type='hidden' name = 'cred_arr' value='$ser_cred'>";
               echo "<input type='hidden' name = 'sch_arr' value='$ser'>";
-              echo "<input type='submit' class='btn btn-success' value='Εκτύπωση'></form></center></td></tr>";
+              echo "<input type='submit' class='btn btn-custom btn-success' value='Εκτύπωση'></form></center></td></tr>";
             } else {
-              echo "<tr><td colspan=2><center><input type='button' class='btn btn-success' value='Εκτύπωση' onclick='javascript:window.print()' /></center></td></tr>";
+              echo "<tr><td colspan=2><center><input type='button' class='btn btn-custom btn-success' value='Εκτύπωση' onclick='javascript:window.print()' /></center></td></tr>";
             }
             if ($av_type == 1)
                 //echo "<tr><td colspan=2><center><form action='criteria.php'><input type='submit' class='btn btn-info' value='Επιστροφή στο Βήμα 1'></form></center></td></tr>";
-                echo "<tr><td colspan=2><center><a href='criteria.php' class='btn btn-info'>Επιστροφή στο Βήμα 1</a></center></td></tr>";
-            echo "<tr><td colspan=2><center><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' class='btn btn-danger' value='Έξοδος'></form></center></td></tr>";
+                echo "<tr><td colspan=2><center><a href='criteria.php' class='btn btn-custom btn-info'>Επιστροφή στο Βήμα 1</a></center></td></tr>";
+            echo "<tr><td colspan=2><center><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' class='btn btn-custom btn-danger' value='Έξοδος'></form></center></td></tr>";
         }
         // if not submitted
         else
@@ -330,18 +330,18 @@
             if ($has_aitisi)
                   echo "<tr><td colspan=2><small>Τελευταία ενημέρωση: ". date("d-m-Y, H:i:s", strtotime($row['updated']))."</small></td></tr>";
             echo "<input type='hidden' name = 'id' value='$id'>";
-            echo "<tr><td colspan=2><center><INPUT TYPE='submit' name='save' class='btn btn-success' VALUE='Αποθήκευση'></center></td></tr>";
+            echo "<tr><td colspan=2><center><INPUT TYPE='submit' name='save' class='btn btn-custom btn-success' VALUE='Αποθήκευση'></center></td></tr>";
             if ($av_type == 1)
                 //echo "<tr><td colspan=2><center><INPUT TYPE='submit' name='prev' class='btn btn-info' VALUE='Επιστροφή στο Βήμα 1'></center></td></tr>";
-                echo "<tr><td colspan=2><center><a href='criteria.php' class='btn btn-info'>Επιστροφή στο Βήμα 1</a></center></td></tr>";
+                echo "<tr><td colspan=2><center><a href='criteria.php' class='btn btn-custom btn-info'>Επιστροφή στο Βήμα 1</a></center></td></tr>";
             if (!$has_aitisi){
-              echo "<tr><td colspan=2><center><button TYPE='submit' id='submitbtn' name='submitbtn' class='btn btn-warning' disabled data-toggle='tooltip' data-placement='left' title='Πρέπει να αποθηκεύσετε πριν υποβάλετε οριστικά'>Οριστική Υποβολή</button></center></td>\n";
+              echo "<tr><td colspan=2><center><button TYPE='submit' id='submitbtn' name='submitbtn' class='btn btn-custom btn-warning' disabled data-toggle='tooltip' data-placement='left' title='Πρέπει να αποθηκεύσετε πριν υποβάλετε οριστικά'>Οριστική Υποβολή</button></center></td>\n";
             } else {
-              echo "<tr><td colspan=2><center><button TYPE='submit' id='submitbtn' name='submitbtn' class='btn btn-warning'>Οριστική Υποβολή</button></center></td>\n";
+              echo "<tr><td colspan=2><center><button TYPE='submit' id='submitbtn' name='submitbtn' class='btn btn-custom btn-warning'>Οριστική Υποβολή</button></center></td>\n";
             }
             echo "</tr>\n";
             echo "</form>";
-            echo "<tr><td colspan=2><center><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' class='btn btn-danger' value='Έξοδος'></form></center></td></tr>";
+            echo "<tr><td colspan=2><center><form action='login.php'><input type='hidden' name = 'logout' value=1><input type='submit' class='btn btn-custom btn-danger' value='Έξοδος'></form></center></td></tr>";
         }
         echo "</table>";
         //echo "</center>";

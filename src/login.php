@@ -62,8 +62,8 @@ include_once 'functions.php';
 
     if (!isset($_REQUEST['action'])) {
         ?>
-        <div class="container">
-            <div class="jumbotron">
+        <div class="container container-wide mt-5">
+            <div class="jumbotron shadow-sm">
                 <h1 class="display-4"><?= $av_title; ?></h1>
                 <p class="lead"><?= $av_dnsh; ?></p>
                 <hr class="my-4">
@@ -88,7 +88,7 @@ include_once 'functions.php';
                     $disp_from = $active_from ? get_greek_day($active_from) . ' ' . date("d/m/Y", $active_from) : $av_active_from;
                     $disp_to = $active_until ? get_greek_day($active_until) . ' ' . date("d/m/Y", $active_until) : $av_active_to;
                     $disp_to_time = date("H:i", $active_until);
-                    echo "<h4>Διάστημα υποβολής αιτήσεων: από $disp_from έως $disp_to και ώρα $disp_to_time.$time_rem_str</h4>";
+                    echo "<div class='alert alert-info text-center shadow-sm'><strong>Διάστημα υποβολής αιτήσεων:</strong> από $disp_from έως $disp_to και ώρα $disp_to_time.$time_rem_str</div>";
                     ?>
                 </div>
             </div>
@@ -96,16 +96,20 @@ include_once 'functions.php';
 
             <?php
             if (!$system_active)
-                echo "<br><h3>Το σύστημα δεν είναι ενεργό αυτή τη στιγμή.</h3><br><br>";
+                echo "<br><div class='alert alert-danger text-center shadow-sm'>Το σύστημα δεν είναι ενεργό αυτή τη στιγμή.</div><br>";
             if ($av_display_login) {
+                echo "<div class='row justify-content-center mt-2'><div class='col-md-8 col-lg-6'>";
+                echo "<div class='card card-custom shadow-sm mb-4 border-0'><div class='card-body p-4'>";
+                echo "<h4 class='text-center mb-4 text-primary'>Είσοδος στο Σύστημα</h4>";
                 $username_text = $av_type == '3' ? 'Επώνυμο εκπ/κού' : 'Αριθμός Μητρώου Εκπ/κού';
                 $log->loginform("login", "id", "", $username_text);
+                echo "</div></div></div></div>";
             }
 
-            echo "<br><br><small>$av_custom</small><br><br>";
+            echo "<div class='text-center mt-3'><small class='text-muted'>$av_custom</small><br>";
 
-            echo "<small>Για τη σωστή λειτουργία της εφαρμογής προτείνεται η χρήση<br>
-        ενός σύγχρονου προγράμματος περιήγησης (browser),<br>π.χ. Mozilla Firefox, Google Chrome ή Internet Explorer (έκδοση 7 ή νεότερη).</small>";
+            echo "<small class='text-muted'>Για τη σωστή λειτουργία της εφαρμογής προτείνεται η χρήση<br>
+        ενός σύγχρονου προγράμματος περιήγησης (browser),<br>π.χ. Mozilla Firefox, Google Chrome ή Microsoft Edge.</small></div>";
             echo "<br><br>";
 
     }
