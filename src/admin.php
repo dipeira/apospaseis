@@ -333,10 +333,10 @@ if ($_SESSION['loggedin'] == false) {
                 echo "<tr><td colspan=4><center><form action='admin.php'><input type='submit' class='btn btn-custom btn-danger' value='Eπιστροφή'></form></center></td></tr>";
                 echo "</table></div></div>";
                 if ($submitted && $av_type == 1) {
+                    echo "<br>";
                     echo "<form action='admin.php' method='post'>";
-                    echo "<div class='fixed-bottom bg-white border-top shadow-lg p-2' style='z-index: 1030; max-height: 40vh; overflow-y: auto;'>";
-                    echo "<div class='container container-wide'>";
-                    echo "<table class='table table-sm table-bordered mb-0'>";
+                    echo "<div class='card card-custom shadow-sm mb-4'><div class='card-body table-responsive'>";
+                    echo "<table class='table table-custom table-striped table-bordered mb-0'>";
                     echo "<thead class='thead-light'><th colspan=2>Έλεγχος αίτησης</th></thead>";
                     echo "<tr><td style='width: 20%;'>Ειδική κατηγορία:</td><td>";
                     $chkd = $row['eid_kat'] ? 'checked' : '';
@@ -354,7 +354,6 @@ if ($_SESSION['loggedin'] == false) {
                     echo "</table>";
                     echo "</div></div>";
                     echo "</form>";
-                    echo "<style>body { padding-bottom: 250px; }</style>";
                 } else if ($av_type == 1) {
                     show_uploaded_files($am, true);
                 }
