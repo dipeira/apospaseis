@@ -879,4 +879,54 @@ function is_authorized()
     return is_staff() || is_admin();
 }
 
+// Gets dimoi for a specific user's application (for the admin page)
+function get_aitisi_dimoi($id, $conn = null)
+{
+    if (!$conn) {
+        global $conn;
+    }
+    global $av_ait, $av_sch;
+
+    $id = intval($id);
+    $query = "SELECT choices FROM $av_ait WHERE id = $id";
+    $result = mysqli_query($conn, $query);
+    if (!$result || mysqli_num_rows($result) == 0) {
+        return;
+    }
+
+    $row = mysqli_fetch_assoc($result);
+    $choices_serialized = $row['choices'];
+    if (empty($choices_serialized)) {
+        return;
+    }
+
+    $choices = @unserialize($choices_serialized);
+    if (!is_array($choices) || empty($choices)) {
+        return;
+    }
+
+    $escaped_choices = array_map(function ($code) use ($conn) {
+        return "'" . mysqli_real_escape_string($conn, $code) . "'";
+    }, $choices);
+
+    if (empty($escaped_choices)) {
+        return;
+    }
+
+    $in_clause = implode(',', $escaped_choices);
+    $query = "SELECT DISTINCT dimos FROM $av_sch WHERE kwdikos IN ($in_clause) AND dimos != '' ORDER BY dimos";
+    $result = mysqli_query($conn, $query);
+
+    $dimoi = [];
+    if ($result) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $dimoi[] = $row['dimos'];
+        }
+    }
+
+    if (!empty($dimoi)) {
+        return implode(', ', $dimoi);
+    }
+}
+
 ?>

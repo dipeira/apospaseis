@@ -173,6 +173,7 @@ if ($_SESSION['loggedin'] == false) {
                     if (is_staff() && !is_admin()) {
                         $choice_count = count(array_filter($sch_arr));
                         $choice_output = "<tr><td colspan=7><center><strong>Αριθμός επιλογών σχολείων: $choice_count</strong></center></td></tr>";
+                        $choice_output .= "<tr><td colspan=7><center>Δήμοι σχολείων αίτησης: " . get_aitisi_dimoi($id, $mysqlconnection) . "</center></td></tr>";
                     } else {
                         // For admin and authorized staff, show full school details
                         for ($i = 0; $i < $av_choices; $i++) {
@@ -246,10 +247,10 @@ if ($_SESSION['loggedin'] == false) {
                         echo "<tr><td colspan=7><input type='checkbox' name='org_eid' value='1' checked disabled>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
                     else
                         echo "<tr><td colspan=7><input type='checkbox' name='org_eid' value='1' disabled>Έχω οργανική στην ειδική αγωγή (σε Ειδικό σχολείο ή τμήμα ένταξης)</td></tr>";
-                    if ($aitisi)
-                        echo "<tr><td colspan=7><input type='checkbox' name='aitisi' value='1' disabled checked>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
-                    else
-                        echo "<tr><td colspan=7><input type='checkbox' name='aitisi' value='1' disabled>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
+                    // if ($aitisi)
+                    //     echo "<tr><td colspan=7><input type='checkbox' name='aitisi' value='1' disabled checked>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
+                    // else
+                    //     echo "<tr><td colspan=7><input type='checkbox' name='aitisi' value='1' disabled>Υπέβαλα αίτηση βελτίωσης θέσης / οριστικής τοποθέτησης το $av_etos</td></tr>";
                     echo "<tr><td colspan=7><center>Οικογενειακή Κατάσταση</center></td></tr>";
                     echo "<tr><td>Γάμος</td><td>";
                     echo getGamos($gamos);
@@ -266,10 +267,10 @@ if ($_SESSION['loggedin'] == false) {
                         echo "<tr><td colspan=2><center>Ειδική Κατηγορία</center></td><td colspan=5><input type='checkbox' name='eidikh' value='1' disabled checked>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
                     else
                         echo "<tr><td colspan=2><center>Ειδική Κατηγορία</center></td><td colspan=5><input type='checkbox' name='eidikh' value='1' disabled>Επιθυμώ να υπαχθώ σε ειδική κατηγορία αποσπάσεων</td></tr>";
-                    if ($apospash)
-                        echo "<tr><td colspan=2><center>Επιθυμώ απόσπαση</center></td><td colspan=5><input type='checkbox' name='apospash' value='1' disabled checked>Απο τη Γενική στην Ειδική Αγωγή</td></tr>";
-                    else
-                        echo "<tr><td colspan=2><center>Επιθυμώ απόσπαση</center></td><td colspan=5><input type='checkbox' name='apospash' value='1' disabled>Απο τη Γενική στην Ειδική Αγωγή</td></tr>";
+                    // if ($apospash)
+                    //     echo "<tr><td colspan=2><center>Επιθυμώ απόσπαση</center></td><td colspan=5><input type='checkbox' name='apospash' value='1' disabled checked>Απο τη Γενική στην Ειδική Αγωγή</td></tr>";
+                    // else
+                    //     echo "<tr><td colspan=2><center>Επιθυμώ απόσπαση</center></td><td colspan=5><input type='checkbox' name='apospash' value='1' disabled>Απο τη Γενική στην Ειδική Αγωγή</td></tr>";
                     echo "<div id='ea'><tr><td colspan=2></td><td colspan=5>";
                     if ($didakt)
                         echo "α) Διδακτορικό Ειδ.Αγωγής<input type='checkbox' name='didakt' value='1' disabled checked><br>";
