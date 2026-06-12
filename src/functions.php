@@ -848,7 +848,7 @@ function show_uploaded_files($am, $notable = false, $can_delete = true)
     echo $notable ? "</table>" : "";
 }
 
-// return true if staff
+// return true if staff (not admin)
 function is_staff()
 {
     global $conn;
@@ -857,7 +857,7 @@ function is_staff()
     $user = mysqli_real_escape_string($conn, $_SESSION['user']);
     $res = mysqli_query($conn, "SELECT role FROM users WHERE username='$user'");
     if ($res && $row = mysqli_fetch_assoc($res)) {
-        return $row['role'] == 'user' || $row['role'] == 'admin';
+        return $row['role'] == 'user';
     }
     return false;
 }

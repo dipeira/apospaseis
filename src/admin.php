@@ -806,10 +806,10 @@ if ($_SESSION['loggedin'] == false) {
                         jQuery.ajax({
                             url: 'sessionhelper.php',
                             type: 'POST',
-                            data: { value: checkBox.checked ? 1 : 0 },
-                            dataType: 'json',
+                            data: { value: checkBox.checked ? 1 : 0 }
+                        }).always(function() {
+                            location.reload();
                         });
-                        location.reload();
                     }
                 </script>
 
@@ -841,7 +841,7 @@ if ($_SESSION['loggedin'] == false) {
 
                     // submitted only checkbox
                     echo "<input id='submitted_box' type='checkbox' ";
-                    echo $_SESSION['only_submitted'] == 1 ? 'checked' : '';
+                    echo (isset($_SESSION['only_submitted']) && $_SESSION['only_submitted'] == 1) ? 'checked' : '';
                     echo " name='only_submitted' onclick='onCheck()'>Εμφάνιση μόνο όσων έχουν υποβληθεί</td>";
 
                     // check if filter
@@ -870,7 +870,7 @@ if ($_SESSION['loggedin'] == false) {
                     while ($i < $num) {
                         $row = mysqli_fetch_assoc($result);
                         // if user has selected only submitted apps, skip non-submitted
-                        if ($_SESSION['only_submitted'] && !$row['submitted']) {
+                        if (!empty($_SESSION['only_submitted']) && !$row['submitted']) {
                             $i++;
                             continue;
                         }
