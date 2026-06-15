@@ -110,6 +110,7 @@ function compute_service_time($hm_dior, $proyp, $av_endofyear)
             if ($av_type == 1) {
                 echo "<div class='custom-control custom-radio mb-2'><input type='radio' id='type1' name='type' value='1' class='custom-control-input' required><label class='custom-control-label' for='type1'>Υπάλληλοι για απόσπαση (από αρχείο) <a href='../files/apo_employee.csv' class='text-muted'>(δείγμα)</a></label></div>";
                 echo "<div class='custom-control custom-radio mb-2'><input type='radio' id='type6' name='type' value='6' class='custom-control-input' required><label class='custom-control-label' for='type6'>Υπάλληλοι για απόσπαση (από API Πρωτέα) <a href='#' class='text-muted'>(οδηγίες)</a></label></div>";
+                echo "<div class='custom-control custom-radio mb-2'><input type='radio' id='type7' name='type' value='7' class='custom-control-input' required><label class='custom-control-label' for='type7'>Υπάλληλοι για απόσπαση (από API Πρωτέα) - ΕΝΗΜΕΡΩΣΗ</label></div>";
             } else if ($av_type == 2) {
                 echo "<div class='custom-control custom-radio mb-2'><input type='radio' id='type4' name='type' value='4' class='custom-control-input' required><label class='custom-control-label' for='type4'>Υπάλληλοι για βελτίωση <a href='../files/apo_employee_velt.csv' class='text-muted'>(δείγμα)</a></label></div>";
             } else if ($av_type == 3) {
@@ -129,8 +130,8 @@ function compute_service_time($hm_dior, $proyp, $av_endofyear)
 
 
 
-        // Check if it's an API import (type 6)
-        if ($_POST['type'] == 6) {
+        // Check if it's an API import (type 6 or 7)
+        if ($_POST['type'] == 6 || $_POST['type'] == 7) {
             // API Import for employees
             echo "<h4 class='mb-4'>Εισαγωγή υπαλλήλων από API Πρωτέα</h4>";
 
@@ -274,10 +275,18 @@ function compute_service_time($hm_dior, $proyp, $av_endofyear)
                     $schools_map[$s['id']] = $s['code'] ?? '';
                 }
 
-                // Clear employee table before import
-                mysqli_query($mysqlconnection, "DELETE FROM $av_emp WHERE am <> '$av_admin'");
+                $is_update_only = ($_POST['type'] == 7);
+                $inserted_count = 0;
+                $updated_count = 0;
+                $unchanged_count = 0;
+                $detailed_summary = [];
+
+                if (!$is_update_only) {
+                    // Clear employee table before import
+                    mysqli_query($mysqlconnection, "DELETE FROM $av_emp WHERE am <> '$av_admin'");
+                    mysqli_query($mysqlconnection, "TRUNCATE $av_ait");
+                }
                 $tbl = $av_emp;
-                mysqli_query($mysqlconnection, "TRUNCATE $av_ait");
 
                 // Process employees
                 $num = 0;
@@ -296,47 +305,156 @@ function compute_service_time($hm_dior, $proyp, $av_endofyear)
                     $name = $emp['name'] ?? '';
                     $surname = $emp['surname'] ?? '';
                     $patrwnymo = $emp['patrwnymo'] ?? '';
-                    $am = $emp['am'] ?? $emp['teacher_code'] ?? 0;
-                    $afm = $emp['afm'] ?? 0;
+                    $am = $emp['am'] ?? $emp['teacher_code'] ?? '';
+                    $afm = $emp['afm'] ?? '';
                     $hm_dior = $emp['hm_dior'] ?? $emp['appointment_date'] ?? '';
                     $proyp = $emp['proyp'] ?? $emp['previous_service_days'] ?? 0;
 
                     // Compute eth, mhnes, hmeres
                     list($eth, $mhnes, $hmeres) = compute_service_time($hm_dior, $proyp, $av_endofyear);
 
-                    // Insert into database
-                    $import = sprintf(
-                        "INSERT INTO $av_emp(name, surname, patrwnymo, klados, am, afm, org, eth, mhnes, hmeres) VALUES('%s', '%s', '%s', '%s', %d, %d, %d, %d, %d, %d)",
-                        mysqli_real_escape_string($mysqlconnection, $name),
-                        mysqli_real_escape_string($mysqlconnection, $surname),
-                        mysqli_real_escape_string($mysqlconnection, $patrwnymo),
-                        mysqli_real_escape_string($mysqlconnection, $klades_perigrafh),
-                        (int) $am,
-                        (int) $afm,
-                        (int) $school_code,
-                        (int) $eth,
-                        (int) $mhnes,
-                        (int) $hmeres
-                    );
+                    $am_trim = trim((string) $am);
+                    $afm_trim = trim((string) $afm);
 
-                    set_time_limit(480);
-                    $ret = mysqli_query($mysqlconnection, $import);
-                    if (!$ret) {
-                        $errors[] = "Σφάλμα για υπάλληλο $am: " . mysqli_error($mysqlconnection);
+                    if ($is_update_only && ($am_trim === '' || $am_trim === '0' || $afm_trim === '' || $afm_trim === '0')) {
+                        continue;
+                    }
+
+                    $am_val = (int) $am;
+                    $afm_val = (int) $afm;
+
+                    if ($is_update_only) {
+                        // Check if employee exists by am and afm
+                        $query_check = "SELECT id, name, surname, patrwnymo, klados, org, eth, mhnes, hmeres FROM $av_emp WHERE am = $am_val AND afm = $afm_val";
+                        $res_check = mysqli_query($mysqlconnection, $query_check);
+
+                        if ($res_check && mysqli_num_rows($res_check) > 0) {
+                            // Employee exists, check for changes
+                            $existing = mysqli_fetch_assoc($res_check);
+                            
+                            $changes_list = [];
+                            if ($existing['name'] !== $name) {
+                                $changes_list[] = "Όνομα: '{$existing['name']}' -> '{$name}'";
+                            }
+                            if ($existing['surname'] !== $surname) {
+                                $changes_list[] = "Επώνυμο: '{$existing['surname']}' -> '{$surname}'";
+                            }
+                            if ($existing['patrwnymo'] !== $patrwnymo) {
+                                $changes_list[] = "Πατρώνυμο: '{$existing['patrwnymo']}' -> '{$patrwnymo}'";
+                            }
+                            if ($existing['klados'] !== $klades_perigrafh) {
+                                $changes_list[] = "Κλάδος: '{$existing['klados']}' -> '{$klades_perigrafh}'";
+                            }
+                            if ((int)$existing['org'] !== (int)$school_code) {
+                                $changes_list[] = "Οργανική: '{$existing['org']}' -> '{$school_code}'";
+                            }
+                            if ((int)$existing['eth'] !== (int)$eth || (int)$existing['mhnes'] !== (int)$mhnes || (int)$existing['hmeres'] !== (int)$hmeres) {
+                                $changes_list[] = "Υπηρεσία: '{$existing['eth']}ε, {$existing['mhnes']}μ, {$existing['hmeres']}η' -> '{$eth}ε, {$mhnes}μ, {$hmeres}η'";
+                            }
+
+                            $has_changes = count($changes_list) > 0;
+
+                            if ($has_changes) {
+                                $update = sprintf(
+                                    "UPDATE $av_emp SET name='%s', surname='%s', patrwnymo='%s', klados='%s', org=%d, eth=%d, mhnes=%d, hmeres=%d WHERE id=%d",
+                                    mysqli_real_escape_string($mysqlconnection, $name),
+                                    mysqli_real_escape_string($mysqlconnection, $surname),
+                                    mysqli_real_escape_string($mysqlconnection, $patrwnymo),
+                                    mysqli_real_escape_string($mysqlconnection, $klades_perigrafh),
+                                    (int) $school_code,
+                                    (int) $eth,
+                                    (int) $mhnes,
+                                    (int) $hmeres,
+                                    (int) $existing['id']
+                                );
+                                set_time_limit(480);
+                                $ret = mysqli_query($mysqlconnection, $update);
+                                if (!$ret) {
+                                    $errors[] = "Σφάλμα κατά την ενημέρωση του υπαλλήλου $am_val: " . mysqli_error($mysqlconnection);
+                                } else {
+                                    $updated_count++;
+                                    $num++;
+                                    $detailed_summary[] = "Ενημερώθηκε: [ΑΜ: {$am_val}] {$surname} {$name} ({$klades_perigrafh}) - Αλλαγές: [" . implode(", ", $changes_list) . "]";
+                                }
+                            } else {
+                                $unchanged_count++;
+                            }
+                        } else {
+                            // Insert new employee since they don't exist
+                            $import = sprintf(
+                                "INSERT INTO $av_emp(name, surname, patrwnymo, klados, am, afm, org, eth, mhnes, hmeres) VALUES('%s', '%s', '%s', '%s', %d, %d, %d, %d, %d, %d)",
+                                mysqli_real_escape_string($mysqlconnection, $name),
+                                mysqli_real_escape_string($mysqlconnection, $surname),
+                                mysqli_real_escape_string($mysqlconnection, $patrwnymo),
+                                mysqli_real_escape_string($mysqlconnection, $klades_perigrafh),
+                                $am_val,
+                                $afm_val,
+                                (int) $school_code,
+                                (int) $eth,
+                                (int) $mhnes,
+                                (int) $hmeres
+                            );
+                            set_time_limit(480);
+                            $ret = mysqli_query($mysqlconnection, $import);
+                            if (!$ret) {
+                                $errors[] = "Σφάλμα για υπάλληλο $am_val: " . mysqli_error($mysqlconnection);
+                            } else {
+                                $inserted_count++;
+                                $num++;
+                                $detailed_summary[] = "Προστέθηκε: [ΑΜ: {$am_val}] {$surname} {$name} ({$klades_perigrafh})";
+                            }
+                        }
                     } else {
-                        $num++;
+                        // Original behavior: insert directly
+                        $import = sprintf(
+                            "INSERT INTO $av_emp(name, surname, patrwnymo, klados, am, afm, org, eth, mhnes, hmeres) VALUES('%s', '%s', '%s', '%s', %d, %d, %d, %d, %d, %d)",
+                            mysqli_real_escape_string($mysqlconnection, $name),
+                            mysqli_real_escape_string($mysqlconnection, $surname),
+                            mysqli_real_escape_string($mysqlconnection, $patrwnymo),
+                            mysqli_real_escape_string($mysqlconnection, $klades_perigrafh),
+                            $am_val,
+                            $afm_val,
+                            (int) $school_code,
+                            (int) $eth,
+                            (int) $mhnes,
+                            (int) $hmeres
+                        );
+
+                        set_time_limit(480);
+                        $ret = mysqli_query($mysqlconnection, $import);
+                        if (!$ret) {
+                            $errors[] = "Σφάλμα για υπάλληλο $am_val: " . mysqli_error($mysqlconnection);
+                        } else {
+                            $inserted_count++;
+                            $num++;
+                        }
                     }
                 }
 
                 if (count($errors) == 0) {
                     print "<h3>Η εισαγωγή πραγματοποιήθηκε με επιτυχία!</h3>";
-                    echo "Έγινε εισαγωγή $num εγγραφών στον πίνακα $tbl.<br>";
+                    if ($is_update_only) {
+                        echo "Προστέθηκαν: $inserted_count υπάλληλοι, Ενημερώθηκαν: $updated_count, Δεν τροποποιήθηκαν: $unchanged_count.<br>";
+                    } else {
+                        echo "Έγινε εισαγωγή $num εγγραφών στον πίνακα $tbl.<br>";
+                    }
                 } else {
                     echo "<h3>Παρουσιάστηκαν σφάλματα κατά την εισαγωγή</h3>";
                     foreach ($errors as $error) {
                         echo "<p>$error</p>";
                     }
-                    echo "Επιτυχημένες εισαγωγές: $num<br>";
+                    if ($is_update_only) {
+                        echo "Προστέθηκαν: $inserted_count υπάλληλοι, Ενημερώθηκαν: $updated_count, Δεν τροποποιήθηκαν: $unchanged_count.<br>";
+                    } else {
+                        echo "Επιτυχημένες εισαγωγές: $num<br>";
+                    }
+                }
+
+                if ($is_update_only && count($detailed_summary) > 0) {
+                    echo "<br><h5 class='mt-4'>Λεπτομέρειες Αλλαγών</h5>";
+                    echo "<textarea class='form-control' rows='12' readonly style='font-family: monospace; font-size: 0.9rem; background-color: #f8f9fa; white-space: pre; overflow-y: scroll;'>";
+                    echo htmlspecialchars(implode("\n", $detailed_summary), ENT_QUOTES, 'UTF-8');
+                    echo "</textarea><br>";
                 }
             }
         }
