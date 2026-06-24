@@ -169,7 +169,7 @@ function compute_service_time($hm_dior, $proyp, $av_endofyear)
                 ];
 
                 // Fetch employees with status 1 or 3
-                $employee_url = $api_url . '/employee?filter=status,eq,1&status,eq,3';
+                $employee_url = $api_url . '/employee?filter=status,in,1,3';
                 // print_r($headers);
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, $employee_url);
