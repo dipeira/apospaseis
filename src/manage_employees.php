@@ -65,9 +65,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } elseif (isset($_POST['import_csv'])) {
         if (is_uploaded_file($_FILES['csv_file']['tmp_name'])) {
             $handle = fopen($_FILES['csv_file']['tmp_name'], "r");
-            $num = 0;
             $headers = 1;
+            $added_count = 0;
+            $updated_count = 0;
+            $unchanged_count = 0;
+            $report_details = [];
             $errors = [];
+
             while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
                 $data = array_map('mb_helper', $data);
                 if ($headers) {
@@ -77,51 +81,171 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 // Minimum required fields: 7 common + at least 2 more based on av_type
                 $min_fields = ($av_type == 2) ? 9 : 10;
-                if (count($data) < $min_fields)
+                if (count($data) < $min_fields) {
                     continue;
+                }
 
-                $name = mysqli_real_escape_string($mysqlconnection, $data[0]);
-                $surname = mysqli_real_escape_string($mysqlconnection, $data[1]);
-                $patrwnymo = mysqli_real_escape_string($mysqlconnection, $data[2]);
-                $klados = mysqli_real_escape_string($mysqlconnection, $data[3]);
-                $am = (int) $data[4];
-                $afm = (int) $data[5];
-                $org = (int) $data[6];
+                $name_raw = isset($data[0]) ? trim($data[0]) : '';
+                $surname_raw = isset($data[1]) ? trim($data[1]) : '';
+                $patrwnymo_raw = isset($data[2]) ? trim($data[2]) : '';
+                $klados_raw = isset($data[3]) ? trim($data[3]) : '';
+                $am = isset($data[4]) ? (int) $data[4] : 0;
+                $afm = isset($data[5]) ? (int) $data[5] : 0;
+                $org = isset($data[6]) ? (int) $data[6] : 0;
 
                 // Parse fields based on av_type
                 $eth = 0;
                 $mhnes = 0;
                 $hmeres = 0;
                 $moria = null;
-                $entopiothta = '';
-                $synyphrethsh = '';
+                $entopiothta_raw = '';
+                $synyphrethsh_raw = '';
 
                 if ($av_type == 1) {
                     // av_type 1: eth, mhnes, hmeres, entopiothta, synyphrethsh
-                    $eth = (int) $data[7];
-                    $mhnes = (int) $data[8];
-                    $hmeres = (int) $data[9];
-                    $entopiothta = isset($data[10]) ? mysqli_real_escape_string($mysqlconnection, $data[10]) : '';
-                    $synyphrethsh = isset($data[11]) ? mysqli_real_escape_string($mysqlconnection, $data[11]) : '';
+                    $eth = isset($data[7]) ? (int) $data[7] : 0;
+                    $mhnes = isset($data[8]) ? (int) $data[8] : 0;
+                    $hmeres = isset($data[9]) ? (int) $data[9] : 0;
+                    $entopiothta_raw = isset($data[10]) ? trim($data[10]) : '';
+                    $synyphrethsh_raw = isset($data[11]) ? trim($data[11]) : '';
                 } elseif ($av_type == 2) {
                     // av_type 2: moria, entopiothta, synyphrethsh
-                    $moria = (float) $data[7];
-                    $entopiothta = isset($data[8]) ? mysqli_real_escape_string($mysqlconnection, $data[8]) : '';
-                    $synyphrethsh = isset($data[9]) ? mysqli_real_escape_string($mysqlconnection, $data[9]) : '';
+                    $moria = isset($data[7]) ? (float) $data[7] : null;
+                    $entopiothta_raw = isset($data[8]) ? trim($data[8]) : '';
+                    $synyphrethsh_raw = isset($data[9]) ? trim($data[9]) : '';
                 }
 
-                $import = "INSERT INTO $av_emp (name, surname, patrwnymo, klados, am, afm, org, eth, mhnes, hmeres, moria, entopiothta, synyphrethsh)
-                           VALUES ('$name', '$surname', '$patrwnymo', '$klados', $am, $afm, $org, $eth, $mhnes, $hmeres, " . ($moria !== null ? $moria : 'NULL') . ", '$entopiothta', '$synyphrethsh')";
-                if (mysqli_query($mysqlconnection, $import)) {
-                    $num++;
+                // Check if employee already exists by AM or AFM
+                $existing = null;
+                if ($am > 0 || $afm > 0) {
+                    $where_clauses = [];
+                    if ($am > 0) {
+                        $where_clauses[] = "am = $am";
+                    }
+                    if ($afm > 0) {
+                        $where_clauses[] = "afm = $afm";
+                    }
+                    $check_query = "SELECT * FROM $av_emp WHERE " . implode(" OR ", $where_clauses) . " LIMIT 1";
+                    $check_res = mysqli_query($mysqlconnection, $check_query);
+                    if ($check_res && mysqli_num_rows($check_res) > 0) {
+                        $existing = mysqli_fetch_assoc($check_res);
+                    }
+                }
+
+                if ($existing) {
+                    $changes = [];
+                    if ($existing['name'] !== $name_raw) {
+                        $changes[] = "Όνομα: '{$existing['name']}' -> '{$name_raw}'";
+                    }
+                    if ($existing['surname'] !== $surname_raw) {
+                        $changes[] = "Επώνυμο: '{$existing['surname']}' -> '{$surname_raw}'";
+                    }
+                    if ($existing['klados'] !== $klados_raw) {
+                        $changes[] = "Κλάδος: '{$existing['klados']}' -> '{$klados_raw}'";
+                    }
+                    if ((int)$existing['am'] !== $am) {
+                        $changes[] = "ΑΜ: '{$existing['am']}' -> '{$am}'";
+                    }
+                    if ((int)$existing['afm'] !== $afm) {
+                        $changes[] = "ΑΦΜ: '{$existing['afm']}' -> '{$afm}'";
+                    }
+                    if ((int)$existing['org'] !== $org) {
+                        $changes[] = "Οργανική: '{$existing['org']}' -> '{$org}'";
+                    }
+
+                    if ($av_type == 1) {
+                        if ((int)$existing['eth'] !== $eth) {
+                            $changes[] = "Έτη: '{$existing['eth']}' -> '{$eth}'";
+                        }
+                        if ((int)$existing['mhnes'] !== $mhnes) {
+                            $changes[] = "Μήνες: '{$existing['mhnes']}' -> '{$mhnes}'";
+                        }
+                        if ((int)$existing['hmeres'] !== $hmeres) {
+                            $changes[] = "Ημέρες: '{$existing['hmeres']}' -> '{$hmeres}'";
+                        }
+                    } elseif ($av_type == 2) {
+                        $existing_moria = $existing['moria'] !== null ? (float)$existing['moria'] : null;
+                        if ($existing_moria !== $moria) {
+                            $existing_moria_str = $existing_moria !== null ? (string)$existing_moria : 'NULL';
+                            $moria_str = $moria !== null ? (string)$moria : 'NULL';
+                            $changes[] = "Μόρια: '{$existing_moria_str}' -> '{$moria_str}'";
+                        }
+                    }
+
+                    if ($existing['entopiothta'] !== $entopiothta_raw) {
+                        $changes[] = "Εντοπιότητα: '{$existing['entopiothta']}' -> '{$entopiothta_raw}'";
+                    }
+                    if ($existing['synyphrethsh'] !== $synyphrethsh_raw) {
+                        $changes[] = "Συνυπηρέτηση: '{$existing['synyphrethsh']}' -> '{$synyphrethsh_raw}'";
+                    }
+
+                    if (!empty($changes)) {
+                        $name_esc = mysqli_real_escape_string($mysqlconnection, $name_raw);
+                        $surname_esc = mysqli_real_escape_string($mysqlconnection, $surname_raw);
+                        $klados_esc = mysqli_real_escape_string($mysqlconnection, $klados_raw);
+                        $entopiothta_esc = mysqli_real_escape_string($mysqlconnection, $entopiothta_raw);
+                        $synyphrethsh_esc = mysqli_real_escape_string($mysqlconnection, $synyphrethsh_raw);
+
+                        $update_query = "UPDATE $av_emp SET 
+                            name = '$name_esc',
+                            surname = '$surname_esc',
+                            klados = '$klados_esc',
+                            am = $am,
+                            afm = $afm,
+                            org = $org,
+                            eth = $eth,
+                            mhnes = $mhnes,
+                            hmeres = $hmeres,
+                            moria = " . ($moria !== null ? $moria : 'NULL') . ",
+                            entopiothta = '$entopiothta_esc',
+                            synyphrethsh = '$synyphrethsh_esc'
+                            WHERE id = " . $existing['id'];
+
+                        if (mysqli_query($mysqlconnection, $update_query)) {
+                            $updated_count++;
+                            $report_details[] = "Ενημέρωση: [AM/AFM: $am / $afm] {$surname_raw} {$name_raw} - Αλλαγές: [" . implode(", ", $changes) . "]";
+                        } else {
+                            $errors[] = "Σφάλμα κατά την ενημέρωση του/της {$surname_raw} {$name_raw} (AM: $am): " . mysqli_error($mysqlconnection);
+                        }
+                    } else {
+                        $unchanged_count++;
+                    }
                 } else {
-                    $errors[] = "Σφάλμα στην AM $am: " . mysqli_error($mysqlconnection);
+                    $name_esc = mysqli_real_escape_string($mysqlconnection, $name_raw);
+                    $surname_esc = mysqli_real_escape_string($mysqlconnection, $surname_raw);
+                    $patrwnymo_esc = mysqli_real_escape_string($mysqlconnection, $patrwnymo_raw);
+                    $klados_esc = mysqli_real_escape_string($mysqlconnection, $klados_raw);
+                    $entopiothta_esc = mysqli_real_escape_string($mysqlconnection, $entopiothta_raw);
+                    $synyphrethsh_esc = mysqli_real_escape_string($mysqlconnection, $synyphrethsh_raw);
+
+                    $insert_query = "INSERT INTO $av_emp (name, surname, patrwnymo, klados, am, afm, org, eth, mhnes, hmeres, moria, entopiothta, synyphrethsh)
+                               VALUES ('$name_esc', '$surname_esc', '$patrwnymo_esc', '$klados_esc', $am, $afm, $org, $eth, $mhnes, $hmeres, " . ($moria !== null ? $moria : 'NULL') . ", '$entopiothta_esc', '$synyphrethsh_esc')";
+                    
+                    if (mysqli_query($mysqlconnection, $insert_query)) {
+                        $added_count++;
+                        $report_details[] = "Προσθήκη: [AM/AFM: $am / $afm] {$surname_raw} {$name_raw} ({$klados_raw})";
+                    } else {
+                        $errors[] = "Σφάλμα κατά την προσθήκη του/της {$surname_raw} {$name_raw} (AM: $am): " . mysqli_error($mysqlconnection);
+                    }
                 }
             }
             fclose($handle);
-            $message = "<div class='alert alert-success'>Η εισαγωγή ολοκληρώθηκε. Εισήχθησαν $num εγγραφές.</div>";
+
+            $message = "<div class='alert alert-success'>Η εισαγωγή ολοκληρώθηκε. Προστέθηκαν $added_count εγγραφές, ενημερώθηκαν $updated_count εγγραφές, ενώ $unchanged_count εγγραφές παρέμειναν ίδιες.</div>";
             if (!empty($errors)) {
-                $message .= "<div class='alert alert-warning'>Παρουσιάστηκαν σφάλματα σε " . count($errors) . " εγγραφές.</div>";
+                $message .= "<div class='alert alert-danger'>Παρουσιάστηκαν σφάλματα σε " . count($errors) . " εγγραφές:<ul>";
+                foreach ($errors as $error) {
+                    $message .= "<li>" . htmlspecialchars($error, ENT_QUOTES, 'UTF-8') . "</li>";
+                }
+                $message .= "</ul></div>";
+            }
+            if (!empty($report_details)) {
+                $message .= "<div class='mt-3 mb-3'>";
+                $message .= "<label class='font-weight-bold'>Λεπτομέρειες εισαγωγής (Προσθήκες & Ενημερώσεις):</label>";
+                $message .= "<textarea class='form-control' rows='8' readonly style='font-family: monospace; font-size: 0.9rem; background-color: #f8f9fa; white-space: pre; overflow-y: scroll;'>";
+                $message .= htmlspecialchars(implode("\n", $report_details), ENT_QUOTES, 'UTF-8');
+                $message .= "</textarea>";
+                $message .= "</div>";
             }
         }
     }

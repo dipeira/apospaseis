@@ -458,8 +458,12 @@ function getYgeia_a($y)
     return $ret;
 }
 
+// check if utf8 else convert to utf8
 function mb_helper($v)
 {
+    if (mb_check_encoding($v, 'UTF-8')) {
+        return $v;
+    }
     return mb_convert_encoding($v, 'utf-8', 'iso-8859-7');
 }
 
