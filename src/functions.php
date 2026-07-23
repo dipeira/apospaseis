@@ -125,12 +125,13 @@ function getSchools($epil, $dim, $omada, $conn, $sch, $show_inactive = false)
 {
     global $av_sch;
     $inactive = $show_inactive ? '' : 'AND inactive=0';
+    $allow_special = is_authorized() ? "OR kwdikos = '2222222'" : "";
     if (!$omada && !$dim)
         $query = "select DISTINCT name,id,kwdikos from $av_sch WHERE 1 $inactive order by name";
     if (!$omada && $dim)
-        $query = "select DISTINCT name,id,kwdikos from $av_sch where dim=$dim $inactive order by name";
+        $query = "select DISTINCT name,id,kwdikos from $av_sch where (dim=$dim $allow_special) $inactive order by name";
     if ($omada && $dim)
-        $query = "select DISTINCT name,id,kwdikos from $av_sch where dim=$dim AND omada <> $omada $inactive order by name";
+        $query = "select DISTINCT name,id,kwdikos from $av_sch where (dim=$dim $allow_special) AND omada <> $omada $inactive order by name";
     $arr = array();
     $result = mysqli_query($conn, $query);
     while ($ar = mysqli_fetch_array($result))
@@ -931,6 +932,75 @@ function get_aitisi_dimoi($id, $conn = null)
     if (!empty($dimoi)) {
         return implode(', ', $dimoi);
     }
+}
+
+function get_export_debug_info($mysqlconnection, $av_type, $andClause)
+{
+    global $av_ait, $av_emp, $av_sch;
+    $errors = [];
+    $seen_emp_ids = [];
+
+    // Query all submitted applications matching the filter
+    $q = "SELECT a.id as ait_id, a.emp_id, e.id as emp_db_id, e.surname, e.name, e.am, e.org
+          FROM $av_ait a
+          LEFT JOIN $av_emp e ON a.emp_id = e.id
+          WHERE a.submitted = 1 $andClause";
+    $res = mysqli_query($mysqlconnection, $q);
+    if (!$res) {
+        $errors[] = "Σφάλμα ερωτήματος διάγνωσης: " . mysqli_error($mysqlconnection);
+        return $errors;
+    }
+
+    while ($row = mysqli_fetch_assoc($res)) {
+        $ait_id = $row['ait_id'];
+        $emp_id = $row['emp_id'];
+        $emp_db_id = $row['emp_db_id'];
+        $surname = $row['surname'];
+        $name = $row['name'];
+        $am = $row['am'];
+        $org = $row['org'];
+
+        // 1. Check if employee exists
+        if (!$emp_db_id) {
+            $errors[] = "Αίτηση Α/Α $ait_id: Ο εκπαιδευτικός με ID $emp_id δεν βρέθηκε στον πίνακα εκπαιδευτικών ($av_emp).";
+            continue;
+        }
+
+        // 2. Check for duplicate applications for the same employee
+        if (in_array($emp_db_id, $seen_emp_ids)) {
+            $errors[] = "Αίτηση Α/Α $ait_id: Ο εκπαιδευτικός $surname $name (Α.Μ. $am, ID $emp_db_id) έχει πολλαπλές υποβληθείσες αιτήσεις.";
+        } else {
+            $seen_emp_ids[] = $emp_db_id;
+        }
+
+        // 3. For types that join schools, check school code 'org'
+        if ($av_type != 3) {
+            if (is_null($org) || trim($org) === '' || $org == 0) {
+                $errors[] = "Εκπαιδευτικός $surname $name (Α.Μ. $am, Αίτηση Α/Α $ait_id): Δεν έχει οριστεί κωδικός οργανικής (κενό ή 0).";
+            } else {
+                // Check in schools table
+                $org_esc = mysqli_real_escape_string($mysqlconnection, $org);
+                $q_s = "SELECT id, name FROM $av_sch WHERE kwdikos = '$org_esc'";
+                $res_s = mysqli_query($mysqlconnection, $q_s);
+                if ($res_s) {
+                    $school_count = mysqli_num_rows($res_s);
+                    if ($school_count == 0) {
+                        $errors[] = "Εκπαιδευτικός $surname $name (Α.Μ. $am, Αίτηση Α/Α $ait_id): Ο κωδικός οργανικής '$org' δεν αντιστοιχεί σε κανένα σχολείο στον πίνακα σχολείων ($av_sch).";
+                    } elseif ($school_count > 1) {
+                        $names = [];
+                        while ($row_s = mysqli_fetch_assoc($res_s)) {
+                            $names[] = $row_s['name'];
+                        }
+                        $errors[] = "Εκπαιδευτικός $surname $name (Α.Μ. $am, Αίτηση Α/Α $ait_id): Ο κωδικός οργανικής '$org' αντιστοιχεί σε πολλαπλά σχολεία στον πίνακα σχολείων ($av_sch) [" . implode(", ", $names) . "]. Αυτό προκαλεί διπλότυπες εγγραφές στην εξαγωγή.";
+                    }
+                } else {
+                    $errors[] = "Σφάλμα ελέγχου σχολείου για κωδικό '$org': " . mysqli_error($mysqlconnection);
+                }
+            }
+        }
+    }
+
+    return $errors;
 }
 
 ?>

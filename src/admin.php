@@ -408,19 +408,9 @@ if ($_SESSION['loggedin'] == false) {
                 if ($num == 0) {
                     if ($count_ait > 0) {
                         echo "<div class='alert alert-danger'>Δεν βρέθηκαν δεδομένα για εξαγωγή, παρόλο που υπάρχουν $count_ait υποβληθείσες αιτήσεις!<br>Ελέγξτε αν οι εκπαιδευτικοί και τα σχολεία έχουν εισαχθεί σωστά στο σύστημα (πιθανή αποτυχία JOIN).";
-                        $missing_teachers = [];
-                        $q_m = ($av_type == 3) ?
-                            "SELECT a.id as ait_id, e.surname, e.name, a.emp_id FROM $av_ait a LEFT JOIN $av_emp e ON a.emp_id=e.id WHERE a.submitted=1 $andClause AND e.id IS NULL" :
-                            "SELECT a.id as ait_id, e.surname, e.name, e.am, a.emp_id, e.org, s.id as sid FROM $av_ait a LEFT JOIN $av_emp e ON a.emp_id=e.id LEFT JOIN $av_sch s ON s.kwdikos = e.org WHERE a.submitted=1 $andClause AND (e.id IS NULL OR s.id IS NULL)";
-                        $res_m = mysqli_query($mysqlconnection, $q_m);
-                        while ($row_m = mysqli_fetch_assoc($res_m)) {
-                            if (!$row_m['surname'])
-                                $missing_teachers[] = "Αίτηση Α/Α " . $row_m['ait_id'] . " (Ο εκπ/κός με ID " . $row_m['emp_id'] . " δεν βρέθηκε)";
-                            else
-                                $missing_teachers[] = $row_m['surname'] . " " . $row_m['name'] . " (Α.Μ. " . $row_m['am'] . ") - Πρόβλημα με τον κωδικό οργανικής (" . $row_m['org'] . ")";
-                        }
-                        if (count($missing_teachers)) {
-                            echo "<br><b>Εκπαιδευτικοί που λείπουν:</b><br><ul><li>" . implode("</li><li>", $missing_teachers) . "</li></ul>";
+                        $debug_errors = get_export_debug_info($mysqlconnection, $av_type, $andClause);
+                        if (count($debug_errors) > 0) {
+                            echo "<br><b>Λεπτομέρειες σφαλμάτων διάγνωσης:</b><br><ul><li>" . implode("</li><li>", $debug_errors) . "</li></ul>";
                         }
                         echo "</div>";
                     } else {
@@ -563,19 +553,9 @@ if ($_SESSION['loggedin'] == false) {
 
                 if ($count_ait != $num) {
                     echo "<div class='alert alert-warning'>Προσοχή: Ο αριθμός των υποβληθέντων αιτήσεων ($count_ait) διαφέρει από τον αριθμό των αιτήσεων που εξάγονται ($num). <br>Αυτό μπορεί να οφείλεται σε ελλιπή στοιχεία εκπαιδευτικών ή σχολείων στις αντίστοιχες βάσεις δεδομένων (αποτυχία JOIN).";
-                    $missing_teachers = [];
-                    $q_m = ($av_type == 3) ?
-                        "SELECT a.id as ait_id, e.surname, e.name, a.emp_id FROM $av_ait a LEFT JOIN $av_emp e ON a.emp_id=e.id WHERE a.submitted=1 $andClause AND e.id IS NULL" :
-                        "SELECT a.id as ait_id, e.surname, e.name, e.am, a.emp_id, e.org, s.id as sid FROM $av_ait a LEFT JOIN $av_emp e ON a.emp_id=e.id LEFT JOIN $av_sch s ON s.kwdikos = e.org WHERE a.submitted=1 $andClause AND (e.id IS NULL OR s.id IS NULL)";
-                    $res_m = mysqli_query($mysqlconnection, $q_m);
-                    while ($row_m = mysqli_fetch_assoc($res_m)) {
-                        if (!$row_m['surname'])
-                            $missing_teachers[] = "Αίτηση Α/Α " . $row_m['ait_id'] . " (Ο εκπ/κός με ID " . $row_m['emp_id'] . " δεν βρέθηκε)";
-                        else
-                            $missing_teachers[] = $row_m['surname'] . " " . $row_m['name'] . " (Α.Μ. " . $row_m['am'] . ") - Πρόβλημα με τον κωδικό οργανικής (" . $row_m['org'] . ")";
-                    }
-                    if (count($missing_teachers)) {
-                        echo "<br><b>Εκπαιδευτικοί που λείπουν:</b><br><ul><li>" . implode("</li><li>", $missing_teachers) . "</li></ul>";
+                    $debug_errors = get_export_debug_info($mysqlconnection, $av_type, $andClause);
+                    if (count($debug_errors) > 0) {
+                        echo "<br><b>Λεπτομέρειες σφαλμάτων διάγνωσης:</b><br><ul><li>" . implode("</li><li>", $debug_errors) . "</li></ul>";
                     }
                     echo "</div>";
                 }
